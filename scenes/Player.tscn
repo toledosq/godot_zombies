@@ -1,0 +1,27 @@
+[gd_scene load_steps=7 format=3 uid="uid://coq7sptp1bsje"]
+
+[ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
+[ext_resource type="Script" uid="uid://f7mtdxk0kw1y" path="res://scripts/Health.gd" id="3_3li8b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_p0vlq"]
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
+albedo_texture = ExtResource("2_v6fml")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_5q5h1")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_p0vlq")
+surface_material_override/0 = SubResource("StandardMaterial3D_3li8b")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_3li8b")

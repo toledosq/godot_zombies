@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://5g6hav51ui0q"]
+
+[ext_resource type="Environment" uid="uid://dgmsf46fcrpqd" path="res://default_env.tres" id="1_elqb8"]
+[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_0bbpv"]
+[ext_resource type="PackedScene" uid="uid://coq7sptp1bsje" path="res://scenes/Player.tscn" id="2_rvslj"]
+[ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_rarhs"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rvslj"]
+size = Vector2(50, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elqb8"]
+albedo_texture = ExtResource("2_0bbpv")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rvslj"]
+size = Vector3(50, 1, 50)
+
+[node name="Main" type="Node3D"]
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_elqb8")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_rvslj")
+surface_material_override/0 = SubResource("StandardMaterial3D_elqb8")
+
+[node name="GroundPhysics" type="StaticBody3D" parent="Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/GroundPhysics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_rvslj")
+
+[node name="Player" parent="." instance=ExtResource("2_rvslj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("4_rarhs")
+follow_target = NodePath("../Player")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 0.64278764, 0.76604444, 0, -0.76604444, 0.64278764, 0, 0, 0)
+collision_mask = 0
+spring_length = 12.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+current = true

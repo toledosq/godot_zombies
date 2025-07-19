@@ -1,0 +1,76 @@
+[gd_scene load_steps=11 format=3 uid="uid://5g6hav51ui0q"]
+
+[ext_resource type="Script" uid="uid://cl6hsfp7i6sql" path="res://scripts/main.gd" id="1_c01mt"]
+[ext_resource type="Environment" uid="uid://dgmsf46fcrpqd" path="res://default_env.tres" id="1_elqb8"]
+[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_0bbpv"]
+[ext_resource type="PackedScene" uid="uid://coq7sptp1bsje" path="res://scenes/Player.tscn" id="2_rvslj"]
+[ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_rarhs"]
+[ext_resource type="Script" uid="uid://2ivha60ioyls" path="res://scripts/deadzone_debug.gd" id="5_vcsgt"]
+[ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="7_nxtc6"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rvslj"]
+size = Vector2(50, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elqb8"]
+albedo_texture = ExtResource("2_0bbpv")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rvslj"]
+size = Vector3(50, 1, 50)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_c01mt")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_elqb8")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_rvslj")
+surface_material_override/0 = SubResource("StandardMaterial3D_elqb8")
+
+[node name="GroundPhysics" type="StaticBody3D" parent="Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/GroundPhysics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_rvslj")
+
+[node name="Player" parent="." instance=ExtResource("2_rvslj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CameraRig" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_rarhs")
+follow_target = NodePath("../Player")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="CameraRig"]
+
+[node name="DeadzoneDebug" type="Control" parent="CameraRig/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_vcsgt")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("7_nxtc6")
+
+[node name="VitalsContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/VitalsContainer"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+rounded = true
