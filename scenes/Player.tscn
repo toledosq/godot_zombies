@@ -33,6 +33,7 @@ script = ExtResource("4_qu4a1")
 metadata/_custom_type_script = "uid://3stm174dy74a"
 
 [node name="Camera3D" type="Camera3D" parent="PlayerCamera"]
+physics_interpolation_mode = 1
 current = true
 
 [node name="HUD" type="CanvasLayer" parent="."]

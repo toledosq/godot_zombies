@@ -22,6 +22,7 @@ func _process(delta: float) -> void:
 	if not target_node:
 		return
 	_update_position(delta)
+	force_update_transform()
 
 func _update_position(delta: float) -> void:
 	# Base position relative to target

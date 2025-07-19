@@ -34,15 +34,10 @@ func _ready() -> void:
 	camera_rig.set_target(self)
 
 func _physics_process(delta):
-	previous_transform = body.global_transform
 	_handle_movement(delta)
 	_rotate_towards_mouse()
 
 func _process(_delta: float) -> void:
-	# Interpolate the body mesh movement to avoid ghosting from physics process
-	var alpha = Engine.get_physics_interpolation_fraction()
-	body.global_transform = previous_transform.interpolate_with(global_transform, alpha)
-	
 	# TEST: Press J to deal damage
 	if Input.is_action_just_pressed("test_damage"):
 		print(">>> Applying 10 damage")
