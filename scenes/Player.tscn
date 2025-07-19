@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=11 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -14,6 +14,30 @@ height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu4a1"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_70d11"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1")
@@ -39,21 +63,104 @@ current = true
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("6_70d11")
 
-[node name="VitalsContainer" type="Control" parent="HUD"]
+[node name="BottomBar" type="Control" parent="HUD"]
 layout_mode = 3
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+
+[node name="CenterContainer" type="CenterContainer" parent="HUD/BottomBar"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HealthBar" type="ProgressBar" parent="HUD/VitalsContainer"]
-custom_minimum_size = Vector2(192, 0)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 38.0
-offset_bottom = -22.0
-grow_vertical = 0
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="VitalsContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/BottomBar/CenterContainer/HBoxContainer/VitalsContainer"]
+custom_minimum_size = Vector2(64, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 rounded = true
+
+[node name="EnergyBar" type="ProgressBar" parent="HUD/BottomBar/CenterContainer/HBoxContainer/VitalsContainer"]
+custom_minimum_size = Vector2(64, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+
+[node name="WeaponContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Square1" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+
+[node name="Square2" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+
+[node name="QuickSlotContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel2" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel3" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel4" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel5" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel6" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
