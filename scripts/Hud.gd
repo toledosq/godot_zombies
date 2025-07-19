@@ -1,21 +1,18 @@
 extends CanvasLayer
+class_name PlayerHud
 
-@onready var health_bar = %HealthBar
+@onready var health_bar = $VitalsContainer/HealthBar
+
+signal ready_
 
 func _ready():
-	UiEventBus.connect("health_changed", _on_health_changed)
-	UiEventBus.connect("player_died", _on_player_died)
-	UiEventBus.connect("player_spawned", _on_player_spawned)
+	print("HUD: Ready")
+	emit_signal("ready_")
 
-func _on_health_changed(value: int, max_value: int):
+func _on_health_changed(_player_id: int, value: int, max_value: int):
 	print("HUD: Player health changed")
 	health_bar.max_value = max_value
 	health_bar.value = value
 
-func _on_player_died():
+func _on_player_died(_player_id):
 	print("HUD: Player died!")
-
-func _on_player_spawned(player):
-	print("HUD: Player spawned")
-	var hc = player.get_node("Health")
-	_on_health_changed(hc.current_health, hc.max_health)

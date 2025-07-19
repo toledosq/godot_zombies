@@ -3,20 +3,35 @@ class_name Player
 
 @export var speed := 5.0
 
+var player_id: int
+var player_name: String
+
 var previous_transform: Transform3D
 var health_component: Health
+var player_hud: PlayerHud
 
-signal player_health_changed(current: int, maximum: int)
-signal player_died
+signal player_health_changed(player_id_:int, current: int, maximum: int)
+signal player_died(player_id_: int)
 
 @onready var body = $Body  # Path to visible mesh
 @onready var collision = $CollisionShape3D
-
+@onready var camera_rig = $PlayerCamera
 
 func _ready() -> void:
+	# Connect player Health Component
+	print("Player: Connecting Health Component")
 	health_component = $Health
-	health_component.connect("health_changed", self._on_health_changed)
-	health_component.connect("died", self._on_player_died)
+	health_component.connect("health_changed", _on_health_changed)
+	health_component.connect("died", _on_player_died)
+	
+	# Connect player Heads Up Display
+	print("Player: Connecting HUD")
+	player_hud = $HUD
+	connect("player_health_changed", player_hud._on_health_changed)
+	connect("player_died", player_hud._on_player_died)
+	emit_current_health()
+	
+	camera_rig.set_target(self)
 
 func _physics_process(delta):
 	previous_transform = body.global_transform
@@ -76,14 +91,14 @@ func _rotate_towards_mouse():
 			look_at(global_transform.origin + direction, Vector3.UP)
 
 func _on_health_changed(current:int, maximum:int) -> void:
-	# Update HUD
-	emit_signal("player_health_changed", current, maximum)
+	# Announce health change
+	emit_signal("player_health_changed", player_id, current, maximum)
 	# Play hit flash
 	print("Player: HP:", current, "/", maximum)
 
 func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
-	emit_signal("player_died")
+	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
 
 func apply_damage(amount: int) -> void:
@@ -94,4 +109,4 @@ func apply_heal(amount: int) -> void:
 
 func emit_current_health():
 	print("Player: Sharing current health")
-	emit_signal("player_health_changed", health_component.current_health, health_component.max_health)
+	_on_health_changed(health_component.current_health, health_component.max_health)

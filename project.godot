@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 ItemDatabase="*res://scripts/ItemDatabase.gd"
-UiEventBus="*res://scripts/UIEventBus.gd"
 
 [input]
 

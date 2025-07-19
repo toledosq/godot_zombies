@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=9 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
 [ext_resource type="Script" uid="uid://f7mtdxk0kw1y" path="res://scripts/Health.gd" id="3_3li8b"]
+[ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
+[ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 height = 1.8
@@ -25,3 +27,27 @@ surface_material_override/0 = SubResource("StandardMaterial3D_3li8b")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_3li8b")
+
+[node name="PlayerCamera" type="Node3D" parent="."]
+script = ExtResource("4_qu4a1")
+metadata/_custom_type_script = "uid://3stm174dy74a"
+
+[node name="Camera3D" type="Camera3D" parent="PlayerCamera"]
+current = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_70d11")
+
+[node name="VitalsContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/VitalsContainer"]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+rounded = true

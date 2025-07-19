@@ -1,20 +1,18 @@
 class_name PlayerCamera
 extends Node3D
 
-@export var follow_target: NodePath
 @export var smooth_speed := 20.0
 @export var camera_distance := 10.0
 @export var camera_rotation := 60.0
-@export var deadzone_size := Vector2(0.2, 0.2)
+@export var deadzone_size := Vector2(0.3, 0.3)
 @export var max_pan_distance_horizontal_x := 6.0
 @export var max_pan_distance_horizontal_z := 3.0
 @export var lerp_speed_min := 2.0
 @export var lerp_speed_max := 5.0
 
 # cache nodes once
-@onready var target_node: Node3D = get_node(follow_target) as Node3D
+@export var target_node: Node3D
 @onready var camera: Camera3D    = $Camera3D
-@onready var debug_deadzone      = $CanvasLayer/DeadzoneDebug
 
 # precompute static offset direction
 var initial_offset: Vector3
@@ -24,17 +22,17 @@ var pan_plane := Plane(Vector3.UP, 0.0)
 
 
 func _ready():
-	debug_deadzone.deadzone_size = deadzone_size
-
 	# compute the camera pitch vector just once
 	var pitch = deg_to_rad(camera_rotation)
 	initial_offset = Vector3(0, sin(pitch), cos(pitch)) * camera_distance
 
 	if target_node:
-		set_target(follow_target)
+		set_target(target_node)
 
 
 func _process(delta):
+	# Override inherited rotation
+	global_rotation = Vector3.ZERO
 	if not target_node:
 		return
 
@@ -89,8 +87,7 @@ func _process(delta):
 	global_transform.origin = new_pos
 
 func set_target(target):
-	follow_target = target
-	target_node = get_node(follow_target) as Node3D
+	target_node = target
 	camera.global_position = target_node.global_position + initial_offset
 	camera.look_at(
 		target_node.global_position + Vector3(0, -1.5, 0),
