@@ -10,13 +10,7 @@ extends Node3D
 var initial_offset: Vector3
 var player_height_offset: Vector3 = Vector3(0, -1.5, 0)
 
-# Interpolation variables
-var previous_transform: Transform3D
-
 func _ready():
-	# Make CameraRig ignore parent transforms
-	set_as_top_level(true)
-	
 	# Compute the camera pitch vector just once
 	var pitch = deg_to_rad(camera_rotation)
 	initial_offset = Vector3(0, sin(pitch), cos(pitch)) * camera_distance
@@ -28,18 +22,13 @@ func _physics_process(_delta: float) -> void:
 	if not target_node:
 		return
 	
-	# Store previous transform before updating
-	previous_transform = global_transform
-	
 	_update_position()
 
 func _process(_delta: float) -> void:
 	if not target_node:
 		return
 	
-	# Interpolate between physics ticks
-	var alpha = Engine.get_physics_interpolation_fraction()
-	global_transform = previous_transform.interpolate_with(global_transform, alpha)
+	_update_position()
 
 func _update_position() -> void:
 	# Desired camera rig position relative to target
@@ -57,5 +46,4 @@ func set_target(target):
 	target_node = target
 	# Snap rig and camera immediately to target
 	global_position = target_node.global_position + initial_offset
-	previous_transform = global_transform
 	camera.look_at(target_node.global_position + player_height_offset, Vector3.UP)
