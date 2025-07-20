@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=12 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
-[ext_resource type="Script" uid="uid://f7mtdxk0kw1y" path="res://scripts/Health.gd" id="3_3li8b"]
+[ext_resource type="Script" uid="uid://cxari8u5xjym2" path="res://scripts/HealthComponent.gd" id="3_70d11"]
+[ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://scripts/inventory_component.gd" id="4_cw2d6"]
+[ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
+[ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 height = 1.8
@@ -12,6 +15,30 @@ height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu4a1"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_70d11"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1")
@@ -23,5 +50,122 @@ shape = SubResource("CapsuleShape3D_5q5h1")
 mesh = SubResource("CapsuleMesh_p0vlq")
 surface_material_override/0 = SubResource("StandardMaterial3D_3li8b")
 
-[node name="Health" type="Node" parent="."]
-script = ExtResource("3_3li8b")
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3_70d11")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("4_cw2d6")
+
+[node name="PlayerCamera" type="Node3D" parent="."]
+script = ExtResource("4_qu4a1")
+metadata/_custom_type_script = "uid://3stm174dy74a"
+
+[node name="Camera3D" type="Camera3D" parent="PlayerCamera"]
+physics_interpolation_mode = 1
+current = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_70d11")
+
+[node name="BottomBar" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+
+[node name="CenterContainer" type="CenterContainer" parent="HUD/BottomBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="VitalsContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/BottomBar/CenterContainer/HBoxContainer/VitalsContainer"]
+custom_minimum_size = Vector2(64, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+
+[node name="EnergyBar" type="ProgressBar" parent="HUD/BottomBar/CenterContainer/HBoxContainer/VitalsContainer"]
+custom_minimum_size = Vector2(64, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+
+[node name="WeaponContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Square1" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+
+[node name="Square2" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+
+[node name="QuickSlotContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel2" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel3" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel4" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel5" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
+
+[node name="Panel6" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemLibrary" load_steps=5 format=3 uid="uid://c2v2a68bdicl"]
+[gd_resource type="Resource" script_class="ItemLibrary" load_steps=7 format=3 uid="uid://c2v2a68bdicl"]
 
 [ext_resource type="Script" uid="uid://rr53mngj40sg" path="res://items/ItemData.gd" id="1_q5re3"]
 [ext_resource type="Script" uid="uid://b20edmirglmiy" path="res://items/ItemLibrary.gd" id="2_dfvuy"]
@@ -17,6 +17,51 @@ display_name = "MP5"
 description = "A classic HK"
 value = 500
 
+[sub_resource type="Resource" id="Resource_amjtv"]
+script = ExtResource("1_q5re3")
+id = "cons_bandage"
+icon_file = "bandage.svg"
+scene_file = "bandage.tscn"
+display_name = "Bandage"
+description = "Heals you a bit"
+category = "consumable"
+subcategory = "health"
+tags = "consumable,health"
+value = 20
+weight = 0.5
+max_stack = 10
+sort_order = 2
+spawn_chance = 100.0
+consume_duration = 2.0
+effect_type = "heal"
+effect_value = 15
+craftable = "TRUE"
+recipe_id = "recipe_bandage"
+recyclable = "TRUE"
+recyclable_id = "recycle_bandage"
+
+[sub_resource type="Resource" id="Resource_jfa2s"]
+script = ExtResource("1_q5re3")
+id = "helmet_biker"
+icon_file = "helmet_biker.svg"
+scene_file = "helmet_biker.tscn"
+display_name = "Biker Helmet"
+description = "Protects the noggin"
+category = "armor"
+subcategory = "head"
+tags = "armor,head"
+value = 100
+weight = 1.0
+max_stack = 1
+spawn_chance = 100.0
+equip_slot = "helmet"
+durability_max = 100
+durability = 100
+armor_type = "light"
+resist_phys = 10.0
+craftable = "FALSE"
+recyclable = "FALSE"
+
 [resource]
 script = ExtResource("2_dfvuy")
-items = Array[ExtResource("1_q5re3")]([SubResource("Resource_q5re3"), SubResource("Resource_dfvuy")])
+items = Array[ExtResource("1_q5re3")]([SubResource("Resource_q5re3"), SubResource("Resource_dfvuy"), SubResource("Resource_amjtv"), SubResource("Resource_jfa2s")])
