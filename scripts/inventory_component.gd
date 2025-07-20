@@ -1,8 +1,10 @@
 class_name InventoryComponent extends Node
 
-@export var inventory: Inventory = Inventory.new()
+signal item_added(item: ItemData, quantity: int)
+signal item_removed(item: ItemData, quantity: int)
+signal inventory_full(item: ItemData, quantity: int)
 
-# expose max_slots via the component
+@export var inventory: Inventory = Inventory.new()
 @export var max_slots: int:
 	set(value):
 		inventory.max_slots = value
@@ -16,11 +18,22 @@ func _ready() -> void:
 
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
-	return inventory.add_item(item, quantity)
+	var result = inventory.add_item(item, quantity)
+	
+	if result.added > 0:
+		emit_signal("item_added", item, result.added)
+	
+	if result.rejected > 0:
+		emit_signal("inventory_full", item, result.rejected)
+	
+	return result
 
 
 func remove_item(item: ItemData, quantity: int = 1) -> int:
-	return inventory.remove_item(item, quantity)
+	var success = inventory.remove_item(item, quantity)
+	if success:
+		emit_signal("item_removed", item, quantity)
+	return success
 
 
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:
