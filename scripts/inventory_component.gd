@@ -16,28 +16,19 @@ func _ready() -> void:
 
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
-	print("InventoryComponent: Adding item to inventory")
-	var result = inventory.add_item(item, quantity)
-	get_quantity(item)
-	return result
+	return inventory.add_item(item, quantity)
 
 
 func remove_item(item: ItemData, quantity: int = 1) -> int:
-	print("InventoryComponent: Removing %d items from inventory" % quantity)
-	var result = inventory.remove_item(item, quantity)
-	get_quantity(item)
-	return result
+	return inventory.remove_item(item, quantity)
 
 
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:
-	print("InventoryComponent: Checking inventory for space")
 	return inventory.has_space_for(item, quantity)
 
 
 func get_quantity(item: ItemData) -> int:
-	var quantity = inventory.get_quantity(item)
-	print("InventoryComponent: %d/%d items in inventory" % [quantity, max_slots])
-	return quantity
+	return inventory.get_quantity(item)
 
 
 func save(path: String) -> void:

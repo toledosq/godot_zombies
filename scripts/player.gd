@@ -52,14 +52,12 @@ func _process(_delta: float) -> void:
 		health_component.heal(5)
 	
 	if Input.is_action_just_pressed("test_add_item"):
-		print(">>> Adding 3 items")
-		var returned = inventory_component.add_item(ItemDatabase.get_item("wep_mp5"), 3)
-		print(str(returned))
+		print(">>> Adding 1 items")
+		inventory_component.add_item(ItemDatabase.get_item("wep_mp5"), 1)
 		
 	if Input.is_action_just_pressed("test_remove_item"):
-		print(">>> Removing 3 items")
-		var returned: int = inventory_component.remove_item(ItemDatabase.get_item("wep_mp5"), 3)
-		print("<<< Removed %d/%d items" % [returned, 3])
+		print(">>> Removing 1 item")
+		inventory_component.remove_item(ItemDatabase.get_item("wep_mp5"), 1)
 
 
 func _handle_movement(delta):
