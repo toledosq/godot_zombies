@@ -16,6 +16,7 @@ id = "wep_mp5"
 display_name = "MP5"
 description = "A classic HK"
 value = 500
+max_stack = 2
 
 [sub_resource type="Resource" id="Resource_amjtv"]
 script = ExtResource("1_q5re3")

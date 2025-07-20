@@ -18,6 +18,7 @@ signal player_died(player_id_: int)
 @onready var camera_rig = $PlayerCamera
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 
+
 func _ready() -> void:
 	# Connect player Health Component
 	print("Player: Connecting Health Component")
@@ -34,9 +35,11 @@ func _ready() -> void:
 	
 	camera_rig.set_target(self)
 
+
 func _physics_process(delta):
 	_handle_movement(delta)
 	_rotate_towards_mouse()
+
 
 func _process(_delta: float) -> void:
 	# TEST: Press J to deal damage
@@ -47,6 +50,17 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("test_heal"):
 		print(">>> Healing 5 HP")
 		health_component.heal(5)
+	
+	if Input.is_action_just_pressed("test_add_item"):
+		print(">>> Adding 3 items")
+		var returned = inventory_component.add_item(ItemDatabase.get_item("wep_mp5"), 3)
+		print(str(returned))
+		
+	if Input.is_action_just_pressed("test_remove_item"):
+		print(">>> Removing 3 items")
+		var returned: int = inventory_component.remove_item(ItemDatabase.get_item("wep_mp5"), 3)
+		print("<<< Removed %d/%d items" % [returned, 3])
+
 
 func _handle_movement(delta):
 	# Get movement input vector
@@ -65,6 +79,7 @@ func _handle_movement(delta):
 	
 	# Do movement
 	move_and_slide()
+
 
 func _rotate_towards_mouse():
 	var camera = get_viewport().get_camera_3d()
@@ -86,26 +101,32 @@ func _rotate_towards_mouse():
 		if direction.length() > 0.01:
 			look_at(global_transform.origin + direction, Vector3.UP)
 
+
 func _on_health_changed(current:int, maximum:int) -> void:
 	# Announce health change
 	emit_signal("player_health_changed", player_id, current, maximum)
 	# Play hit flash
 	print("Player: HP:", current, "/", maximum)
 
+
 func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
 	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
 
+
 func apply_damage(amount: int) -> void:
 	health_component.take_damage(amount)
+
 
 func apply_heal(amount: int) -> void:
 	health_component.heal(amount)
 
+
 func emit_current_health():
 	print("Player: Sharing current health")
 	_on_health_changed(health_component.current_health, health_component.max_health)
+
 
 func pickup_item(item: ItemData, quantity: int) -> int:
 	var result = inventory_component.add_item(item, quantity)

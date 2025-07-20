@@ -55,7 +55,7 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	}
 
 
-func remove_item(item: ItemData, quantity: int = 1) -> bool:
+func remove_item(item: ItemData, quantity: int = 1) -> int:
 	var remaining = quantity
 	
 	for slot in slots:
@@ -64,13 +64,13 @@ func remove_item(item: ItemData, quantity: int = 1) -> bool:
 				slot.quantity -= remaining
 				if slot.quantity == 0:
 					slots.erase(slot)
-				return true
+				return remaining
 			else:
 				remaining -= slot.quantity
 				slots.erase(slot)
 	
 	# If we still have remaining quantity, we couldn't remove enough
-	return remaining == 0
+	return remaining
 
 
 func get_quantity(item: ItemData) -> int:
