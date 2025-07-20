@@ -16,6 +16,7 @@ signal player_died(player_id_: int)
 @onready var body = $Body  # Path to visible mesh
 @onready var collision = $CollisionShape3D
 @onready var camera_rig = $PlayerCamera
+@onready var inventory_component: InventoryComponent = $InventoryComponent
 
 func _ready() -> void:
 	# Connect player Health Component
@@ -105,3 +106,10 @@ func apply_heal(amount: int) -> void:
 func emit_current_health():
 	print("Player: Sharing current health")
 	_on_health_changed(health_component.current_health, health_component.max_health)
+
+func pickup_item(item: ItemData, quantity: int) -> int:
+	var result = inventory_component.add_item(item, quantity)
+	if result.rejected > 0:
+		print("Dropped %d %s because inventory full!" % [result.rejected, item.name])
+		return result.rejected
+	return 0
