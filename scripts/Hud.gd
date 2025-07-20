@@ -30,12 +30,12 @@ func _update_hud_layout():
 	energy_bar.custom_minimum_size = Vector2(bar_width, bar_height)
 	
 	# Resize Weapon Panels for screen %
-	var square_size = screen_size.y * 0.10
-	for square in weapon_container.get_children():
-		square.custom_minimum_size = Vector2(square_size, square_size)
+	var element_size = screen_size.y * 0.10
+	for element in weapon_container.get_children():
+		element.custom_minimum_size = Vector2(element_size, element_size)
 	
 	# Resize Quick Slot Panels for screen %
-	var element_size = screen_size.y * 0.05
+	element_size = screen_size.y * 0.05
 	for element in weapon_container.get_children():
 		element.custom_minimum_size = Vector2(element_size, element_size)
 
@@ -43,6 +43,10 @@ func _on_health_changed(_player_id: int, value: int, max_value: int):
 	print("HUD: Player health changed")
 	health_bar.max_value = max_value
 	health_bar.value = value
+
+func _on_energy_changed(_player_id: int, value: int, max_value: int):
+	energy_bar.max_value = max_value
+	energy_bar.value = value
 
 func _on_player_died(_player_id):
 	print("HUD: Player died!")
