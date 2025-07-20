@@ -1,8 +1,11 @@
 extends CanvasLayer
 class_name PlayerHud
 
-@onready var vitals_container = $VitalsContainer
-@onready var health_bar = $VitalsContainer/HealthBar
+@onready var health_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/HealthBar
+@onready var energy_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/EnergyBar
+@onready var weapon_container: HBoxContainer = $BottomBar/CenterContainer/HBoxContainer/WeaponContainer
+@onready var quick_slot_container: HBoxContainer = $BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer
+
 
 signal ready_
 
@@ -20,35 +23,30 @@ func _ready():
 func _update_hud_layout():
 	var screen_size = get_viewport().get_visible_rect().size
 
-	# --- VitalsContainer: Full Rect ---
-	vitals_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vitals_container.offset_left = 0
-	vitals_container.offset_top = 0
-	vitals_container.offset_right = 0
-	vitals_container.offset_bottom = 0
-
-	# --- HealthBar ---
-	# Anchor to bottom left
-	health_bar.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
-
-	# Padding (2% of screen size)
-	var padding_x = screen_size.x * 0.04
-	var padding_y = screen_size.y * 0.04
-
-	health_bar.offset_left = padding_x
-	health_bar.offset_bottom = -padding_y
-	health_bar.offset_top = 0
-	health_bar.offset_right = 0
-
-	# Size (10% of screen width)
-	var bar_width = screen_size.x * 0.15
-	var bar_height = screen_size.y * 0.04
+	# Resize Health Bars for screen %
+	var bar_width = screen_size.x * 0.10
+	var bar_height = screen_size.y * 0.05
 	health_bar.custom_minimum_size = Vector2(bar_width, bar_height)
+	energy_bar.custom_minimum_size = Vector2(bar_width, bar_height)
+	
+	# Resize Weapon Panels for screen %
+	var element_size = screen_size.y * 0.10
+	for element in weapon_container.get_children():
+		element.custom_minimum_size = Vector2(element_size, element_size)
+	
+	# Resize Quick Slot Panels for screen %
+	element_size = screen_size.y * 0.05
+	for element in weapon_container.get_children():
+		element.custom_minimum_size = Vector2(element_size, element_size)
 
 func _on_health_changed(_player_id: int, value: int, max_value: int):
 	print("HUD: Player health changed")
 	health_bar.max_value = max_value
 	health_bar.value = value
+
+func _on_energy_changed(_player_id: int, value: int, max_value: int):
+	energy_bar.max_value = max_value
+	energy_bar.value = value
 
 func _on_player_died(_player_id):
 	print("HUD: Player died!")

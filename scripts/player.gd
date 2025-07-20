@@ -7,7 +7,7 @@ var player_id: int
 var player_name: String
 
 var previous_transform: Transform3D
-var health_component: Health
+var health_component: HealthComponent
 var player_hud: PlayerHud
 
 signal player_health_changed(player_id_:int, current: int, maximum: int)
@@ -20,7 +20,7 @@ signal player_died(player_id_: int)
 func _ready() -> void:
 	# Connect player Health Component
 	print("Player: Connecting Health Component")
-	health_component = $Health
+	health_component = $HealthComponent
 	health_component.connect("health_changed", _on_health_changed)
 	health_component.connect("died", _on_player_died)
 	
