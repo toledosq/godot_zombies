@@ -108,6 +108,9 @@ layout_mode = 2
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
+[node name="Label" type="Label" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponContainer"]
+layout_mode = 2
+
 [node name="ArmorContainer" type="VBoxContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
 layout_mode = 2
 
@@ -126,54 +129,6 @@ layout_mode = 2
 [node name="GridContainer" type="GridContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
 layout_mode = 2
 columns = 4
-
-[node name="Panel" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel2" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel3" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel4" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel5" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel6" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel7" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel8" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel9" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel10" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel11" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel12" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("6_70d11")

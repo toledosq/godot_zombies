@@ -43,6 +43,7 @@ func _ready() -> void:
 	inventory_ui = $InventoryUI
 	inventory_ui.connect("inventory_opened", _on_inventory_opened)
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
+	inventory_ui.setup(inventory_component)
 	
 	camera_rig.set_target(self)
 
@@ -65,11 +66,11 @@ func _process(_delta: float) -> void:
 	
 	if Input.is_action_just_pressed("test_add_item"):
 		print(">>> Adding 1 items")
-		inventory_component.add_item(ItemDatabase.get_item("wep_mp5"), 1)
+		inventory_component.add_item(ItemDatabase.get_item("cons_bandage"), 1)
 		
 	if Input.is_action_just_pressed("test_remove_item"):
 		print(">>> Removing 1 item")
-		inventory_component.remove_item(ItemDatabase.get_item("wep_mp5"), 1)
+		inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
 
 
 func _handle_movement(delta):
