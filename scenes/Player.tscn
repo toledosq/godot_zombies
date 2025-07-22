@@ -55,6 +55,7 @@ script = ExtResource("3_70d11")
 
 [node name="InventoryComponent" type="Node" parent="."]
 script = ExtResource("4_cw2d6")
+max_slots = 5
 
 [node name="PlayerCamera" type="Node3D" parent="."]
 script = ExtResource("4_qu4a1")
