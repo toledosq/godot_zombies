@@ -15,6 +15,7 @@ signal inventory_full(item: ItemData, quantity: int)
 
 func _ready() -> void:
 	print("InventoryComponent: Max Slots = %d" % max_slots)
+	print("InventoryComponent: Inventory reports max slots = %d" % inventory.max_slots)
 
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
