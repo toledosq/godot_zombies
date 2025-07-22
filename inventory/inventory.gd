@@ -69,7 +69,8 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 func remove_item(item: ItemData, quantity: int = 1) -> bool:
 	var remaining = quantity
 
-	for slot in slots:
+	for i in range(slots.size(), 0, -1):
+		var slot = slots[i-1]
 		if slot.item == item:
 			if slot.quantity > remaining:
 				slot.quantity -= remaining
