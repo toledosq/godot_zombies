@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=13 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://scripts/inventory_component.gd" id="4_cw2d6"]
 [ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
 [ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
+[ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://scenes/inventory_ui.gd" id="6_cw2d6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 height = 1.8
@@ -64,6 +65,106 @@ metadata/_custom_type_script = "uid://3stm174dy74a"
 [node name="Camera3D" type="Camera3D" parent="PlayerCamera"]
 physics_interpolation_mode = 1
 current = true
+
+[node name="InventoryUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_cw2d6")
+
+[node name="CenterContainer" type="CenterContainer" parent="InventoryUI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InventoryUI/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="WeaponContainer" type="VBoxContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel3" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="ArmorContainer" type="VBoxContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/ArmorContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/ArmorContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel3" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/ArmorContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="Panel" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel3" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel4" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel5" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel6" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel7" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel8" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel9" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel10" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel11" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Panel12" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("6_70d11")

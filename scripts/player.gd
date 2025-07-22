@@ -8,7 +8,11 @@ var player_name: String
 
 var previous_transform: Transform3D
 var health_component: HealthComponent
+var inventory_component: InventoryComponent
 var player_hud: PlayerHud
+var inventory_ui: Control
+
+var input_enabled := true
 
 signal player_health_changed(player_id_:int, current: int, maximum: int)
 signal player_died(player_id_: int)
@@ -16,7 +20,6 @@ signal player_died(player_id_: int)
 @onready var body = $Body  # Path to visible mesh
 @onready var collision = $CollisionShape3D
 @onready var camera_rig = $PlayerCamera
-@onready var inventory_component: InventoryComponent = $InventoryComponent
 
 
 func _ready() -> void:
@@ -33,12 +36,21 @@ func _ready() -> void:
 	connect("player_died", player_hud._on_player_died)
 	emit_current_health()
 	
+	# Connect to Inventory Component
+	inventory_component = $InventoryComponent
+	
+	# Connect to Inventory UI
+	inventory_ui = $InventoryUI
+	inventory_ui.connect("inventory_opened", _on_inventory_opened)
+	inventory_ui.connect("inventory_closed", _on_inventory_closed)
+	
 	camera_rig.set_target(self)
 
 
 func _physics_process(delta):
-	_handle_movement(delta)
-	_rotate_towards_mouse()
+	if input_enabled:
+		_handle_movement(delta)
+		_rotate_towards_mouse()
 
 
 func _process(_delta: float) -> void:
@@ -100,6 +112,10 @@ func _rotate_towards_mouse():
 			look_at(global_transform.origin + direction, Vector3.UP)
 
 
+func set_input_enabled(val: bool) -> void:
+	input_enabled = val
+
+
 func _on_health_changed(current:int, maximum:int) -> void:
 	# Announce health change
 	emit_signal("player_health_changed", player_id, current, maximum)
@@ -111,6 +127,14 @@ func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
 	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
+
+
+func _on_inventory_opened() -> void:
+	set_input_enabled(false)
+
+
+func _on_inventory_closed() -> void:
+	set_input_enabled(true)
 
 
 func apply_damage(amount: int) -> void:
