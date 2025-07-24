@@ -46,6 +46,12 @@ func _ready() -> void:
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
 	inventory_ui.setup_player_grid(inventory_component)
 	
+	# Hook up InteractionComponent -> InventoryUI
+	interaction_component = $InteractionComponent
+	interaction_component.connect("container_inventory_received", inventory_ui.setup_container_grid)
+	interaction_component.connect("container_inventory_closed", inventory_ui.clear_container_grid)
+	
+	# Set camera rig target to self
 	camera_rig.set_target(self)
 
 
