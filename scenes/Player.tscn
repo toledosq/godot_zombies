@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=16 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
 [ext_resource type="Script" uid="uid://cxari8u5xjym2" path="res://scripts/HealthComponent.gd" id="3_70d11"]
 [ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://inventory/inventory_component.gd" id="4_cw2d6"]
 [ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
+[ext_resource type="Script" uid="uid://dgppophkyfi5k" path="res://scripts/weapon_component.gd" id="5_bruh7"]
 [ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
 [ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://inventory/inventory_ui.gd" id="6_cw2d6"]
 [ext_resource type="Script" uid="uid://d3i6igf4mq5m0" path="res://scripts/interaction_component.gd" id="8_khinc"]
@@ -61,6 +62,9 @@ script = ExtResource("3_70d11")
 [node name="InventoryComponent" type="Node" parent="."]
 script = ExtResource("4_cw2d6")
 max_slots = 5
+
+[node name="WeaponComponent" type="Node" parent="."]
+script = ExtResource("5_bruh7")
 
 [node name="InteractionComponent" type="Area3D" parent="."]
 script = ExtResource("8_khinc")
