@@ -18,6 +18,9 @@ height = 1.8
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cw2d6"]
+radius = 2.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu4a1"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -42,9 +45,6 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 corner_detail = 5
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_cw2d6"]
-radius = 2.0
-
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1")
 
@@ -61,6 +61,12 @@ script = ExtResource("3_70d11")
 [node name="InventoryComponent" type="Node" parent="."]
 script = ExtResource("4_cw2d6")
 max_slots = 5
+
+[node name="InteractionComponent" type="Area3D" parent="."]
+script = ExtResource("8_khinc")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionComponent"]
+shape = SubResource("CylinderShape3D_cw2d6")
 
 [node name="PlayerCamera" type="Node3D" parent="."]
 script = ExtResource("4_qu4a1")
@@ -236,9 +242,3 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_70d11")
-
-[node name="InteractionComponent" type="Area3D" parent="."]
-script = ExtResource("8_khinc")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionComponent"]
-shape = SubResource("CylinderShape3D_cw2d6")

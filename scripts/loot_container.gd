@@ -11,5 +11,5 @@ func interact(interaction_component: Object) -> void:
 	if interaction_component.has_method("receive_inventory"):
 		interaction_component.receive_inventory(inv_comp)
 	else:
-		push_warning("Passed-in interaction_component is missing received_inventory()")
+		push_warning("Passed-in interaction_component is missing receive_inventory()")
 		print("LootContainer: handed off inventory")
