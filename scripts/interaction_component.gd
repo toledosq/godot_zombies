@@ -26,7 +26,6 @@ func _on_body_exited(body: Node) -> void:
 		print("InteractionComponent: Closing container inventory")
 		emit_signal("container_inventory_closed")
 		container_inv_comp = null
-		print("InteractionComponent: Is it still there? %s" % container_inv_comp)
 	_nearby_interactables.erase(body)
 
 func _try_interact() -> void:

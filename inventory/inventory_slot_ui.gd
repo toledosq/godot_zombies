@@ -18,7 +18,7 @@ func _ready() -> void:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
 
-func setup(component: InventoryComponent, inv: Inventory) -> void:
+func setup(component: InventoryComponent) -> void:
 	inv_comp = component
 	inventory = inv_comp.inventory
 	

@@ -44,7 +44,7 @@ func _ready() -> void:
 	inventory_ui = $InventoryUI
 	inventory_ui.connect("inventory_opened", _on_inventory_opened)
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
-	inventory_ui.setup(inventory_component)
+	inventory_ui.setup_player_grid(inventory_component)
 	
 	camera_rig.set_target(self)
 
