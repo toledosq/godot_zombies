@@ -57,7 +57,10 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	if not slot.item: return null
 	
 	# Package the source index
-	var data = { "from_index": slot_index }
+	var data = { 
+		"src_index": slot_index, 
+		"src_comp": inv_comp
+	}
 	
 	# Make drag preview
 	var preview = TextureRect.new()
@@ -68,13 +71,27 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	return data
 
 func _can_drop_data(_position: Vector2, data: Variant) -> bool:
-	return data is Dictionary and data.has("from_index")
+	return data is Dictionary and data.has("src_index")
 
 func _drop_data(_position: Vector2, data: Variant) -> void:
-	var from_idx = data["from_index"]
-	var to_idx = slot_index
-	print("Dropping data")
-	inventory.swap_slots(from_idx, to_idx)
+	var src_idx = data["src_index"]
+	var src_comp = data["src_comp"]
+	var dst_idx = slot_index
+	var dst_comp = inv_comp
 	
-	# Tell UI to redraw
-	inv_comp.emit_signal("item_removed", null, 0)
+	if src_comp == dst_comp:
+		# Simple swap within inventory
+		src_comp.inventory.swap_slots(src_idx, dst_idx)
+		src_comp.emit_signal("item_removed", null, 0)
+	else:
+		# Transfer across components
+		var src_slot = src_comp.inventory.slots[src_idx]
+		if not src_slot.item:
+			return
+		var to_move = src_slot.quantity
+		var result = dst_comp.add_item(src_slot.item, to_move)
+		if result.added > 0:
+			src_comp.remove_item(src_slot.item, result.added)
+	
+		src_comp.emit_signal("item_removed", src_slot.item, result.added)
+		dst_comp.emit_signal("item_added", src_slot.item, result.added)
