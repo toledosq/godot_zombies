@@ -9,6 +9,7 @@ var player_name: String
 var previous_transform: Transform3D
 var health_component: HealthComponent
 var inventory_component: InventoryComponent
+var interaction_component: Area3D
 var player_hud: PlayerHud
 var inventory_ui: Control
 
