@@ -65,6 +65,7 @@ max_slots = 5
 
 [node name="WeaponComponent" type="Node" parent="."]
 script = ExtResource("5_bruh7")
+max_slots = 2
 
 [node name="InteractionComponent" type="Area3D" parent="."]
 script = ExtResource("8_khinc")
@@ -108,18 +109,6 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="WeaponSlots" type="VBoxContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponSlots"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel2" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponSlots"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-
-[node name="Panel3" type="Panel" parent="InventoryUI/CenterContainer/HBoxContainer/WeaponSlots"]
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
 [node name="ArmorSlots" type="VBoxContainer" parent="InventoryUI/CenterContainer/HBoxContainer"]

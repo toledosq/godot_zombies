@@ -1,15 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://wbub15ovvh0y"]
+[gd_scene load_steps=2 format=3 uid="uid://di23kk7e50xf"]
 
-[ext_resource type="Script" uid="uid://d0g1vcsgy2bla" path="res://scripts/inventory_slot_ui.gd" id="1_em717"]
+[ext_resource type="Script" uid="uid://ds3sxm1e2e1kj" path="res://scripts/weapon_slot_ui.gd" id="1_o0uty"]
 
-[node name="InventorySlotUI" type="Panel"]
+[node name="WeaponSlotUI" type="Panel"]
 custom_minimum_size = Vector2(64, 64)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_em717")
+script = ExtResource("1_o0uty")
 
 [node name="Icon" type="TextureRect" parent="."]
 layout_mode = 0

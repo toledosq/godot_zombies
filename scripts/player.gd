@@ -9,6 +9,7 @@ var player_name: String
 var previous_transform: Transform3D
 var health_component: HealthComponent
 var inventory_component: InventoryComponent
+var weapon_component: WeaponComponent
 var interaction_component: Area3D
 var player_hud: PlayerHud
 var inventory_ui: Control
@@ -40,11 +41,15 @@ func _ready() -> void:
 	# Connect to Inventory Component
 	inventory_component = $InventoryComponent
 	
+	# Connect to Weapon Component
+	weapon_component = $WeaponComponent
+	
 	# Connect to Inventory UI
 	inventory_ui = $InventoryUI
 	inventory_ui.connect("inventory_opened", _on_inventory_opened)
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
 	inventory_ui.setup_player_grid(inventory_component)
+	inventory_ui.setup_weapon_slots(weapon_component)
 	
 	# Hook up InteractionComponent -> InventoryUI
 	interaction_component = $InteractionComponent

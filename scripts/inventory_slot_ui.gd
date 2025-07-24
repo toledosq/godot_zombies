@@ -56,11 +56,14 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	var slot = inventory.slots[slot_index]
 	if not slot.item: return null
 	
-	# Package the source index
+	# Package the source item type, index, and component
 	var data = { 
+		"item": slot.item,
 		"src_index": slot_index, 
 		"src_comp": inv_comp
 	}
+	
+	print(data)
 	
 	# Make drag preview
 	var preview = TextureRect.new()
