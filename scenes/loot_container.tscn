@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://73k7mnylnjci"]
+
+[ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://inventory/inventory_component.gd" id="1_24i0d"]
+[ext_resource type="Script" uid="uid://bgo33rcpwr475" path="res://scripts/loot_container.gd" id="1_rmns8"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_24i0d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rmns8"]
+albedo_color = Color(0.14509805, 0.7254902, 0.09803922, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rmns8"]
+
+[node name="LootContainer" type="StaticBody3D" groups=["interactable"]]
+script = ExtResource("1_rmns8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_24i0d")
+surface_material_override/0 = SubResource("StandardMaterial3D_rmns8")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("1_24i0d")
+metadata/_custom_type_script = "uid://bcyu5txi7tm5p"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_rmns8")
