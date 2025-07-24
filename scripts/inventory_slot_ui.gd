@@ -88,15 +88,15 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 		src_comp.inventory.swap_slots(src_idx, dst_idx)
 		src_comp.emit_signal("item_removed", null, 0)
 		return
+	
 	# 2) Cross-inventory -> direct placement
 	var src_slot = src_comp.inventory.slots[src_idx]
 	if not src_slot.item:
 		return
 	
+	# 2a) empty target slot -> move up to one full stack
 	var dst_slot = dst_comp.inventory.slots[dst_idx]
 	var moved = 0
-	
-	# 2a) empty target slot -> move up to one full stack
 	if dst_slot.item == null:
 		moved = min(src_slot.quantity, src_slot.item.max_stack)
 		dst_slot.item = src_slot.item

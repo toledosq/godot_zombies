@@ -36,6 +36,6 @@ func refresh() -> void:
 ### OVERRIDES IventorySlotUI._can_drop_data() to check item type is WeaponData
 func _can_drop_data(_position: Vector2, data: Variant) -> bool:
 	# Don't let the data drop if the item isn't a weapon
-	if data.has("item_type") and data["item"] is not WeaponData:
+	if data.has("item") and data["item"] is not WeaponData:
 		return false
 	return data is Dictionary and data.has("src_index")
