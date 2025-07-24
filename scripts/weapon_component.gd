@@ -1,6 +1,3 @@
-class_name WeaponComponent extends Node
+class_name WeaponComponent extends InventoryComponent
 
-@export var max_slots: int = 2
-var weapon_slots: Array[WeaponData] = []
-
-signal weapon_equipped
+@export var active_slot: int = 0
