@@ -44,9 +44,9 @@ func setup_player_grid(component: InventoryComponent) -> void:
 	_populate_player_grid(player_inventory.max_slots)
 	
 	# Listen for changes
-	player_inv_component.connect("item_added", Callable(self, "_on_inventory_changed"))
-	player_inv_component.connect("item_removed", Callable(self, "_on_inventory_changed"))
-	player_inv_component.connect("inventory_full", Callable(self, "_on_inventory_full"))
+	player_inv_component.connect("item_added", Callable(self, "_on_player_inventory_changed"))
+	player_inv_component.connect("item_removed", Callable(self, "_on_player_inventory_changed"))
+	player_inv_component.connect("inventory_full", Callable(self, "_on_player_inventory_full"))
 	
 	_refresh_player_grid()
 
@@ -64,11 +64,11 @@ func _populate_player_grid(slot_count: int) -> void:
 		slot_ui.setup(player_inv_component)
 
 
-func _on_inventory_changed(_item: ItemData, _qty: int) -> void:
+func _on_player_inventory_changed(_item: ItemData, _qty: int) -> void:
 	_refresh_player_grid()
 
 
-func _on_inventory_full(item: ItemData, qty: int) -> void:
+func _on_player_inventory_full(item: ItemData, qty: int) -> void:
 	print("Inventory full - dropped %d %s" % [qty, item.display_name])
 
 

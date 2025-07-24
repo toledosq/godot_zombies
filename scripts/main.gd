@@ -15,6 +15,7 @@ func _ready():
 	# Spawn player in world
 	spawn_players(1)
 
+
 func spawn_players(player_count: int):
 	for i in player_count:
 		# Instantiate a player scene
@@ -38,6 +39,7 @@ func spawn_players(player_count: int):
 		# Track player
 		players[i] = player
 
+
 func _on_player_spawned(player):
 	# Connect the player signals
 	player.connect("player_health_changed", _on_player_health_changed)
@@ -50,8 +52,10 @@ func _on_player_spawned(player):
 	print("Main: Requesting Player emit current health")
 	player.emit_current_health()
 
+
 func _on_player_health_changed(player_id_, current: int, maximum: int):
 	print("Main: Player %d Health Changed " % player_id_, current, "/", maximum)
+
 
 func _on_player_died(player_id_: int):
 	print("Main: Player %d Died" % player_id_)
