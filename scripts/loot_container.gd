@@ -1,13 +1,15 @@
 class_name LootContainer extends StaticBody3D
 
-signal toggle_inventory(external_inventory_owner)
-
-@onready var inventory_component: InventoryComponent = $InventoryComponent
+@onready var inv_comp: InventoryComponent = $InventoryComponent
 
 func _ready() -> void:
-	inventory_component.max_slots = 5
-	inventory_component.add_item(ItemDatabase.get_item("wep_mp5"), 2)
+	inv_comp.max_slots = 5
+	inv_comp.add_item(ItemDatabase.get_item("wep_mp5"), 2)
 
-func interact() -> void:
+func interact(interaction_component: Object) -> void:
 	print(self, " : interacted with")
-	toggle_inventory.emit(self)
+	if interaction_component.has_method("receive_inventory"):
+		interaction_component.receive_inventory(inv_comp)
+	else:
+		push_warning("Passed-in interaction_component is missing received_inventory()")
+		print("LootContainer: handed off inventory")
