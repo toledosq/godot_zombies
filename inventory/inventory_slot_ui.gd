@@ -79,19 +79,53 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 	var dst_idx = slot_index
 	var dst_comp = inv_comp
 	
+	# 1) Same inventory -> swap slots
 	if src_comp == dst_comp:
 		# Simple swap within inventory
 		src_comp.inventory.swap_slots(src_idx, dst_idx)
 		src_comp.emit_signal("item_removed", null, 0)
-	else:
-		# Transfer across components
-		var src_slot = src_comp.inventory.slots[src_idx]
-		if not src_slot.item:
-			return
-		var to_move = src_slot.quantity
-		var result = dst_comp.add_item(src_slot.item, to_move)
-		if result.added > 0:
-			src_comp.remove_item(src_slot.item, result.added)
+		return
+	# 2) Cross-inventory -> direct placement
+	var src_slot = src_comp.inventory.slots[src_idx]
+	if not src_slot.item:
+		return
 	
-		src_comp.emit_signal("item_removed", src_slot.item, result.added)
-		dst_comp.emit_signal("item_added", src_slot.item, result.added)
+	var dst_slot = dst_comp.inventory.slots[dst_idx]
+	var moved = 0
+	
+	# 2a) empty target slot -> move up to one full stack
+	if dst_slot.item == null:
+		moved = min(src_slot.quantity, src_slot.item.max_stack)
+		dst_slot.item = src_slot.item
+		dst_slot.quantity = moved
+	
+	# 2b) same item in target slot -> top off existing stack
+	elif dst_slot.item == src_slot.item:
+		var space = dst_slot.item.max_stack - dst_slot.quantity
+		moved = min(space, src_slot.quantity)
+		dst_slot.quantity += moved
+	
+	# 2c) different item in target -> swap entire stacks
+	else:
+		var tmp_item = dst_slot.item
+		var tmp_qty = dst_slot.quantity
+		dst_slot.item = src_slot.item
+		dst_slot.quantity = src_slot.quantity
+		src_slot.item = tmp_item
+		src_slot.quantity = tmp_qty
+		moved = dst_slot.quantity
+		
+		# Emit and exit early
+		src_comp.emit_signal("item_removed", tmp_item, tmp_qty)
+		dst_comp.emit_signal("item_added", dst_slot.item, moved)
+		return
+	
+	# 3) Remove moved quantity from source
+	src_slot.quantity -= moved
+	if src_slot.quantity <= 0:
+		src_slot.item = null
+		src_slot.quantity = 0
+
+	# 4) fire signals so both UIs refresh slots
+	src_comp.emit_signal("item_removed", dst_slot.item, moved)
+	dst_comp.emit_signal("item_added", dst_slot.item, moved)
