@@ -40,6 +40,9 @@ func _try_interact() -> void:
 		push_warning("%s has no interact method" % target.name)
 
 func receive_inventory(inventory_component: InventoryComponent) -> void:
+	if container_inv_comp == inventory_component:
+		return # already have this inventory
+		
 	print("InteractionComponent: Received container inventory")
 	container_inv_comp = inventory_component
 	emit_signal("container_inventory_received", container_inv_comp)

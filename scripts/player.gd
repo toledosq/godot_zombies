@@ -58,7 +58,7 @@ func _ready() -> void:
 func _physics_process(delta):
 	if input_enabled:
 		_handle_movement(delta)
-		_rotate_towards_mouse()
+	_rotate_towards_mouse()
 
 
 func _process(_delta: float) -> void:

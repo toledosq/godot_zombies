@@ -80,6 +80,9 @@ func _refresh_player_grid() -> void:
 
 # Called by Player when InteractionComponent signals "got inventory"
 func setup_container_grid(inv_comp: InventoryComponent) -> void:
+	if container_inv_component == inv_comp:
+		return # already have the component stored
+	
 	container_inv_component = inv_comp
 	container_grid.columns = columns
 	_clear_container_grid()
