@@ -1,14 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdjynrr2iy3rp"]
+[gd_scene load_steps=2 format=3 uid="uid://bdjynrr2iy3rp"]
 
-[ext_resource type="Texture2D" uid="uid://gii1qqj7xu23" path="res://data/icons/keyboard-&-mouse_sheet_double.png" id="1_osbyw"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5cu26"]
-atlas = ExtResource("1_osbyw")
-region = Rect2(1294, 1294, 100, 100)
+[ext_resource type="Texture2D" uid="uid://bgkcetxsqaffg" path="res://data/icons/keyboard-&-mouse_sheet_default.png" id="1_osbyw"]
 
 [node name="InteractPrompt" type="Node3D"]
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-offset = Vector2(0, 1.5)
 billboard = 1
-texture = SubResource("AtlasTexture_5cu26")
+texture = ExtResource("1_osbyw")
+region_enabled = true
+region_rect = Rect2(647, 647, 50, 50)
