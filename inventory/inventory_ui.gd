@@ -21,12 +21,6 @@ func _ready() -> void:
 	container_grid.visible = false # Hide until a container is opened
 
 
-func _input(event) -> void:
-	if event.is_action_pressed("ui_inventory"):
-		visible = not visible
-		_update_mouse_mode()
-
-
 func _update_mouse_mode() -> void:
 	if visible:
 		emit_signal("inventory_opened")

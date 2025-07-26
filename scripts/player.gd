@@ -14,7 +14,7 @@ var interaction_component: Area3D
 var player_hud: PlayerHud
 var inventory_ui: Control
 
-var input_enabled := true
+var input_enabled := false
 
 signal player_health_changed(player_id_:int, current: int, maximum: int)
 signal player_died(player_id_: int)
@@ -22,7 +22,6 @@ signal player_died(player_id_: int)
 @onready var body = $Body  # Path to visible mesh
 @onready var collision = $CollisionShape3D
 @onready var camera_rig = $PlayerCamera
-
 
 func _ready() -> void:
 	# Connect player Health Component
@@ -53,37 +52,51 @@ func _ready() -> void:
 	
 	# Hook up InteractionComponent -> InventoryUI
 	interaction_component = $InteractionComponent
-	interaction_component.connect("container_inventory_received", inventory_ui.setup_container_grid)
-	interaction_component.connect("container_inventory_closed", inventory_ui.clear_container_grid)
+	interaction_component.connect("container_inventory_received", _on_container_inventory_received)
+	interaction_component.connect("container_inventory_closed", _on_container_inventory_closed)
 	
 	# Set camera rig target to self
 	camera_rig.set_target(self)
-
+	
+	# Enable input
+	input_enabled = true
 
 func _physics_process(delta):
 	if input_enabled:
 		_handle_movement(delta)
 	_rotate_towards_mouse()
 
-
 func _process(_delta: float) -> void:
-	# TEST: Press J to deal damage
-	if Input.is_action_just_pressed("test_damage"):
+	pass
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		interaction_component._try_interact()
+		
+	elif event.is_action_pressed("ui_inventory"):
+		if inventory_ui.visible and interaction_component.is_interacting:
+			interaction_component.cancel_interaction()
+			inventory_ui.clear_container_grid()
+			inventory_ui.visible = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+		else:
+			# Toggle visibility for regular inventory
+			inventory_ui.visible = not inventory_ui.visible
+			Input.set_mouse_mode(
+				Input.MOUSE_MODE_VISIBLE if inventory_ui.visible else Input.MOUSE_MODE_CONFINED
+				)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("test_add_item"):
+		inventory_component.add_item(ItemDatabase.get_item("cons_bandage"), 1)
+	elif event.is_action_pressed("test_remove_item"):
+		inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
+	elif event.is_action_pressed("test_damage"):
 		print(">>> Applying 10 damage")
 		health_component.take_damage(10)
-	# TEST: Press K to heal damage
-	if Input.is_action_just_pressed("test_heal"):
+	elif event.is_action_pressed("test_heal"):
 		print(">>> Healing 5 HP")
 		health_component.heal(5)
-	
-	if Input.is_action_just_pressed("test_add_item"):
-		print(">>> Adding 1 items")
-		inventory_component.add_item(ItemDatabase.get_item("cons_bandage"), 1)
-		
-	if Input.is_action_just_pressed("test_remove_item"):
-		print(">>> Removing 1 item")
-		inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
-
 
 func _handle_movement(delta):
 	# Get movement input vector
@@ -102,7 +115,6 @@ func _handle_movement(delta):
 	
 	# Do movement
 	move_and_slide()
-
 
 func _rotate_towards_mouse():
 	var camera = get_viewport().get_camera_3d()
@@ -124,10 +136,19 @@ func _rotate_towards_mouse():
 		if direction.length() > 0.01:
 			look_at(global_transform.origin + direction, Vector3.UP)
 
-
 func set_input_enabled(val: bool) -> void:
 	input_enabled = val
 
+func _on_container_inventory_received(inv_comp: InventoryComponent) -> void:
+	inventory_ui.setup_container_grid(inv_comp)
+	inventory_ui.visible = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+func _on_container_inventory_closed() -> void:
+	inventory_ui.clear_container_grid()
+	inventory_ui.visible = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	
 
 func _on_health_changed(current:int, maximum:int) -> void:
 	# Announce health change
@@ -135,33 +156,26 @@ func _on_health_changed(current:int, maximum:int) -> void:
 	# Play hit flash
 	print("Player: HP:", current, "/", maximum)
 
-
 func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
 	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
 
-
 func _on_inventory_opened() -> void:
 	set_input_enabled(false)
-
 
 func _on_inventory_closed() -> void:
 	set_input_enabled(true)
 
-
 func apply_damage(amount: int) -> void:
 	health_component.take_damage(amount)
-
 
 func apply_heal(amount: int) -> void:
 	health_component.heal(amount)
 
-
 func emit_current_health():
 	print("Player: Sharing current health")
 	_on_health_changed(health_component.current_health, health_component.max_health)
-
 
 func pickup_item(item: ItemData, quantity: int) -> int:
 	var result = inventory_component.add_item(item, quantity)
