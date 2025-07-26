@@ -1,3 +1,14 @@
-[gd_scene format=3 uid="uid://bdjynrr2iy3rp"]
+[gd_scene load_steps=3 format=3 uid="uid://bdjynrr2iy3rp"]
+
+[ext_resource type="Texture2D" uid="uid://gii1qqj7xu23" path="res://data/icons/keyboard-&-mouse_sheet_double.png" id="1_osbyw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5cu26"]
+atlas = ExtResource("1_osbyw")
+region = Rect2(1294, 1294, 100, 100)
 
 [node name="InteractPrompt" type="Node3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+offset = Vector2(0, 1.5)
+billboard = 1
+texture = SubResource("AtlasTexture_5cu26")

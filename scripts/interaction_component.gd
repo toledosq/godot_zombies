@@ -1,14 +1,13 @@
 class_name InteractionComponent extends Area3D
 
-signal container_inventory_received(inventory_component: InventoryComponent)
-signal container_inventory_closed()
-
 @export var size: float = 2.0
 
 var _nearby_interactables: Array[Node] = []
 var container_inv_comp: InventoryComponent
-
 var is_interacting := false
+
+signal container_inventory_received(inventory_component: InventoryComponent)
+signal container_inventory_closed()
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -17,13 +16,18 @@ func _ready() -> void:
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("interactable"):
 		_nearby_interactables.append(body)
+		body.show_prompt()
 
 func _on_body_exited(body: Node) -> void:
+	if body.is_in_group("interactable"):
+		body.hide_prompt()
+		
 	if container_inv_comp != null and body == container_inv_comp.get_parent():
 		print("InteractionComponent: Closing container inventory")
 		emit_signal("container_inventory_closed")
 		container_inv_comp = null
 		is_interacting = false
+		
 	_nearby_interactables.erase(body)
 
 func _try_interact() -> void:
