@@ -10,7 +10,7 @@ var previous_transform: Transform3D
 var health_component: HealthComponent
 var inventory_component: InventoryComponent
 var weapon_component: WeaponComponent
-var interaction_component: Area3D
+var interaction_component: Node3D
 var player_hud: PlayerHud
 var inventory_ui: Control
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=15 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -7,8 +7,8 @@
 [ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
 [ext_resource type="Script" uid="uid://dgppophkyfi5k" path="res://scripts/weapon_component.gd" id="5_bruh7"]
 [ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
+[ext_resource type="PackedScene" uid="uid://dwiu1ju7n7usy" path="res://scenes/interaction_component.tscn" id="6_bruh7"]
 [ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://inventory/inventory_ui.gd" id="6_cw2d6"]
-[ext_resource type="Script" uid="uid://d3i6igf4mq5m0" path="res://scripts/interaction_component.gd" id="8_khinc"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 height = 1.8
@@ -18,9 +18,6 @@ height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_cw2d6"]
-radius = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu4a1"]
 content_margin_left = 0.0
@@ -67,11 +64,7 @@ max_slots = 5
 script = ExtResource("5_bruh7")
 max_slots = 2
 
-[node name="InteractionComponent" type="Area3D" parent="."]
-script = ExtResource("8_khinc")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionComponent"]
-shape = SubResource("CylinderShape3D_cw2d6")
+[node name="InteractionComponent" parent="." instance=ExtResource("6_bruh7")]
 
 [node name="PlayerCamera" type="Node3D" parent="."]
 script = ExtResource("4_qu4a1")
