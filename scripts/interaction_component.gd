@@ -1,6 +1,6 @@
 class_name InteractionComponent extends Node3D
 
-@export var interaction_hint_visible_radius: float = 10.0
+@export var interaction_hint_visible_radius: float = 8.0
 @export var interact_area_size: float = 1.5
 
 var _nearby_interactables: Array[Node] = []

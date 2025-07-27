@@ -15,6 +15,9 @@ func _ready() -> void:
 	
 	# connect the base "interacted" signal
 	connect("interacted", Callable(self, "_on_interacted"))
+	
+	# Call super
+	super._ready()
 
 func _on_interacted(ic: Object) -> void:
 	if ic.has_method("receive_inventory"):
