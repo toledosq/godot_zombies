@@ -31,7 +31,6 @@ func _ready() -> void:
 func _on_body_entered_interaction_area(body: Node) -> void:
 	if body.is_in_group("interactable"):
 		_nearby_interactables.append(body)
-		
 
 func _on_body_exited_interaction_area(body: Node) -> void:
 	if container_inv_comp != null and body == container_inv_comp.get_parent():
@@ -44,11 +43,11 @@ func _on_body_exited_interaction_area(body: Node) -> void:
 
 func _on_body_entered_hint_area(body: Node) -> void:
 	if body.is_in_group("interactable"):
-		body.show_prompt()
+		body.show_hint_bubble(self, interaction_hint_visible_radius)
 
 func _on_body_exited_hint_area(body: Node) -> void:
 	if body.is_in_group("interactable"):
-		body.hide_prompt()
+		body.hide_hint_bubble()
 
 func _try_interact() -> void:
 	if is_interacting:
