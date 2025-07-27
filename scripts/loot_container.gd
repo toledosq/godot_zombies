@@ -1,23 +1,20 @@
 class_name LootContainer extends StaticBody3D
 
 @onready var inv_comp: InventoryComponent = $InventoryComponent
-const prompt_scene = preload("uid://bdjynrr2iy3rp")
-var prompt
+@onready var interactable_bubble: Sprite3D = $InteractableBubble
+
 
 func _ready() -> void:
 	inv_comp.max_slots = 5
 	inv_comp.add_item(ItemDatabase.get_item("wep_mp5"), 2)
 	
-	prompt = prompt_scene.instantiate()
-	add_child(prompt)
-	prompt.transform.origin = Vector3(0, 1.5, 0)
-	prompt.visible = false
+	interactable_bubble.visible = false
 
 func show_prompt() -> void: 
-	prompt.visible = true
+	interactable_bubble.visible = true
 
 func hide_prompt() -> void: 
-	prompt.visible = false
+	interactable_bubble.visible = false
 
 func interact(interaction_component: Object) -> void:
 	print(self, " : interacted with")

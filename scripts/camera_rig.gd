@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var camera_distance := 15.0
+@export var camera_distance := 12.0
 @export var camera_rotation := 60.0
 @export var pan_limit := 3.0 # Maximum offset in meters
 @export var pan_speed := 5.0 # Smooth movement speed
