@@ -42,11 +42,14 @@ func _ready() -> void:
 	
 	# Connect to Weapon Component
 	weapon_component = $WeaponComponent
+	weapon_component.connect("active_weapon_changed", player_hud._on_active_weapon_changed)
 	
 	# Connect to Inventory UI
 	inventory_ui = $InventoryUI
 	inventory_ui.connect("inventory_opened", _on_inventory_opened)
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
+	inventory_ui.connect("weapon_equipped", player_hud._on_weapon_equipped)
+	inventory_ui.connect("weapon_unequipped", player_hud._on_weapon_unequipped)
 	inventory_ui.setup_player_grid(inventory_component)
 	inventory_ui.setup_weapon_slots(weapon_component)
 	

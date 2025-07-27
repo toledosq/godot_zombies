@@ -1,18 +1,26 @@
 class_name WeaponSlotUI extends InventorySlotUI
 
-signal weapon_equipped(slot_idx: int, weapon: WeaponData)
-signal weapon_unequipped(slot_idx: int)
+signal weapon_equipped(slot_index: int, item: WeaponData)
+signal weapon_unequipped(slot_index: int)
 
 func setup(component: InventoryComponent) -> void:
 	inv_comp = component
 	inventory = inv_comp.inventory
 	
 	# Connect signals
-	inv_comp.connect("item_added", Callable(self, "_on_inventory_changed"))
-	inv_comp.connect("item_removed", Callable(self, "_on_inventory_changed"))
+	inv_comp.connect("item_added", _on_inventory_changed)
+	inv_comp.connect("item_removed", _on_inventory_changed)
+	inv_comp.connect("item_added", _on_item_added)
+	inv_comp.connect("item_removed", _on_item_removed)
 	inv_comp.connect("inventory_full", Callable(self, "_on_inventory_full"))
 	
 	refresh()
+
+func _on_item_added(item: ItemData, _qty: int) -> void:
+	emit_signal("weapon_equipped", slot_index, item)
+
+func _on_item_removed(_item: ItemData, _qty: int) -> void:
+	emit_signal("weapon_unequipped", slot_index)
 
 ### OVERRIDES IventorySlotUI.refresh() to allow custom behavior
 func refresh() -> void:

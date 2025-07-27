@@ -20,6 +20,14 @@ func _ready():
 	print("HUD: Ready")
 	emit_signal("ready_")
 
+func _on_weapon_equipped(slot_idx: int, weapon_data: WeaponData):
+	var panel: Panel = weapon_container.get_child(slot_idx)
+	#panel.icon.texture = weapon_data.icon_texture
+
+func _on_weapon_unequipped(slot_idx: int):
+	var panel = weapon_container.get_child(slot_idx)
+	#panel.icon.texture = null
+
 func _update_hud_layout():
 	var screen_size = get_viewport().get_visible_rect().size
 
@@ -50,3 +58,20 @@ func _on_energy_changed(_player_id: int, value: int, max_value: int):
 
 func _on_player_died(_player_id):
 	print("HUD: Player died!")
+
+func _on_active_weapon_changed(slot_idx: int, weapon_data: WeaponData) -> void:
+	# 1) Swap the icon texture
+	var panel = weapon_container.get_child(slot_idx)
+	panel.icon.texture = weapon_data.icon_texture
+	
+	# 2) Update the colored border
+	for i in weapon_container.get_child_indices():
+		var p = weapon_container.get_child(i)
+		# For StyleBoxFlat borders, you can do:
+		var style = p.get("custom_styles/panel")
+		style.border_width_left  = 4 if (i == slot_idx) else 0
+		style.border_width_top   = 4 if (i == slot_idx) else 0
+		style.border_width_right = 4 if (i == slot_idx) else 0
+		style.border_width_bottom= 4 if (i == slot_idx) else 0
+		style.border_color       = Color.ORANGE_RED
+		p.add_theme_stylebox_override("panel", style)
