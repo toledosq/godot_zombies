@@ -1,6 +1,6 @@
 class_name InteractionComponent extends Node3D
 
-@export var interaction_hint_visible_radius: float = 6.0
+@export var interaction_hint_visible_radius: float = 10.0
 @export var interact_area_size: float = 2.5
 
 var _nearby_interactables: Array[Node] = []
@@ -11,10 +11,10 @@ signal container_inventory_received(inventory_component: InventoryComponent)
 signal container_inventory_closed()
 
 @onready var interaction_area: Area3D = $InteractionArea
-@onready var interaction_area_shape: CollisionShape3D = $InteractionArea/CollisionShape3D
+@onready var interaction_area_shape: CollisionShape3D = $InteractionArea/InteractionAreaShape
 
 @onready var interaction_hint_area: Area3D = $InteractionHintArea
-@onready var interaction_hint_area_shape: CollisionShape3D = $InteractionHintArea/CollisionShape3D
+@onready var interaction_hint_area_shape: CollisionShape3D = $InteractionHintArea/InteractionHintAreaShape
 
 
 func _ready() -> void:
@@ -31,8 +31,12 @@ func _ready() -> void:
 func _on_body_entered_interaction_area(body: Node) -> void:
 	if body.is_in_group("interactable"):
 		_nearby_interactables.append(body)
+		body.show_hint_ring()
 
 func _on_body_exited_interaction_area(body: Node) -> void:
+	if body.is_in_group("interactable"):
+		body.hide_hint_ring()
+	
 	if container_inv_comp != null and body == container_inv_comp.get_parent():
 		print("InteractionComponent: Closing container inventory")
 		emit_signal("container_inventory_closed")

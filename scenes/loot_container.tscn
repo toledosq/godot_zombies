@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://73k7mnylnjci"]
+[gd_scene load_steps=8 format=3 uid="uid://73k7mnylnjci"]
 
 [ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://inventory/inventory_component.gd" id="1_24i0d"]
 [ext_resource type="Script" uid="uid://bgo33rcpwr475" path="res://scripts/loot_container.gd" id="1_rmns8"]
 [ext_resource type="Texture2D" uid="uid://dxciof8l5x6so" path="res://data/icons/interactable_bubble.tres" id="3_6yf5w"]
+[ext_resource type="Texture2D" uid="uid://da7q6at2qvu3l" path="res://data/icons/generic_button_circle_outline.png" id="4_h256f"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_24i0d"]
 
@@ -25,9 +26,16 @@ shape = SubResource("BoxShape3D_rmns8")
 script = ExtResource("1_24i0d")
 metadata/_custom_type_script = "uid://bcyu5txi7tm5p"
 
-[node name="InteractableBubble" type="Sprite3D" parent="."]
+[node name="InteractHintGroup" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="InteractHintBubble" type="Sprite3D" parent="InteractHintGroup"]
 billboard = 1
 double_sided = false
 no_depth_test = true
 texture = ExtResource("3_6yf5w")
+
+[node name="InteractHintRing" type="Sprite3D" parent="InteractHintGroup"]
+billboard = 1
+no_depth_test = true
+texture = ExtResource("4_h256f")
