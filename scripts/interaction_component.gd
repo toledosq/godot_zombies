@@ -1,7 +1,7 @@
 class_name InteractionComponent extends Node3D
 
 @export var interaction_hint_visible_radius: float = 10.0
-@export var interact_area_size: float = 2.5
+@export var interact_area_size: float = 1.5
 
 var _nearby_interactables: Array[Node] = []
 var container_inv_comp: InventoryComponent
@@ -62,12 +62,26 @@ func _try_interact() -> void:
 	if _nearby_interactables.size() == 0:
 		return
 	
-	# Pick first
-	var target = _nearby_interactables[0]
-	if target.has_method("interact"):
-		target.interact(self)
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return  # no camera? bail early.
+	
+	var mouse_pos := get_viewport().get_mouse_position()
+
+	var closest: Node = null
+	var best_dist2 := INF
+	for obj in _nearby_interactables:
+		# world → screen
+		var screen_p: Vector2 = cam.unproject_position(obj.global_transform.origin)
+		var d2 := screen_p.distance_squared_to(mouse_pos)
+		if d2 < best_dist2:
+			best_dist2 = d2
+			closest = obj
+	
+	if closest.has_method("interact"):
+		closest.interact(self)
 	else:
-		push_warning("%s has no interact method" % target.name)
+		push_warning("%s has no interact method" % closest.name)
 
 func cancel_interaction() -> void:
 	if container_inv_comp != null:

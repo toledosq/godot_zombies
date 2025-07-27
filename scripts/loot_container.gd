@@ -1,5 +1,7 @@
 class_name LootContainer extends StaticBody3D
 
+@export var max_slots: int = 10
+
 @onready var inv_comp: InventoryComponent = $InventoryComponent
 @onready var interact_hint_bubble: Sprite3D = $InteractHintGroup/InteractHintBubble
 @onready var interact_hint_ring: Sprite3D = $InteractHintGroup/InteractHintRing
@@ -10,7 +12,7 @@ var fade_end: float = 2.0
 
 
 func _ready() -> void:
-	inv_comp.max_slots = 5
+	inv_comp.max_slots = max_slots
 	inv_comp.add_item(ItemDatabase.get_item("wep_mp5"), 2)
 	interact_hint_bubble.visible = false
 	interact_hint_ring.visible = false
