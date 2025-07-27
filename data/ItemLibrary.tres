@@ -1,86 +1,92 @@
-[gd_resource type="Resource" script_class="ItemLibrary" load_steps=12 format=3 uid="uid://djp8oxbmci8h2"]
+[gd_resource type="Resource" script_class="ItemLibrary" load_steps=16 format=3 uid="uid://djp8oxbmci8h2"]
 
-[ext_resource type="Script" uid="uid://rr53mngj40sg" path="res://items/ItemData.gd" id="1_t42ma"]
-[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_hfia1"]
-[ext_resource type="Script" uid="uid://b20edmirglmiy" path="res://items/ItemLibrary.gd" id="2_wfdj4"]
-[ext_resource type="Script" uid="uid://bauxa12hln0na" path="res://items/ArmorData.gd" id="2_ydtnr"]
-[ext_resource type="Script" uid="uid://xm1j54ma2t7d" path="res://items/WeaponData.gd" id="3_hfia1"]
+[ext_resource type="Script" uid="uid://rr53mngj40sg" path="res://items/ItemData.gd" id="1_hfia1"]
+[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_ha0ya"]
+[ext_resource type="Script" uid="uid://bauxa12hln0na" path="res://items/ArmorData.gd" id="3_xv8lu"]
+[ext_resource type="Script" uid="uid://xm1j54ma2t7d" path="res://items/WeaponData.gd" id="4_pyq2h"]
+[ext_resource type="Script" uid="uid://b20edmirglmiy" path="res://items/ItemLibrary.gd" id="5_k8ppy"]
 
-[sub_resource type="Resource" id="Resource_ydtnr"]
-script = ExtResource("2_ydtnr")
+[sub_resource type="Resource" id="Resource_hfia1"]
+script = ExtResource("3_xv8lu")
 armor_type = "light"
-id = "backpack_small"
-icon = ExtResource("2_hfia1")
-scene_file = "backpack_small.tscn"
-display_name = "Small Backpack"
+equip_slot = "backpack"
+id = &"backpack_sm"
+icon = ExtResource("2_ha0ya")
+scene_file = &"backpack_sm"
+display_name = &"Small Backpack"
 description = "Has 5 slots"
 category = "armor"
 subcategory = "backpack"
 value = 80
-durability_max = 100
-durability = 100
+weight = 1.0
 max_stack = 1
 sort_order = 1
 equippable = true
-equip_slot = "backpack"
+time_to_use = 1.0
 craftable = true
-recipe_id = "recipe_backpack_small"
+recipe_id = "recipe_backpack_sm"
 recyclable = true
-recyclable_id = "recycle_backpack_small"
+recyclable_id = "recycle_backpack_sm"
 
-[sub_resource type="Resource" id="Resource_hfia1"]
-script = ExtResource("3_hfia1")
+[sub_resource type="Resource" id="Resource_ha0ya"]
+script = ExtResource("4_pyq2h")
 weapon_type = "ranged"
-damage = 15
-damage_type = "physical"
-attack_speed = 13.0
-attack_range = 40.0
+reload_time = 4.0
 recoil = 10.0
+accuracy = 90.0
+attack_speed = 13.0
+damage_type = "physical"
+ranged_distance = 40.0
+ranged_damage = 15
+melee_distance = 1.0
+melee_damage = 5
 ammo_type = "ammo_pistol_small"
 mag_size = 30
-reload_time = 4.0
-id = "wep_mp5"
-icon = ExtResource("2_hfia1")
-scene_file = "wep_mp5.tscn"
-display_name = "MP5"
-description = "A classic HK"
+id = &"wep_mp5"
+icon = ExtResource("2_ha0ya")
+scene_file = &"wep_mp5"
+display_name = &"MP5"
+description = "A classic HK smg"
 category = "weapon"
 subcategory = "ranged"
 value = 500
 weight = 3.5
 durability_max = 100
 durability = 100
+repairable = true
 max_stack = 1
 sort_order = 2
 equippable = true
-equip_slot = "wep_ranged"
 recyclable = true
+recyclable_id = "recycle_mp5"
 
-[sub_resource type="Resource" id="Resource_ha0ya"]
-script = ExtResource("1_t42ma")
-id = "cons_bandage"
-icon = ExtResource("2_hfia1")
-scene_file = "bandage.tscn"
-display_name = "Bandage"
+[sub_resource type="Resource" id="Resource_xv8lu"]
+script = ExtResource("1_hfia1")
+id = &"cons_bandage"
+icon = ExtResource("2_ha0ya")
+scene_file = &"bandage"
+display_name = &"Bandage"
 description = "Heals you a bit"
 category = "consumable"
 subcategory = "health"
 value = 20
 weight = 0.5
 max_stack = 10
+time_to_use = 2.5
 craftable = true
 recipe_id = "recipe_bandage"
 recyclable = true
 recyclable_id = "recycle_bandage"
 
-[sub_resource type="Resource" id="Resource_xv8lu"]
-script = ExtResource("2_ydtnr")
+[sub_resource type="Resource" id="Resource_pyq2h"]
+script = ExtResource("3_xv8lu")
 armor_type = "light"
+equip_slot = "helmet"
 resist_physical = 10.0
-id = "helmet_biker"
-icon = ExtResource("2_hfia1")
-scene_file = "helmet_biker.tscn"
-display_name = "Biker Helmet"
+id = &"helmet_biker"
+icon = ExtResource("2_ha0ya")
+scene_file = &"helmet_biker"
+display_name = &"Biker Helmet"
 description = "Protects the noggin"
 category = "armor"
 subcategory = "head"
@@ -88,41 +94,111 @@ value = 100
 weight = 1.0
 durability_max = 100
 durability = 100
+repairable = true
 max_stack = 1
 sort_order = 2
 equippable = true
-equip_slot = "helmet"
+time_to_use = 2.0
 
-[sub_resource type="Resource" id="Resource_pyq2h"]
-script = ExtResource("1_t42ma")
-id = "ammo_pistol_small"
-icon = ExtResource("2_hfia1")
-scene_file = "ammo_pistol_small.tscn"
-display_name = "Small Pistol Ammo"
+[sub_resource type="Resource" id="Resource_k8ppy"]
+script = ExtResource("1_hfia1")
+id = &"ammo_pistol_sm"
+icon = ExtResource("2_ha0ya")
+scene_file = &"ammo_pistol_sm"
+display_name = &"Small Pistol Ammo"
 description = "9mm"
 category = "ammo"
+subcategory = "item"
 value = 2
 weight = 0.01
 max_stack = 200
 sort_order = 3
 craftable = true
-recipe_id = "recipe_ammo_pistol_small"
+recipe_id = "recipe_ammo_pistol_sm"
 recyclable = true
-recyclable_id = "recycle_ammo_pistol_small"
+recyclable_id = "recycle_ammo_pistol_sm"
 
-[sub_resource type="Resource" id="Resource_k8ppy"]
-script = ExtResource("1_t42ma")
-id = "scrap_cloth"
-icon = ExtResource("2_hfia1")
-scene_file = "scrap_cloth.tscn"
-display_name = "Cloth Scrap"
+[sub_resource type="Resource" id="Resource_fgah5"]
+script = ExtResource("1_hfia1")
+id = &"scrap_cloth"
+icon = ExtResource("2_ha0ya")
+scene_file = &"scrap_cloth"
+display_name = &"Cloth Scrap"
 description = "A small scrap of cloth"
-category = "item"
+subcategory = "item"
 value = 5
 weight = 0.05
 max_stack = 20
 sort_order = 4
 
+[sub_resource type="Resource" id="Resource_h26dq"]
+script = ExtResource("1_hfia1")
+id = &"cons_health_stim"
+icon = ExtResource("2_ha0ya")
+scene_file = &"cons_health_stim"
+display_name = &"Health Stim"
+description = "Really stimulating"
+category = "consumable"
+subcategory = "health"
+value = 150
+weight = 0.3
+max_stack = 5
+craftable = true
+recipe_id = "recipe_healthstim"
+
+[sub_resource type="Resource" id="Resource_vkj7p"]
+script = ExtResource("1_hfia1")
+id = &"cons_medkit_sm"
+icon = ExtResource("2_ha0ya")
+scene_file = &"cons_medkit_sm"
+display_name = &"Small Medical Kit"
+description = "Useful for repeated injuries!"
+category = "consumable"
+subcategory = "health"
+value = 100
+weight = 0.5
+durability_max = 100
+durability = 100
+max_stack = 2
+time_to_use = 5.0
+craftable = true
+recipe_id = "recipe_medkit_sm"
+recyclable = true
+recyclable_id = "recycle_medkit_sm"
+
+[sub_resource type="Resource" id="Resource_00x47"]
+script = ExtResource("1_hfia1")
+id = &"cons_biscuit"
+icon = ExtResource("2_ha0ya")
+scene_file = &"cons_biscuit"
+display_name = &"Biscuit"
+description = "yummy"
+category = "consumable"
+subcategory = "food"
+value = 10
+weight = 0.1
+max_stack = 10
+time_to_use = 3.0
+recipe_id = "cons_biscuit"
+
+[sub_resource type="Resource" id="Resource_twr1d"]
+script = ExtResource("1_hfia1")
+id = &"cons_waterbottle"
+icon = ExtResource("2_ha0ya")
+scene_file = &"cons_waterbottle"
+display_name = &"Water Bottle"
+description = "refreshing"
+category = "consumable"
+subcategory = "drink"
+value = 15
+weight = 0.5
+durability_max = 100
+durability = 100
+max_stack = 5
+time_to_use = 3.0
+recyclable = true
+recyclable_id = "recycle_waterbottle"
+
 [resource]
-script = ExtResource("2_wfdj4")
-items = Array[ExtResource("1_t42ma")]([SubResource("Resource_ydtnr"), SubResource("Resource_hfia1"), SubResource("Resource_ha0ya"), SubResource("Resource_xv8lu"), SubResource("Resource_pyq2h"), SubResource("Resource_k8ppy")])
+script = ExtResource("5_k8ppy")
+items = Array[ExtResource("1_hfia1")]([SubResource("Resource_hfia1"), SubResource("Resource_ha0ya"), SubResource("Resource_xv8lu"), SubResource("Resource_pyq2h"), SubResource("Resource_k8ppy"), SubResource("Resource_fgah5"), SubResource("Resource_h26dq"), SubResource("Resource_vkj7p"), SubResource("Resource_00x47"), SubResource("Resource_twr1d")])

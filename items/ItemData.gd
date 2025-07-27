@@ -3,10 +3,10 @@ extends Resource
 class_name ItemData
 
 # Base item attributes
-@export var id: String
+@export var id: StringName
 @export var icon: Texture2D
-@export var scene_file: String
-@export var display_name: String
+@export var scene_file: StringName
+@export var display_name: StringName
 @export var description: String
 @export var category: String
 @export var subcategory: String
@@ -14,11 +14,13 @@ class_name ItemData
 @export var weight: float
 @export var durability_max: int
 @export var durability: int
+@export var repairable: bool
+@export var repair_cost: int
 @export var max_stack: int
 @export var sort_order: int
 @export var quest_only: bool
 @export var equippable: bool
-@export var equip_slot: String
+@export var time_to_use: float
 @export var craftable: bool
 @export var recipe_id: String
 @export var recyclable: bool

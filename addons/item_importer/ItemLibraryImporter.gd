@@ -2,7 +2,7 @@
 extends EditorScript
 
 # Paths
-const CSV_PATH := "res://data/ItemDB_20250721.csv"
+const CSV_PATH := "res://data/ItemDB_20250726.csv"
 const ITEM_LIBRARY_PATH := "res://data/ItemLibrary.tres"
 const OUTPUT_DIR := "res://data/items/"
 
@@ -42,7 +42,7 @@ func _run():
 					var parsed_value = parse_value(row[key])
 					item_resource.set(key, parsed_value)
 					print("Setting %s to %s" % [key, parsed_value])
-					
+				
 		# Assign type-specific fields
 		for key in row.keys():
 			if key.begins_with("%s." % item_type):
@@ -53,6 +53,9 @@ func _run():
 		# Save Resource
 		#var item_path = "%s%s.tres" % [OUTPUT_DIR, item_resource.name]
 		#ResourceSaver.save(item_path, item_resource)
+		
+		# Temporary icon path for prototyping
+		item_resource.set("icon", load("res://icon.svg"))
 		
 		item_library.items.append(item_resource)
 

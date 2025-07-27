@@ -2,6 +2,8 @@ class_name InventoryUI extends Control
 
 signal inventory_opened
 signal inventory_closed
+signal weapon_equipped(slot_idx: int, weapon: WeaponData)
+signal weapon_unequipped(slot_idx: int, weapon: WeaponData)
 
 @export var columns: int = 5
 @export var slot_scene: PackedScene = preload("res://ui/InventorySlotUI.tscn")
@@ -56,10 +58,15 @@ func _populate_weapon_slots(slot_count: int):
 		var slot_ui = weapon_slot_scene.instantiate() as WeaponSlotUI
 		slot_ui.slot_index = i
 		weapon_slots.add_child(slot_ui)
-		slot_ui.connect("weapon_equipped", Callable(self, "_on_weapon_equipped"))
-		slot_ui.connect("weapon_unequipped", Callable(self, "_on_weapon_unequipped"))
+		slot_ui.connect("weapon_equipped", _on_weapon_equipped)
+		slot_ui.connect("weapon_unequipped", _on_weapon_unequipped)
 		slot_ui.setup(player_weapon_component)
 
+func _on_weapon_equipped(slot_index: int, weapon: WeaponData):
+	emit_signal("weapon_equipped", slot_index, weapon)
+
+func _on_weapon_unequipped(slot_index: int):
+	emit_signal("weapon_unequipped", slot_index)
 
 func _clear_weapon_slots() -> void:
 	for child in weapon_slots.get_children():

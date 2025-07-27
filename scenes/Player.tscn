@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=16 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -18,6 +18,8 @@ height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bruh7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qu4a1"]
 content_margin_left = 0.0
@@ -181,12 +183,22 @@ layout_mode = 2
 [node name="Square1" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+theme_override_styles/panel = SubResource("StyleBoxTexture_bruh7")
+
+[node name="Icon" type="TextureRect" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer/Square1"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="Square2" type="Panel" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qu4a1")
+
+[node name="Icon" type="TextureRect" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer/Square2"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="QuickSlotContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
 layout_mode = 2
