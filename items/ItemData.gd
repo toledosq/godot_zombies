@@ -4,7 +4,7 @@ class_name ItemData
 
 # Base item attributes
 @export var id: StringName
-@export var icon_file: Texture2D
+@export var icon: Texture2D
 @export var scene_file: StringName
 @export var display_name: StringName
 @export var description: String
