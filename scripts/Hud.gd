@@ -2,6 +2,9 @@ class_name PlayerHud extends CanvasLayer
 
 signal ready_
 
+var default_crosshair_cursor: Texture2D = preload("res://data/icons/generic_button_circle_outline.png")
+@export var crosshair_texture: Texture2D
+
 @onready var health_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/HealthBar
 @onready var energy_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/EnergyBar
 @onready var weapon_container: HBoxContainer = $BottomBar/CenterContainer/HBoxContainer/WeaponContainer
@@ -14,6 +17,13 @@ func _ready():
 
 	# Connect to viewport resize for dynamic scaling
 	get_viewport().connect("size_changed", _update_hud_layout)
+	
+	# Init crosshair
+	if not crosshair_texture:
+		crosshair_texture = default_crosshair_cursor
+	
+	# Connect to MouseModeMonitor
+	MouseModeMonitor.mouse_mode_changed.connect(_on_mouse_mode_changed)
 	
 	# Announce ready status
 	print("HUD: Ready")
@@ -62,8 +72,20 @@ func _on_energy_changed(_player_id: int, value: int, max_value: int):
 func _on_player_died(_player_id):
 	print("HUD: Player died!")
 
-func _on_active_weapon_changed(_slot_idx: int, weapon_data: WeaponData) -> void:
+func _on_active_weapon_changed(_slot_idx: int, _weapon_data: WeaponData) -> void:
 	# 1) Swap the icon texture
 	#var panel = weapon_container.get_child(slot_idx)
 	#panel.icon.texture = weapon_data.icon_texture
 	pass
+
+func _on_mouse_mode_changed(mode: Input.MouseMode) -> void:
+	match mode:
+		Input.MOUSE_MODE_CONFINED:
+			Input.set_custom_mouse_cursor(crosshair_texture, Input.CURSOR_ARROW, crosshair_texture.get_size() / 2)
+		Input.MOUSE_MODE_VISIBLE:
+			Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+
+func set_crosshair_texture(tex: Texture2D):
+	crosshair_texture = tex
+	# Call this to ensure the crosshair updates
+	_on_mouse_mode_changed(Input.mouse_mode)

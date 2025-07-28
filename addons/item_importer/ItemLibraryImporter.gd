@@ -11,6 +11,8 @@ const BASE_ITEM_CLASS := preload("res://items/ItemData.gd")
 const WEAPON_CLASS := preload("res://items/WeaponData.gd")
 const ARMOR_CLASS := preload("res://items/ArmorData.gd")
 const CONSUMABLE_CLASS := preload("res://items/ConsumableData.gd")
+const DEFAULT_ICON := preload("res://icon.svg")
+const DEFAULT_CROSSHAIR := preload("res://data/icons/generic_button_circle_outline.png")
 
 func _has_property(obj: Object, prop: String) -> bool:
 	for dict in obj.get_property_list():
@@ -54,8 +56,10 @@ func _run():
 		#var item_path = "%s%s.tres" % [OUTPUT_DIR, item_resource.name]
 		#ResourceSaver.save(item_path, item_resource)
 		
-		# Temporary icon path for prototyping
-		item_resource.set("icon", load("res://icon.svg"))
+		# Temporary texture paths for prototyping
+		item_resource.set("icon", DEFAULT_ICON)
+		if _has_property(item_resource, "crosshair"):
+			item_resource.set("crosshair", DEFAULT_CROSSHAIR)
 		
 		item_library.items.append(item_resource)
 

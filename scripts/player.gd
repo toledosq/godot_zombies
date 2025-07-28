@@ -14,6 +14,7 @@ var previous_transform: Transform3D
 var movement_enabled := false
 var rotation_enabled := false
 
+
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
@@ -64,6 +65,9 @@ func _ready() -> void:
 	
 	# Set camera rig target to self
 	camera_rig.set_target(self)
+	
+	# Ensure mouse mode is confined
+	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 	
 	# Enable input
 	rotation_enabled = true

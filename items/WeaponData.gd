@@ -12,6 +12,9 @@ class_name WeaponData
 @export var melee_distance: float
 @export var melee_damage: int
 
+# Crosshair
+@export var crosshair: Texture2D
+
 # Ammo
 @export var ammo_type: String
 @export var mag_size: int
