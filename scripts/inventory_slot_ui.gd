@@ -23,9 +23,8 @@ func setup(component: InventoryComponent) -> void:
 	inventory = inv_comp.inventory
 	
 	# Listen for changes
-	inv_comp.connect("item_added", Callable(self, "_on_inventory_changed"))
-	inv_comp.connect("item_removed", Callable(self, "_on_inventory_changed"))
-	inv_comp.connect("inventory_full", Callable(self, "_on_inventory_full"))
+	inv_comp.connect("item_added", _on_inventory_changed)
+	inv_comp.connect("item_removed", _on_inventory_changed)
 	
 	refresh()
 
@@ -47,7 +46,7 @@ func refresh() -> void:
 			count_label.text = ""
 		tooltip_text = ""
 
-func _on_inventory_changed(_item: ItemData, _qty: int) -> void:
+func _on_inventory_changed(_index: int, _item: ItemData, _qty: int) -> void:
 	refresh()
 
 # Drag & Drop hooks
@@ -86,7 +85,8 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 	if src_comp == dst_comp:
 		# Simple swap within inventory
 		src_comp.inventory.swap_slots(src_idx, dst_idx)
-		src_comp.emit_signal("item_removed", null, 0)
+		src_comp.emit_signal("item_removed", src_idx, null, 0)
+		dst_comp.emit_signal("item_added", dst_idx, dst_comp.inventory.slots[dst_idx].item, 0)
 		return
 	
 	# 2) Cross-inventory -> direct placement
@@ -119,8 +119,8 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 		moved = dst_slot.quantity
 		
 		# Emit and exit early
-		src_comp.emit_signal("item_removed", tmp_item, tmp_qty)
-		dst_comp.emit_signal("item_added", dst_slot.item, moved)
+		src_comp.emit_signal("item_removed", src_idx, tmp_item, tmp_qty)
+		dst_comp.emit_signal("item_added", dst_idx, dst_slot.item, moved)
 		return
 	
 	# 3) Remove moved quantity from source
@@ -130,5 +130,5 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 		src_slot.quantity = 0
 
 	# 4) fire signals so both UIs refresh slots
-	src_comp.emit_signal("item_removed", dst_slot.item, moved)
-	dst_comp.emit_signal("item_added", dst_slot.item, moved)
+	src_comp.emit_signal("item_removed", src_idx, dst_slot.item, moved)
+	dst_comp.emit_signal("item_added", dst_idx, dst_slot.item, moved)

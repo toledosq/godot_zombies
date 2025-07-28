@@ -1,7 +1,5 @@
 class_name WeaponSlotUI extends InventorySlotUI
 
-signal weapon_equipped(slot_index: int, item: WeaponData)
-signal weapon_unequipped(slot_index: int)
 
 func setup(component: InventoryComponent) -> void:
 	inv_comp = component
@@ -10,23 +8,16 @@ func setup(component: InventoryComponent) -> void:
 	# Connect signals
 	inv_comp.connect("item_added", _on_inventory_changed)
 	inv_comp.connect("item_removed", _on_inventory_changed)
-	inv_comp.connect("item_added", _on_item_added)
-	inv_comp.connect("item_removed", _on_item_removed)
 	inv_comp.connect("inventory_full", Callable(self, "_on_inventory_full"))
 	
 	refresh()
-
-func _on_item_added(item: ItemData, _qty: int) -> void:
-	emit_signal("weapon_equipped", slot_index, item)
-
-func _on_item_removed(_item: ItemData, _qty: int) -> void:
-	emit_signal("weapon_unequipped", slot_index)
 
 ### OVERRIDES IventorySlotUI.refresh() to allow custom behavior
 func refresh() -> void:
 	# var slot = slot_index < inventory.slots.size() ? inventory.slots[slot_index] : null
 	var slot = inventory.slots[slot_index] if slot_index < inventory.slots.size() else null
 	var weapon = slot.item as WeaponData
+	print("INV Weapon Slot %d refreshing" % slot_index)
 	
 	if slot and weapon and icon:
 		icon.texture = weapon.icon
@@ -47,3 +38,7 @@ func _can_drop_data(_position: Vector2, data: Variant) -> bool:
 	if data.has("item") and data["item"] is not WeaponData:
 		return false
 	return data is Dictionary and data.has("src_index")
+
+func _on_inventory_changed(_index: int, _item: ItemData, _qty: int) -> void:
+	print("WeaponSlotUI: Refreshing slot %d" % slot_index)
+	refresh()

@@ -1,7 +1,7 @@
 class_name InventoryComponent extends Node
 
-signal item_added(item: ItemData, quantity: int)
-signal item_removed(item: ItemData, quantity: int)
+signal item_added(index: int, item: ItemData, quantity: int)
+signal item_removed(index: int, item: ItemData, quantity: int)
 signal inventory_full(item: ItemData, quantity: int)
 
 @export var inventory: Inventory = Inventory.new()
@@ -22,7 +22,7 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	var result = inventory.add_item(item, quantity)
 	
 	if result.added > 0:
-		emit_signal("item_added", item, result.added)
+		emit_signal("item_added", result.index, item, result.added)
 	
 	if result.rejected > 0:
 		emit_signal("inventory_full", item, result.rejected)
@@ -31,10 +31,10 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 
 
 func remove_item(item: ItemData, quantity: int = 1) -> int:
-	var success = inventory.remove_item(item, quantity)
-	if success:
-		emit_signal("item_removed", item, quantity)
-	return success
+	var result = inventory.remove_item(item, quantity)
+	if result.total_removal:
+		emit_signal("item_removed", result.index, item, quantity)
+	return result.total_removal
 
 
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:

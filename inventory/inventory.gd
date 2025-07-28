@@ -36,8 +36,9 @@ func has_space_for(item: ItemData, quantity: int = 1) -> bool:
 	return stacks_needed <= empty_slots
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
-	var remaining = quantity
-	var added = 0
+	var remaining := quantity
+	var added := 0
+	var changed_index := 0
 
 	# 1) Top up existing stacks
 	for slot in slots:
@@ -60,30 +61,39 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 			slot.quantity = to_add
 			added += to_add
 			remaining -= to_add
+		changed_index += 1
 
 	return {
 		"added": added,		 # how many items went in
-		"rejected": remaining  # leftovers
+		"rejected": remaining,
+		"index": changed_index  # leftovers
 	}
 
-func remove_item(item: ItemData, quantity: int = 1) -> bool:
+func remove_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	var remaining = quantity
-
+	var changed_index := 0
+	var total_removal := false
+	
 	for i in range(slots.size(), 0, -1):
-		var slot = slots[i-1]
+		# Track which slot is being tried
+		changed_index = i-1
+		var slot = slots[changed_index]
 		if slot.item == item:
 			if slot.quantity > remaining:
 				slot.quantity -= remaining
-				return true
+				total_removal = true
 			else:
 				remaining -= slot.quantity
 				# clear that slot instead of removing it
 				slot.item = null
 				slot.quantity = 0
 				if remaining == 0:
-					return true
-	# if we ran out of slots before removing everything...
-	return remaining == 0
+					total_removal = true
+	
+	return {
+		"total_removal": total_removal,
+		"index": changed_index
+	}
 
 func swap_slots(a: int, b: int) -> void:
 	# no need to re-ensure length here

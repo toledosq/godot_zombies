@@ -1,60 +1,55 @@
-extends CharacterBody3D
-class_name Player
+class_name Player extends CharacterBody3D
+
+signal player_health_changed(player_id_:int, current: int, maximum: int)
+signal player_died(player_id_: int)
+signal weapon_equipped(slot_idx: int, weapon: WeaponData)
+signal weapon_unequipped(slot_idx: int)
+signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
 
 @export var speed := 5.0
 
 var player_id: int
 var player_name: String
-
 var previous_transform: Transform3D
-var health_component: HealthComponent
-var inventory_component: InventoryComponent
-var weapon_component: WeaponComponent
-var interaction_component: Node3D
-var player_hud: PlayerHud
-var inventory_ui: Control
-
 var input_enabled := false
 
-signal player_health_changed(player_id_:int, current: int, maximum: int)
-signal player_died(player_id_: int)
-
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var inventory_component: InventoryComponent = $InventoryComponent
+@onready var weapon_component: WeaponComponent = $WeaponComponent
+@onready var interaction_component: Node3D = $InteractionComponent
+@onready var player_hud: PlayerHud = $HUD
+@onready var inventory_ui: Control = $InventoryUI
 @onready var body = $Body  # Path to visible mesh
-@onready var collision = $CollisionShape3D
-@onready var camera_rig = $PlayerCamera
+@onready var collision: CollisionShape3D = $CollisionShape3D
+@onready var camera_rig: Node3D = $PlayerCamera
 
 func _ready() -> void:
 	# Connect player Health Component
 	print("Player: Connecting Health Component")
-	health_component = $HealthComponent
 	health_component.connect("health_changed", _on_health_changed)
 	health_component.connect("died", _on_player_died)
 	
 	# Connect player Heads Up Display
 	print("Player: Connecting HUD")
-	player_hud = $HUD
 	connect("player_health_changed", player_hud._on_health_changed)
 	connect("player_died", player_hud._on_player_died)
+	connect("active_weapon_changed", player_hud._on_active_weapon_changed)
+	connect("weapon_equipped", player_hud._on_weapon_equipped)
+	connect("weapon_unequipped", player_hud._on_weapon_unequipped)
 	emit_current_health()
 	
-	# Connect to Inventory Component
-	inventory_component = $InventoryComponent
-	
 	# Connect to Weapon Component
-	weapon_component = $WeaponComponent
-	weapon_component.connect("active_weapon_changed", player_hud._on_active_weapon_changed)
+	weapon_component.connect("active_weapon_changed", _on_active_weapon_changed)
 	
 	# Connect to Inventory UI
-	inventory_ui = $InventoryUI
 	inventory_ui.connect("inventory_opened", _on_inventory_opened)
 	inventory_ui.connect("inventory_closed", _on_inventory_closed)
-	inventory_ui.connect("weapon_equipped", player_hud._on_weapon_equipped)
-	inventory_ui.connect("weapon_unequipped", player_hud._on_weapon_unequipped)
+	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
+	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
 	inventory_ui.setup_player_grid(inventory_component)
 	inventory_ui.setup_weapon_slots(weapon_component)
 	
 	# Hook up InteractionComponent -> InventoryUI
-	interaction_component = $InteractionComponent
 	interaction_component.connect("container_inventory_received", _on_container_inventory_received)
 	interaction_component.connect("container_inventory_closed", _on_container_inventory_closed)
 	
@@ -64,7 +59,7 @@ func _ready() -> void:
 	# Enable input
 	input_enabled = true
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	if input_enabled:
 		_handle_movement(delta)
 	_rotate_towards_mouse()
@@ -101,7 +96,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		print(">>> Healing 5 HP")
 		health_component.heal(5)
 
-func _handle_movement(delta):
+func _handle_movement(delta) -> void:
 	# Get movement input vector
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	# Get direction from movement input
@@ -119,7 +114,7 @@ func _handle_movement(delta):
 	# Do movement
 	move_and_slide()
 
-func _rotate_towards_mouse():
+func _rotate_towards_mouse() -> void:
 	var camera = get_viewport().get_camera_3d()
 	if not camera:
 		return
@@ -176,7 +171,18 @@ func apply_damage(amount: int) -> void:
 func apply_heal(amount: int) -> void:
 	health_component.heal(amount)
 
-func emit_current_health():
+func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
+	emit_signal("active_weapon_changed", slot_idx, weapon)
+
+func _on_weapon_equipped(slot_idx: int, weapon: WeaponData) -> void:
+	print("Player: weapon equipped in slot %d" % slot_idx)
+	emit_signal("weapon_equipped", slot_idx, weapon)
+
+func _on_weapon_unequipped(slot_idx: int) -> void:
+	print("Player: weapon unequipped in slot %d" % slot_idx)
+	emit_signal("weapon_unequipped", slot_idx)
+
+func emit_current_health() -> void:
 	print("Player: Sharing current health")
 	_on_health_changed(health_component.current_health, health_component.max_health)
 
