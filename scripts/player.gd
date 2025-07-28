@@ -14,7 +14,6 @@ var previous_transform: Transform3D
 var movement_enabled := false
 var rotation_enabled := false
 
-
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
@@ -25,6 +24,7 @@ var rotation_enabled := false
 @onready var body = $Body  # Path to visible mesh
 @onready var collision: CollisionShape3D = $CollisionShape3D
 @onready var camera_rig: Node3D = $PlayerCamera
+
 
 func _ready() -> void:
 	# Connect player controller
@@ -72,13 +72,24 @@ func _ready() -> void:
 	# Enable input
 	rotation_enabled = true
 	movement_enabled = true
-	
+
 
 func _physics_process(delta) -> void:
 	if movement_enabled:
 		_handle_movement(delta)
 	if rotation_enabled:
 		_rotate_towards_mouse()
+
+
+func set_movement_enabled(val: bool) -> void:
+	print("Player: set_movement_enabled = %s" % val)
+	movement_enabled = val
+
+
+func set_rotation_enabled(val: bool) -> void:
+	print("Player: set_rotation_enabled = %s" % val)
+	rotation_enabled = val
+
 
 func _handle_movement(delta) -> void:
 	# Get movement input vector
@@ -98,18 +109,22 @@ func _handle_movement(delta) -> void:
 	# Do movement
 	move_and_slide()
 
+
 func _rotate_towards_mouse() -> void:
 	var camera = get_viewport().get_camera_3d()
 	if not camera:
 		return
 
+
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_pos)
 	var ray_dir = camera.project_ray_normal(mouse_pos)
 
+
 	# Project ray onto a horizontal plane at player's Y position
 	var plane = Plane(Vector3.UP, global_transform.origin.y)
 	var intersection = plane.intersects_ray(ray_origin, ray_dir)
+
 
 	if intersection:
 		var target_pos = intersection
@@ -118,32 +133,6 @@ func _rotate_towards_mouse() -> void:
 		if direction.length() > 0.01:
 			look_at(global_transform.origin + direction, Vector3.UP)
 
-func set_movement_enabled(val: bool) -> void:
-	movement_enabled = val
-
-func set_rotation_enabled(val: bool) -> void:
-	rotation_enabled = val
-
-func _on_toggle_inventory_ui() -> void:
-	# If interacting w/ container and UI is visible, disconnect from container and hide UI
-	if inventory_ui.visible and interaction_component.is_interacting:
-		interaction_component.cancel_interaction()
-		inventory_ui.clear_container_grid()
-		inventory_ui.visible = false
-	# Otherwise, just toggle visibility
-	else:
-		inventory_ui.visible = not inventory_ui.visible
-
-func _on_inventory_ui_visibility_changed() -> void:
-	# Set mouse mode and movement
-	if inventory_ui.visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		# Only restrict movement when interacting
-		if interaction_component.is_interacting:
-			set_movement_enabled(false)
-	elif not inventory_ui.visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
-		set_movement_enabled(true)
 
 func _on_test_input_event(test_type: String) -> void:
 	match test_type:
@@ -162,13 +151,40 @@ func _on_test_input_event(test_type: String) -> void:
 		_:
 			print("invalid test type: %s" % test_type)
 
+
+func _on_toggle_inventory_ui() -> void:
+	# If interacting w/ container and UI is visible, disconnect from container and hide UI
+	if inventory_ui.visible and interaction_component.is_interacting:
+		interaction_component.cancel_interaction()
+		inventory_ui.clear_container_grid()
+		inventory_ui.visible = false
+	# Otherwise, just toggle visibility
+	else:
+		inventory_ui.visible = not inventory_ui.visible
+
+
+func _on_inventory_ui_visibility_changed() -> void:
+	# Set mouse mode and movement
+	if inventory_ui.visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		# Only restrict movement when interacting
+		if interaction_component.is_interacting:
+			set_movement_enabled(false)
+	
+	elif not inventory_ui.visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+		set_movement_enabled(true)
+
+
 func _on_container_inventory_received(inv_comp: InventoryComponent) -> void:
 	inventory_ui.setup_container_grid(inv_comp)
 	inventory_ui.visible = true
 
+
 func _on_container_inventory_closed() -> void:
 	inventory_ui.clear_container_grid()
 	inventory_ui.visible = false
+
 
 func _on_health_changed(current:int, maximum:int) -> void:
 	# Announce health change
@@ -176,31 +192,39 @@ func _on_health_changed(current:int, maximum:int) -> void:
 	# Play hit flash
 	print("Player: HP:", current, "/", maximum)
 
+
 func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
 	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
 
+
 func apply_damage(amount: int) -> void:
 	health_component.take_damage(amount)
+
 
 func apply_heal(amount: int) -> void:
 	health_component.heal(amount)
 
+
 func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
 	emit_signal("active_weapon_changed", slot_idx, weapon)
+
 
 func _on_weapon_equipped(slot_idx: int, weapon: WeaponData) -> void:
 	print("Player: weapon equipped in slot %d" % slot_idx)
 	emit_signal("weapon_equipped", slot_idx, weapon)
 
+
 func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
 	emit_signal("weapon_unequipped", slot_idx)
 
+
 func emit_current_health() -> void:
 	print("Player: Sharing current health")
 	_on_health_changed(health_component.current_health, health_component.max_health)
+
 
 func pickup_item(item: ItemData, quantity: int) -> int:
 	var result = inventory_component.add_item(item, quantity)

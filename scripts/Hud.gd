@@ -2,7 +2,7 @@ class_name PlayerHud extends CanvasLayer
 
 signal ready_
 
-var default_crosshair_cursor: Texture2D = preload("res://data/icons/generic_button_circle_outline.png")
+var default_crosshair_texture: Texture2D = preload("res://data/icons/generic_button_circle_outline.png")
 @export var crosshair_texture: Texture2D
 
 @onready var health_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/HealthBar
@@ -20,7 +20,7 @@ func _ready():
 	
 	# Init crosshair
 	if not crosshair_texture:
-		crosshair_texture = default_crosshair_cursor
+		crosshair_texture = default_crosshair_texture
 	
 	# Connect to MouseModeMonitor
 	MouseModeMonitor.mouse_mode_changed.connect(_on_mouse_mode_changed)
@@ -73,9 +73,8 @@ func _on_player_died(_player_id):
 	print("HUD: Player died!")
 
 func _on_active_weapon_changed(_slot_idx: int, _weapon_data: WeaponData) -> void:
-	# 1) Swap the icon texture
-	#var panel = weapon_container.get_child(slot_idx)
-	#panel.icon.texture = weapon_data.icon_texture
+	# 1) Swap the crosshair texture
+	# set_crosshair_texture(weapon_data.crosshair)
 	pass
 
 func _on_mouse_mode_changed(mode: Input.MouseMode) -> void:
