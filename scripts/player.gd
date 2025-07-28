@@ -134,7 +134,9 @@ func _on_inventory_ui_visibility_changed() -> void:
 	# Set mouse mode and movement
 	if inventory_ui.visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		set_movement_enabled(false)
+		# Only restrict movement when interacting
+		if interaction_component.is_interacting:
+			set_movement_enabled(false)
 	elif not inventory_ui.visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 		set_movement_enabled(true)
