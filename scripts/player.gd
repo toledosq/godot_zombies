@@ -13,6 +13,7 @@ var player_name: String
 var previous_transform: Transform3D
 var input_enabled := false
 
+@onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var weapon_component: WeaponComponent = $WeaponComponent
@@ -24,6 +25,11 @@ var input_enabled := false
 @onready var camera_rig: Node3D = $PlayerCamera
 
 func _ready() -> void:
+	# Connect player controller
+	player_controller.connect("interact", _on_interact)
+	player_controller.connect("toggle_inventory_ui", _on_toggle_inventory_ui)
+	player_controller.connect("test_input", _on_test_input_event)
+	
 	# Mark the inventory component as belonging to player
 	inventory_component.add_to_group("player_inventory")
 	
@@ -70,35 +76,6 @@ func _physics_process(delta) -> void:
 func _process(_delta: float) -> void:
 	pass
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact"):
-		interaction_component._try_interact()
-		
-	elif event.is_action_pressed("ui_inventory"):
-		if inventory_ui.visible and interaction_component.is_interacting:
-			interaction_component.cancel_interaction()
-			inventory_ui.clear_container_grid()
-			inventory_ui.visible = false
-			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
-		else:
-			# Toggle visibility for regular inventory
-			inventory_ui.visible = not inventory_ui.visible
-			Input.set_mouse_mode(
-				Input.MOUSE_MODE_VISIBLE if inventory_ui.visible else Input.MOUSE_MODE_CONFINED
-				)
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("test_add_item"):
-		inventory_component.add_item(ItemDatabase.get_item("cons_bandage"), 1)
-	elif event.is_action_pressed("test_remove_item"):
-		inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
-	elif event.is_action_pressed("test_damage"):
-		print(">>> Applying 10 damage")
-		health_component.take_damage(10)
-	elif event.is_action_pressed("test_heal"):
-		print(">>> Healing 5 HP")
-		health_component.heal(5)
-
 func _handle_movement(delta) -> void:
 	# Get movement input vector
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -139,6 +116,39 @@ func _rotate_towards_mouse() -> void:
 
 func set_input_enabled(val: bool) -> void:
 	input_enabled = val
+
+func _on_interact() -> void:
+	interaction_component._try_interact()
+
+func _on_toggle_inventory_ui() -> void:
+	if inventory_ui.visible and interaction_component.is_interacting:
+		interaction_component.cancel_interaction()
+		inventory_ui.clear_container_grid()
+		inventory_ui.visible = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	else:
+		# Toggle visibility for regular inventory
+		inventory_ui.visible = not inventory_ui.visible
+		Input.set_mouse_mode(
+			Input.MOUSE_MODE_VISIBLE if inventory_ui.visible else Input.MOUSE_MODE_CONFINED
+			)
+
+func _on_test_input_event(test_type: String) -> void:
+	match test_type:
+		"test_heal":
+			print(">>> Applying 10 damage")
+			health_component.heal(5)
+		"test_damage":
+			print(">>> Healing 5 HP")
+			health_component.take_damage(10)
+		"test_add_item":
+			print("Adding 1 bandage")
+			inventory_component.add_item(ItemDatabase.get_item("cons_bandage"), 1)
+		"test_remove_item":
+			print("Removing 1 bandage")
+			inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
+		_:
+			print("invalid test type: %s" % test_type)
 
 func _on_container_inventory_received(inv_comp: InventoryComponent) -> void:
 	inventory_ui.setup_container_grid(inv_comp)

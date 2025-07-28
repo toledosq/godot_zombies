@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=16 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
 [ext_resource type="Script" uid="uid://cxari8u5xjym2" path="res://scripts/HealthComponent.gd" id="3_70d11"]
+[ext_resource type="Script" uid="uid://bxd3fkhmiegb0" path="res://scripts/player_controller.gd" id="3_o4126"]
 [ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://inventory/inventory_component.gd" id="4_cw2d6"]
 [ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/camera_rig.gd" id="4_qu4a1"]
 [ext_resource type="Script" uid="uid://dgppophkyfi5k" path="res://scripts/weapon_component.gd" id="5_bruh7"]
@@ -30,6 +31,9 @@ shape = SubResource("CapsuleShape3D_5q5h1")
 [node name="Body" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_p0vlq")
 surface_material_override/0 = SubResource("StandardMaterial3D_3li8b")
+
+[node name="PlayerController" type="Node" parent="."]
+script = ExtResource("3_o4126")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("3_70d11")
