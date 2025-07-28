@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=15 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dwiu1ju7n7usy" path="res://scenes/interaction_component.tscn" id="6_bruh7"]
 [ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://inventory/inventory_ui.gd" id="6_cw2d6"]
 [ext_resource type="PackedScene" uid="uid://cmd0tj3cmpqum" path="res://ui/hudPanel.tscn" id="10_6eyey"]
+[ext_resource type="Script" uid="uid://dtephply162fw" path="res://ui/hud_weapon_panel.gd" id="11_d3wef"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 height = 1.8
@@ -156,9 +157,11 @@ layout_mode = 2
 
 [node name="WeaponSlot1" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer" instance=ExtResource("10_6eyey")]
 layout_mode = 2
+script = ExtResource("11_d3wef")
 
 [node name="WeaponSlot2" parent="HUD/BottomBar/CenterContainer/HBoxContainer/WeaponContainer" instance=ExtResource("10_6eyey")]
 layout_mode = 2
+script = ExtResource("11_d3wef")
 
 [node name="QuickSlotContainer" type="HBoxContainer" parent="HUD/BottomBar/CenterContainer/HBoxContainer"]
 layout_mode = 2

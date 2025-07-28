@@ -20,7 +20,11 @@ func _ready() -> void:
 	_refresh()
 
 func _can_drop_data(_position: Vector2, data: Variant) -> bool:
-	return data is Dictionary and data.has("item")
+	if data is not Dictionary or not data.has("item"):
+		return false
+	if data.has("item") and data.item is WeaponData:
+		return false
+	return data["src_comp"].is_in_group("player_inventory")
 
 func _drop_data(_position: Vector2, data: Variant) -> void:
 	# disconnect any previous listener
@@ -63,4 +67,5 @@ func clear_label_text() -> void:
 
 func _refresh() -> void:
 	# Force icon to be specific size
-	icon.custom_minimum_size = square_size
+	if icon:
+		icon.custom_minimum_size = square_size

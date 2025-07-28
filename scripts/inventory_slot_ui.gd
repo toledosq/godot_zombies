@@ -58,6 +58,7 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	# Package the source item type, index, and component
 	var data = { 
 		"item": slot.item,
+		"qty": slot.quantity,
 		"src_index": slot_index, 
 		"src_comp": inv_comp
 	}

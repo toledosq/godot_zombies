@@ -24,6 +24,9 @@ var input_enabled := false
 @onready var camera_rig: Node3D = $PlayerCamera
 
 func _ready() -> void:
+	# Mark the inventory component as belonging to player
+	inventory_component.add_to_group("player_inventory")
+	
 	# Connect player Health Component
 	print("Player: Connecting Health Component")
 	health_component.connect("health_changed", _on_health_changed)
