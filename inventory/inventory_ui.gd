@@ -1,7 +1,5 @@
 class_name InventoryUI extends Control
 
-signal inventory_opened
-signal inventory_closed
 signal weapon_equipped(slot_idx: int, weapon: WeaponData)
 signal weapon_unequipped(slot_idx: int)
 
@@ -21,14 +19,6 @@ var container_inv_component: InventoryComponent
 func _ready() -> void:
 	visible = false
 	container_grid.visible = false # Hide until a container is opened
-
-func _update_mouse_mode() -> void:
-	if visible:
-		emit_signal("inventory_opened")
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	else:
-		emit_signal("inventory_closed")
-		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 
 func setup_player_grid(component: InventoryComponent) -> void:
 	player_inv_component = component

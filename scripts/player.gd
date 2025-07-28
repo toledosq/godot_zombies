@@ -11,7 +11,8 @@ signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
 var player_id: int
 var player_name: String
 var previous_transform: Transform3D
-var input_enabled := false
+var movement_enabled := false
+var rotation_enabled := false
 
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
@@ -26,7 +27,7 @@ var input_enabled := false
 
 func _ready() -> void:
 	# Connect player controller
-	player_controller.connect("interact", _on_interact)
+	player_controller.connect("interact", interaction_component._try_interact)
 	player_controller.connect("toggle_inventory_ui", _on_toggle_inventory_ui)
 	player_controller.connect("test_input", _on_test_input_event)
 	
@@ -51,10 +52,9 @@ func _ready() -> void:
 	weapon_component.connect("active_weapon_changed", _on_active_weapon_changed)
 	
 	# Connect to Inventory UI
-	inventory_ui.connect("inventory_opened", _on_inventory_opened)
-	inventory_ui.connect("inventory_closed", _on_inventory_closed)
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
 	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
+	inventory_ui.visibility_changed.connect(_on_inventory_ui_visibility_changed)
 	inventory_ui.setup_player_grid(inventory_component)
 	inventory_ui.setup_weapon_slots(weapon_component)
 	
@@ -66,15 +66,15 @@ func _ready() -> void:
 	camera_rig.set_target(self)
 	
 	# Enable input
-	input_enabled = true
+	rotation_enabled = true
+	movement_enabled = true
+	
 
 func _physics_process(delta) -> void:
-	if input_enabled:
+	if movement_enabled:
 		_handle_movement(delta)
-	_rotate_towards_mouse()
-
-func _process(_delta: float) -> void:
-	pass
+	if rotation_enabled:
+		_rotate_towards_mouse()
 
 func _handle_movement(delta) -> void:
 	# Get movement input vector
@@ -114,24 +114,30 @@ func _rotate_towards_mouse() -> void:
 		if direction.length() > 0.01:
 			look_at(global_transform.origin + direction, Vector3.UP)
 
-func set_input_enabled(val: bool) -> void:
-	input_enabled = val
+func set_movement_enabled(val: bool) -> void:
+	movement_enabled = val
 
-func _on_interact() -> void:
-	interaction_component._try_interact()
+func set_rotation_enabled(val: bool) -> void:
+	rotation_enabled = val
 
 func _on_toggle_inventory_ui() -> void:
+	# If interacting w/ container and UI is visible, disconnect from container and hide UI
 	if inventory_ui.visible and interaction_component.is_interacting:
 		interaction_component.cancel_interaction()
 		inventory_ui.clear_container_grid()
 		inventory_ui.visible = false
-		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	# Otherwise, just toggle visibility
 	else:
-		# Toggle visibility for regular inventory
 		inventory_ui.visible = not inventory_ui.visible
-		Input.set_mouse_mode(
-			Input.MOUSE_MODE_VISIBLE if inventory_ui.visible else Input.MOUSE_MODE_CONFINED
-			)
+
+func _on_inventory_ui_visibility_changed() -> void:
+	# Set mouse mode and movement
+	if inventory_ui.visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		set_movement_enabled(false)
+	elif not inventory_ui.visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+		set_movement_enabled(true)
 
 func _on_test_input_event(test_type: String) -> void:
 	match test_type:
@@ -153,13 +159,10 @@ func _on_test_input_event(test_type: String) -> void:
 func _on_container_inventory_received(inv_comp: InventoryComponent) -> void:
 	inventory_ui.setup_container_grid(inv_comp)
 	inventory_ui.visible = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _on_container_inventory_closed() -> void:
 	inventory_ui.clear_container_grid()
 	inventory_ui.visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
-	
 
 func _on_health_changed(current:int, maximum:int) -> void:
 	# Announce health change
@@ -171,12 +174,6 @@ func _on_player_died() -> void:
 	# Handle death: play animation, disable input, etc.
 	emit_signal("player_died", player_id)
 	print("Player: Player has died!")
-
-func _on_inventory_opened() -> void:
-	set_input_enabled(false)
-
-func _on_inventory_closed() -> void:
-	set_input_enabled(true)
 
 func apply_damage(amount: int) -> void:
 	health_component.take_damage(amount)
