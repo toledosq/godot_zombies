@@ -123,7 +123,7 @@ func try_fire() -> bool:
 		
 		can_fire = false
 		# TODO: Implement Rate of Fire delay here w/ timer
-		combat_component.fire() # TODO: threaded call?
+		combat_component.attack_melee() # TODO: threaded call?
 		can_fire = true
 		return true
 	
@@ -137,7 +137,7 @@ func try_fire() -> bool:
 	# If ranged weapon and mag not empty
 	else:
 		can_fire = false
-		combat_component.fire()
+		combat_component.attack_ranged()
 		# TODO: Implement Rate of Fire delay here w/ timer
 		active_slot_weapon.current_ammo -= 1
 		can_fire = true
