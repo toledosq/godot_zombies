@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=17 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/Hud.gd" id="6_70d11"]
 [ext_resource type="PackedScene" uid="uid://dwiu1ju7n7usy" path="res://scenes/interaction_component.tscn" id="6_bruh7"]
 [ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://inventory/inventory_ui.gd" id="6_cw2d6"]
+[ext_resource type="Script" uid="uid://bq25t6bmeu3s5" path="res://scripts/combat_component.gd" id="7_lkdrv"]
 [ext_resource type="PackedScene" uid="uid://cmd0tj3cmpqum" path="res://ui/hudPanel.tscn" id="10_6eyey"]
 [ext_resource type="Script" uid="uid://dtephply162fw" path="res://ui/hud_weapon_panel.gd" id="11_d3wef"]
 
@@ -44,7 +45,12 @@ max_slots = 5
 
 [node name="WeaponComponent" type="Node" parent="."]
 script = ExtResource("5_bruh7")
+active_slot = null
+auto_reload = null
 max_slots = 2
+
+[node name="CombatComponent" type="Node3D" parent="."]
+script = ExtResource("7_lkdrv")
 
 [node name="InteractionComponent" parent="." instance=ExtResource("6_bruh7")]
 

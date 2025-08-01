@@ -1,12 +1,12 @@
 class_name WeaponComponent extends InventoryComponent
 
 signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
+signal request_ammo(type: String, amount: int)
 signal reload_started
 signal reload_complete
 
 @export var active_slot: int = 0
 @export var combat_component: Node3D
-@export var player_inventory: InventoryComponent
 @export var auto_reload: bool = true
 
 var can_change_active_slot := true
@@ -80,8 +80,11 @@ func reload_weapon() -> void:
 	
 	# Request ammo from player's inventory component
 	print("WeaponComponent: Requesting %d %s from inventory" % [amount, active_slot_weapon.ammo_type])
-	var received = player_inventory.request_ammo(ItemDatabase.get_item(active_slot_weapon.ammo_type), amount)
+	#var received = player_inventory.request_ammo(ItemDatabase.get_item(active_slot_weapon.ammo_type), amount)
+	request_ammo.emit(active_slot_weapon.ammo_type, amount)
 
+
+func _on_received_ammo(received: int) -> void:
 	# If no ammo, return early
 	if received == 0:
 		print("WeaponComponent: Did not recieve ammo, aborting reload")
@@ -91,16 +94,17 @@ func reload_weapon() -> void:
 		return
 	
 	# Send noti that reload is occuring
-	print("WeaponComponent: Received ammo - amount: %d" % amount)
+	print("WeaponComponent: Received ammo - amount: %d" % received)
 	reload_started.emit() 
 	
 	# Add reload timer here
 	
 	# Add ammo to weapon magazine
-	active_slot_weapon.current_ammo += amount
+	active_slot_weapon.current_ammo += received
 	
 	# Reload finished, allow changing active slots
 	reload_complete.emit()
+	print("WeaponComponent: Reload complete")
 	can_change_active_slot = true
 	can_reload = true
 	can_fire = true
@@ -114,6 +118,7 @@ func try_fire() -> bool:
 		return false
 	
 	# Check if there is an active weapon
+	# TODO: Eventually there will need to be an unarmed melee attack
 	if not active_slot_weapon:
 		print("WeaponComponent: Cannot fire, active slot is empty")
 		return false
@@ -136,9 +141,11 @@ func try_fire() -> bool:
 		
 	# If ranged weapon and mag not empty
 	else:
+		print("WeaponComponent: Calling combat component.attack_ranged")
 		can_fire = false
 		combat_component.attack_ranged()
 		# TODO: Implement Rate of Fire delay here w/ timer
 		active_slot_weapon.current_ammo -= 1
+		print("WeaponComponent: Ammo remaining: %d/%d" % [active_slot_weapon.current_ammo, active_slot_weapon.mag_size])
 		can_fire = true
 		return true

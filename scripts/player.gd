@@ -18,6 +18,7 @@ var rotation_enabled := false
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var weapon_component: WeaponComponent = $WeaponComponent
+@onready var combat_component: CombatComponent = $CombatComponent
 @onready var interaction_component: Node3D = $InteractionComponent
 @onready var player_hud: PlayerHud = $HUD
 @onready var inventory_ui: Control = $InventoryUI
@@ -51,6 +52,10 @@ func _ready() -> void:
 	
 	# Connect to Weapon Component
 	weapon_component.connect("active_weapon_changed", _on_active_weapon_changed)
+	weapon_component.connect("reload_started", _on_reload_started)
+	weapon_component.connect("reload_complete", _on_reload_complete)
+	weapon_component.connect("request_ammo", _on_request_ammo)
+	weapon_component.combat_component = combat_component
 	
 	# Connect to Inventory UI
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
@@ -115,16 +120,13 @@ func _rotate_towards_mouse() -> void:
 	if not camera:
 		return
 
-
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_pos)
 	var ray_dir = camera.project_ray_normal(mouse_pos)
 
-
 	# Project ray onto a horizontal plane at player's Y position
 	var plane = Plane(Vector3.UP, global_transform.origin.y)
 	var intersection = plane.intersects_ray(ray_origin, ray_dir)
-
 
 	if intersection:
 		var target_pos = intersection
@@ -220,6 +222,17 @@ func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
 	emit_signal("weapon_unequipped", slot_idx)
 
+func _on_reload_started() -> void:
+	print("Player: Reload Started")
+
+func _on_reload_complete() -> void:
+	print("Player: Reload Complete")
+
+func _on_request_ammo(type: String, amount: int) -> void:
+	print("Player: Forwarding ammo request to inventory component")
+	var response: int = inventory_component.give_ammo(type, amount)
+	print("Player: Received response from inventory component (%d)" % response)
+	weapon_component._on_received_ammo(response)
 
 func emit_current_health() -> void:
 	print("Player: Sharing current health")

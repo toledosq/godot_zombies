@@ -92,6 +92,7 @@ func remove_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	
 	return {
 		"total_removal": total_removal,
+		"amount_removed": quantity - remaining,
 		"index": changed_index
 	}
 

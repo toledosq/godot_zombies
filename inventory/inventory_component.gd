@@ -37,6 +37,12 @@ func remove_item(item: ItemData, quantity: int = 1) -> int:
 	return result.total_removal
 
 
+func give_ammo(type: String, quantity: int) -> int:
+	var ammo_item = ItemDatabase.get_item(type)
+	var result = inventory.remove_item(ammo_item, quantity)
+	print("InventoryComponent: Fulfilled ammo request - able to provide %d/%d" % [result["amount_removed"], quantity])
+	return result["amount_removed"]
+
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:
 	return inventory.has_space_for(item, quantity)
 
