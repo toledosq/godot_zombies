@@ -33,7 +33,10 @@ func set_active_slot(idx: int) -> void:
 		print("WeaponComponent: Cannot change active weapon right now")
 
 func _ready() -> void:
+	# Ensure Weapon Slots are initiated
 	inventory.max_slots = max_slots
+	# Set default slot to 0
+	set_active_slot(0)
 	print("WeaponComponent: Active slot set to %d" % active_slot)
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
