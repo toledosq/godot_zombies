@@ -39,9 +39,12 @@ func remove_item(item: ItemData, quantity: int = 1) -> int:
 
 func give_ammo(type: String, quantity: int) -> int:
 	var ammo_item = ItemDatabase.get_item(type)
-	var result = inventory.remove_item(ammo_item, quantity)
-	print("InventoryComponent: Fulfilled ammo request - able to provide %d/%d" % [result["amount_removed"], quantity])
-	return result["amount_removed"]
+	if ammo_item:
+		var result = inventory.remove_item(ammo_item, quantity)
+		print("InventoryComponent: Able to provide %d/%d" % [result["amount_removed"], quantity])
+		return result["amount_removed"]
+	print("InventoryComponent: Invalid ammo type, returning 0" % type)
+	return 0
 
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:
 	return inventory.has_space_for(item, quantity)

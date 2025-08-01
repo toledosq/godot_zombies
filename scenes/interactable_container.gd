@@ -11,7 +11,8 @@ func _ready() -> void:
 	
 	# parent _ready() already ran, so hints start hidden
 	inv_comp.max_slots = max_slots
-	inv_comp.add_item(ItemDatabase.get_item("wep_mp5"), 2)
+	inv_comp.add_item(ItemDatabase.get_item("wep_mp5"), 1)
+	inv_comp.add_item(ItemDatabase.get_item("ammo_pistol_sm"), 50)
 	
 	# connect the base "interacted" signal
 	connect("interacted", Callable(self, "_on_interacted"))
