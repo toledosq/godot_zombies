@@ -47,6 +47,7 @@ func give_ammo(type: String, quantity: int) -> int:
 	print("InventoryComponent: Invalid ammo type, returning 0" % type)
 	return 0
 
+
 func has_space_for(item: ItemData, quantity: int = 1) -> bool:
 	return inventory.has_space_for(item, quantity)
 

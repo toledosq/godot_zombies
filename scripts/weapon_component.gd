@@ -84,7 +84,7 @@ func reload_weapon() -> void:
 	can_fire = false
 	
 	# Request ammo from player's inventory component
-	print("WeaponComponent: Requesting %d %s from inventory" % [amount, active_slot_weapon.ammo_type])
+	print("WeaponComponent: Requesting %d %s from player inventory" % [amount, active_slot_weapon.ammo_type])
 	#var received = player_inventory.request_ammo(ItemDatabase.get_item(active_slot_weapon.ammo_type), amount)
 	request_ammo.emit(active_slot_weapon.ammo_type, amount)
 
@@ -109,7 +109,7 @@ func _on_received_ammo(received: int) -> void:
 	
 	# Reload finished, allow changing active slots
 	reload_complete.emit()
-	print("WeaponComponent: Reload complete")
+	print("WeaponComponent: Reload complete - %d/%d" % [active_slot_weapon.current_ammo, active_slot_weapon.mag_size])
 	can_change_active_slot = true
 	can_reload = true
 	can_fire = true
