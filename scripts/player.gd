@@ -56,9 +56,6 @@ func _ready() -> void:
 	weapon_component.combat_component = combat_component
 	weapon_component.set_active_slot(0)
 	
-	# Initialize Combat Component
-	combat_component.camera = camera_rig.camera
-	
 	# Connect to Inventory UI and run initial setup
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
 	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
