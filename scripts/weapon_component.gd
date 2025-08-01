@@ -7,7 +7,7 @@ signal reload_complete
 
 @export var active_slot: int = 0
 @export var combat_component: Node3D
-@export var auto_reload: bool = true
+@export var auto_reload: bool = false
 
 var can_change_active_slot := true
 var can_reload := true
@@ -15,40 +15,48 @@ var can_fire := true
 
 # Store ref to active weapon to make code easier to read
 var active_slot_weapon: WeaponData
-#var active_slot_is_null := true
-#var active_weapon_ranged: bool = false
-#var active_weapon_current_ammo := 0
-#var active_weapon_max_ammo := 0
-#var active_weapon_ammo_type: String = ""
+
+
+func _ready() -> void:
+	self.connect("item_added", _on_item_added)
+	self.connect("item_removed", _on_item_removed)
+	inventory.max_slots = max_slots
 
 func set_active_slot(idx: int) -> void:
 	if can_change_active_slot:
 		if idx < 0 or idx >= max_slots:
 			return
+		print("WeaponComponent: Switching active slot from %d to %d" % [active_slot, idx])
 		active_slot = idx
-		var w = inventory.slots[idx]
-		active_slot_weapon = w.item
-		emit_signal("active_weapon_changed", idx, active_slot_weapon)
+		update_active_slot()
 	else:
 		print("WeaponComponent: Cannot change active weapon right now")
 
-func _ready() -> void:
-	# Ensure Weapon Slots are initiated
-	inventory.max_slots = max_slots
-	# Set default slot to 0
-	set_active_slot(0)
-	print("WeaponComponent: Active slot set to %d" % active_slot)
+func update_active_slot() -> void:
+	var w = inventory.slots[active_slot]
+	active_slot_weapon = w.item
+	emit_signal("active_weapon_changed", active_slot, active_slot_weapon)
 
+func _on_item_added(idx: int, _item: ItemData, _qty: int) -> void:
+	if idx == active_slot:
+		print("WeaponComponent: Weapon equipped in active slot (%d | %d)" % [idx, active_slot])
+		update_active_slot()
+
+func _on_item_removed(idx: int, _item: ItemData, _qty: int) -> void:
+	if idx == active_slot:
+		print("WeaponComponent: Weapon unequipped in active slot (%d | %d)" % [idx, active_slot])
+		update_active_slot()
+
+## OVERRIDE ADD_ITEM TO ALLOW CUSTOM BEHAVIOR
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	if not item is WeaponData:
-		push_warning("WeaponComponent only accepts WeaponData")
+		push_warning("WeaponComponent: only accepts WeaponData")
 		var result = {
 			"added": 0,		 # how many items went in
 			"rejected": quantity  # leftovers
 		}
 		return result
-		
-	# TODO: WeaponComponent needs to update the stored active_slot_weapon
+	
 	return super.add_item(item, quantity)
 
 func reload_weapon() -> void:
@@ -131,7 +139,6 @@ func try_attack() -> bool:
 	
 	# If melee weapon, just fire it off
 	elif active_slot_weapon.weapon_type == "melee":
-		
 		can_fire = false
 		# TODO: Implement Rate of Fire delay here w/ timer
 		combat_component.attack_melee() # TODO: threaded call?

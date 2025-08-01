@@ -21,7 +21,7 @@ func refresh() -> void:
 	
 	if slot and weapon and icon:
 		icon.texture = weapon.icon
-		count_label.text = ("%d/%d" % [0, weapon.mag_size]) # TODO: Change this to current ammo
+		count_label.text = ("%d/%d" % [weapon.current_ammo, weapon.mag_size]) # TODO: Change this to current ammo
 		tooltip_text = weapon.display_name
 	else:
 		if icon:
