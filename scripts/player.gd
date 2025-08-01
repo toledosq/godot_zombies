@@ -44,13 +44,8 @@ func _ready() -> void:
 	health_component.connect("health_changed", _on_health_changed)
 	health_component.connect("died", _on_player_died)
 	
-	# Connect player Heads Up Display
-	print("Player: Connecting HUD")
-	connect("player_health_changed", player_hud._on_health_changed)
-	connect("player_died", player_hud._on_player_died)
-	connect("active_weapon_changed", player_hud._on_active_weapon_changed)
-	connect("weapon_equipped", player_hud._on_weapon_equipped)
-	connect("weapon_unequipped", player_hud._on_weapon_unequipped)
+	# Initialize HUD
+	print("Player: Initializing HUD")
 	emit_current_health()
 	
 	# Connect to Weapon Component
@@ -60,7 +55,7 @@ func _ready() -> void:
 	weapon_component.connect("request_ammo", _on_request_ammo)
 	weapon_component.combat_component = combat_component
 	
-	# Connect to Inventory UI
+	# Connect to Inventory UI and run initial setup
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
 	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
 	inventory_ui.visibility_changed.connect(_on_inventory_ui_visibility_changed)
@@ -192,6 +187,8 @@ func _on_container_inventory_closed() -> void:
 
 
 func _on_health_changed(current:int, maximum:int) -> void:
+	# Update HUD
+	player_hud._on_health_changed(player_id, current, maximum)
 	# Announce health change
 	emit_signal("player_health_changed", player_id, current, maximum)
 	# Play hit flash
@@ -199,8 +196,11 @@ func _on_health_changed(current:int, maximum:int) -> void:
 
 
 func _on_player_died() -> void:
-	# Handle death: play animation, disable input, etc.
+	# Update HUD
+	player_hud._on_player_died(player_id)
+	# Announce player death
 	emit_signal("player_died", player_id)
+	# Handle death: play animation, disable input, etc.
 	print("Player: Player has died!")
 
 
@@ -219,17 +219,18 @@ func _on_attack() -> void:
 	weapon_component.try_attack()
 
 func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
-	emit_signal("active_weapon_changed", slot_idx, weapon)
-
+	# Tell the combat_component to update stats
+	combat_component.set_weapon_stats(weapon)
+	# Tell the HUD
+	player_hud._on_active_weapon_changed(slot_idx, weapon)
 
 func _on_weapon_equipped(slot_idx: int, weapon: WeaponData) -> void:
 	print("Player: weapon equipped in slot %d" % slot_idx)
-	emit_signal("weapon_equipped", slot_idx, weapon)
-
+	player_hud._on_weapon_equipped(slot_idx, weapon)
 
 func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
-	emit_signal("weapon_unequipped", slot_idx)
+	player_hud._on_weapon_unequipped(slot_idx)
 
 func _on_reload_input() -> void:
 	print("Player: Reload input received")
