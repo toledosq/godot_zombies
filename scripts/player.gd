@@ -32,6 +32,8 @@ func _ready() -> void:
 	player_controller.connect("interact", interaction_component._try_interact)
 	player_controller.connect("toggle_inventory_ui", _on_toggle_inventory_ui)
 	player_controller.connect("test_input", _on_test_input_event)
+	player_controller.connect("reload", _on_reload_input)
+	player_controller.connect("set_active_slot", _on_set_active_slot)
 	
 	# Mark the inventory component as belonging to player
 	inventory_component.add_to_group("player_inventory")
@@ -209,6 +211,10 @@ func apply_heal(amount: int) -> void:
 	health_component.heal(amount)
 
 
+func _on_set_active_slot(idx: int) -> void:
+	weapon_component.set_active_slot(idx)
+
+
 func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
 	emit_signal("active_weapon_changed", slot_idx, weapon)
 
@@ -222,11 +228,18 @@ func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
 	emit_signal("weapon_unequipped", slot_idx)
 
+func _on_reload_input() -> void:
+	print("Player: Reload input received")
+	weapon_component.reload_weapon()
+
+
 func _on_reload_started() -> void:
 	print("Player: Reload Started")
 
+
 func _on_reload_complete() -> void:
 	print("Player: Reload Complete")
+
 
 func _on_request_ammo(type: String, amount: int) -> void:
 	print("Player: Forwarding ammo request to inventory component")

@@ -4,6 +4,8 @@ var input_enabled := false
 
 signal interact
 signal toggle_inventory_ui
+signal reload
+signal set_active_slot(idx: int)
 signal test_input(type: String)
 
 func _input(event: InputEvent) -> void:
@@ -22,3 +24,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		test_input.emit("test_damage")
 	elif event.is_action_pressed("test_heal"):
 		test_input.emit("test_heal")
+	elif event.is_action_pressed("reload"):
+		reload.emit()
+	elif event.is_action_pressed("weapon_1"):
+		set_active_slot.emit(0)
+	elif event.is_action_pressed("weapon_2"):
+		set_active_slot.emit(1)

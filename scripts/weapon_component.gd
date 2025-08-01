@@ -28,12 +28,13 @@ func set_active_slot(idx: int) -> void:
 		active_slot = idx
 		var w = inventory.slots[idx]
 		active_slot_weapon = w.item
-		emit_signal("active_weapon_changed", idx, w)
+		emit_signal("active_weapon_changed", idx, active_slot_weapon)
 	else:
 		print("WeaponComponent: Cannot change active weapon right now")
 
 func _ready() -> void:
 	inventory.max_slots = max_slots
+	print("WeaponComponent: Active slot set to %d" % active_slot)
 
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 	if not item is WeaponData:
@@ -58,6 +59,7 @@ func reload_weapon() -> void:
 	# Check if there is an active weapon
 	if not active_slot_weapon:
 		print("WeaponComponent: Cannot reload - active slot is empty")
+		print("WeaponComponent: slot members: ", inventory.print_slot_members())
 		return
 	
 	# Check if ranged weapon
@@ -121,6 +123,7 @@ func try_fire() -> bool:
 	# TODO: Eventually there will need to be an unarmed melee attack
 	if not active_slot_weapon:
 		print("WeaponComponent: Cannot fire, active slot is empty")
+		inventory.print_slot_members()
 		return false
 	
 	# If melee weapon, just fire it off

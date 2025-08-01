@@ -81,6 +81,7 @@ func remove_item(item: ItemData, quantity: int = 1) -> Dictionary:
 		if slot.item == item:
 			if slot.quantity > remaining:
 				slot.quantity -= remaining
+				remaining = 0
 				total_removal = true
 			else:
 				remaining -= slot.quantity
@@ -110,3 +111,12 @@ func _ensure_slots_length() -> void:
 	# Trim extras if max_slots got smaller
 	while slots.size() > max_slots:
 		slots.pop_back()
+
+func print_slot_members() -> Array:
+	var pa_: Array = []
+	for slot in slots:
+		if slot.item:
+			pa_.append(slot.item.id)
+		else:
+			pa_.append(null)
+	return pa_

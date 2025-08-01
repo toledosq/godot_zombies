@@ -45,8 +45,6 @@ max_slots = 5
 
 [node name="WeaponComponent" type="Node" parent="."]
 script = ExtResource("5_bruh7")
-active_slot = null
-auto_reload = null
 max_slots = 2
 
 [node name="CombatComponent" type="Node3D" parent="."]
