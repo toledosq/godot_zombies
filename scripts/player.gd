@@ -56,6 +56,9 @@ func _ready() -> void:
 	weapon_component.combat_component = combat_component
 	weapon_component.set_active_slot(0)
 	
+	# Initialize Combat Component
+	combat_component.camera = camera_rig.camera
+	
 	# Connect to Inventory UI and run initial setup
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
 	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
@@ -115,13 +118,12 @@ func _handle_movement(delta) -> void:
 
 
 func _rotate_towards_mouse() -> void:
-	var camera = get_viewport().get_camera_3d()
-	if not camera:
+	if not camera_rig.camera:
 		return
 
 	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_pos)
-	var ray_dir = camera.project_ray_normal(mouse_pos)
+	var ray_origin = camera_rig.camera.project_ray_origin(mouse_pos)
+	var ray_dir = camera_rig.camera.project_ray_normal(mouse_pos)
 
 	# Project ray onto a horizontal plane at player's Y position
 	var plane = Plane(Vector3.UP, global_transform.origin.y)

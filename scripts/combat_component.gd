@@ -10,6 +10,7 @@ var dmg_melee: int
 @onready var melee_attack_area: Area3D = $MeleeAttackArea
 @onready var melee_attack_shape: CollisionShape3D = $MeleeAttackArea/CollisionShape3D
 
+@export var camera: Camera3D
 
 func set_weapon_stats(weapon: WeaponData):
 	if weapon:
@@ -30,3 +31,4 @@ func attack_melee() -> void:
 
 func attack_ranged() -> void:
 	print("CombatComponent: Ranged Attack")
+	

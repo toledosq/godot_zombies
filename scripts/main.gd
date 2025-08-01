@@ -6,6 +6,11 @@ class_name Main
 
 var players = {}
 
+var dbg_vert: DebugLine3D
+var dbg_fwd:  DebugLine3D
+
+const RAY_LENGTH := 10.0   # adjust as you like
+
 func _ready():
 	# When scene loads, populate item DB singleton (still TODO: Move higher)
 	print("Loading ItemDB")
@@ -14,7 +19,30 @@ func _ready():
 	
 	# Spawn player in world
 	spawn_players(1)
+	
+	# Instance and configure the vertical line (red)
+	dbg_vert = preload("res://DebugLine3D.gd").new()
+	dbg_vert.color = Color.RED
+	add_child(dbg_vert)
 
+	# Instance and configure the forward line (green)
+	dbg_fwd = preload("res://DebugLine3D.gd").new()
+	dbg_fwd.color = Color.GREEN
+	add_child(dbg_fwd)
+
+func _process(_delta: float) -> void:
+	var pos: Vector3 = players[0].global_transform.origin
+
+	# 1) Vertical: from player → straight up
+	dbg_vert.point_start = pos
+	dbg_vert.point_end	 = pos + Vector3.UP * RAY_LENGTH
+
+	# 2) Forward: 1 m above player, in the direction they face
+	#	 In Godot the “forward” is −Z in world space:
+	var base = pos
+	var forward_dir = -players[0].global_transform.basis.z.normalized()
+	dbg_fwd.point_start = base
+	dbg_fwd.point_end	= base + forward_dir * RAY_LENGTH
 
 func spawn_players(player_count: int):
 	for i in player_count:
