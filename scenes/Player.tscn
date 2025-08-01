@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://coq7sptp1bsje"]
+[gd_scene load_steps=18 format=3 uid="uid://coq7sptp1bsje"]
 
 [ext_resource type="Script" uid="uid://de2h45kccyxwu" path="res://scripts/player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://icon.svg" id="2_v6fml"]
@@ -22,6 +22,9 @@ height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3li8b"]
 albedo_texture = ExtResource("2_v6fml")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_lkdrv"]
+radius = 1.0
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1")
@@ -49,6 +52,12 @@ max_slots = 2
 
 [node name="CombatComponent" type="Node3D" parent="."]
 script = ExtResource("7_lkdrv")
+
+[node name="MeleeAttackArea" type="Area3D" parent="CombatComponent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CombatComponent/MeleeAttackArea"]
+shape = SubResource("CylinderShape3D_lkdrv")
 
 [node name="InteractionComponent" parent="." instance=ExtResource("6_bruh7")]
 

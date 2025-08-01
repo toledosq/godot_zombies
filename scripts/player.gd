@@ -54,6 +54,7 @@ func _ready() -> void:
 	weapon_component.connect("reload_complete", _on_reload_complete)
 	weapon_component.connect("request_ammo", _on_request_ammo)
 	weapon_component.combat_component = combat_component
+	weapon_component.set_active_slot(0)
 	
 	# Connect to Inventory UI and run initial setup
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
