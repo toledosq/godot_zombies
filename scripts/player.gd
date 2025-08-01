@@ -29,6 +29,7 @@ var rotation_enabled := false
 
 func _ready() -> void:
 	# Connect player controller
+	player_controller.connect("attack", _on_attack)
 	player_controller.connect("interact", interaction_component._try_interact)
 	player_controller.connect("toggle_inventory_ui", _on_toggle_inventory_ui)
 	player_controller.connect("test_input", _on_test_input_event)
@@ -214,6 +215,8 @@ func apply_heal(amount: int) -> void:
 func _on_set_active_slot(idx: int) -> void:
 	weapon_component.set_active_slot(idx)
 
+func _on_attack() -> void:
+	weapon_component.try_attack()
 
 func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
 	emit_signal("active_weapon_changed", slot_idx, weapon)

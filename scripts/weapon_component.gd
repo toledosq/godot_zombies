@@ -112,8 +112,8 @@ func _on_received_ammo(received: int) -> void:
 	can_fire = true
 
 
-func try_fire() -> bool:
-	print("WeaponComponent: Trying to fire")
+func try_attack() -> bool:
+	print("WeaponComponent: Trying to attack")
 	
 	# Check if we can fire
 	if not can_fire:
@@ -122,7 +122,7 @@ func try_fire() -> bool:
 	# Check if there is an active weapon
 	# TODO: Eventually there will need to be an unarmed melee attack
 	if not active_slot_weapon:
-		print("WeaponComponent: Cannot fire, active slot is empty")
+		print("WeaponComponent: Cannot attack, active slot is empty")
 		inventory.print_slot_members()
 		return false
 	
@@ -137,7 +137,7 @@ func try_fire() -> bool:
 	
 	# If ranged weapon, but mag empty
 	elif active_slot_weapon.current_ammo <= 0:
-		print("WeaponComponent: Cannot fire - weapon empty")
+		print("WeaponComponent: Cannot attack - weapon empty")
 		if auto_reload:
 			reload_weapon() # TODO: threaded call?
 		return false
