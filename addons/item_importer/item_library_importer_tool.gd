@@ -7,12 +7,12 @@ const ITEM_LIBRARY_PATH := "res://data/ItemLibrary.tres"
 const OUTPUT_DIR := "res://data/items/"
 
 # Resource Classes
-const BASE_ITEM_CLASS := preload("res://items/ItemData.gd")
-const WEAPON_CLASS := preload("res://items/WeaponData.gd")
-const ARMOR_CLASS := preload("res://items/ArmorData.gd")
-const CONSUMABLE_CLASS := preload("res://items/ConsumableData.gd")
-const DEFAULT_ICON := preload("res://icon.svg")
-const DEFAULT_CROSSHAIR := preload("res://data/icons/generic_button_circle_outline.png")
+const BASE_ITEM_CLASS := preload("res://scripts/systems/items/item_data.gd")
+const WEAPON_CLASS := preload("res://scripts/systems/items/weapon_data.gd")
+const ARMOR_CLASS := preload("res://scripts/systems/items/armor_data.gd")
+const CONSUMABLE_CLASS := preload("res://scripts/systems/items/consumable_data.gd")
+const DEFAULT_ICON := preload("res://assets/icons/icon.svg")
+const DEFAULT_CROSSHAIR := preload("res://assets/icons/generic_button_circle_outline.png")
 
 func _has_property(obj: Object, prop: String) -> bool:
 	for dict in obj.get_property_list():
@@ -22,7 +22,7 @@ func _has_property(obj: Object, prop: String) -> bool:
 
 func _run():
 	var csv_data = load_csv(CSV_PATH)
-	var item_library = preload("res://items/ItemLibrary.gd").new()
+	var item_library = load("res://scripts/systems/item_library.gd").new()
 
 	for row in csv_data:
 		var item_type = row.get("category", "").to_lower()

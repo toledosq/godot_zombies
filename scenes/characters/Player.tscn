@@ -7,11 +7,11 @@
 [ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://scripts/components/inventory_component.gd" id="4_cw2d6"]
 [ext_resource type="Script" uid="uid://3stm174dy74a" path="res://scripts/systems/camera_rig.gd" id="4_qu4a1"]
 [ext_resource type="Script" uid="uid://dgppophkyfi5k" path="res://scripts/components/weapon_component.gd" id="5_bruh7"]
-[ext_resource type="Script" uid="uid://qe65qxs11j4a" path="res://scripts/ui/hud.gd" id="6_70d11"]
 [ext_resource type="PackedScene" uid="uid://dwiu1ju7n7usy" path="res://scenes/components/InteractionComponent.tscn" id="6_bruh7"]
 [ext_resource type="Script" uid="uid://1qd3r8siufmm" path="res://scripts/ui/inventory_ui.gd" id="6_cw2d6"]
 [ext_resource type="Script" uid="uid://bq25t6bmeu3s5" path="res://scripts/components/combat_component.gd" id="7_lkdrv"]
 [ext_resource type="PackedScene" uid="uid://cmd0tj3cmpqum" path="res://scenes/ui/hudPanel.tscn" id="10_6eyey"]
+[ext_resource type="Script" uid="uid://baukoty5ino01" path="res://scripts/ui/player_hud.gd" id="11_bpxo2"]
 [ext_resource type="Script" uid="uid://dtephply162fw" path="res://scripts/ui/hud_weapon_panel.gd" id="11_d3wef"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
@@ -123,7 +123,7 @@ layout_mode = 2
 columns = 4
 
 [node name="HUD" type="CanvasLayer" parent="."]
-script = ExtResource("6_70d11")
+script = ExtResource("11_bpxo2")
 
 [node name="BottomBar" type="Control" parent="HUD"]
 layout_mode = 3
