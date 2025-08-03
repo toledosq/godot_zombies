@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dnoaf7k4uqvw6"]
 
-[ext_resource type="Script" uid="uid://t1f2x8nnmmvh" path="res://scripts/debug_sphere.gd" id="1_lmfmj"]
+[ext_resource type="Script" uid="uid://t1f2x8nnmmvh" path="res://scripts/tests/debug_sphere.gd" id="1_xvxr4"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_tv8bd"]
 radius = 0.2
@@ -22,7 +22,7 @@ disable_receive_shadows = true
 cast_shadow = 0
 mesh = SubResource("SphereMesh_tv8bd")
 surface_material_override/0 = SubResource("StandardMaterial3D_lmfmj")
-script = ExtResource("1_lmfmj")
+script = ExtResource("1_xvxr4")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 3.0

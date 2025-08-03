@@ -1,7 +1,7 @@
 extends Node
 
 # Preload your single library resource
-@onready var library: ItemLibrary = preload("res://data/ItemLibrary.tres")
+@onready var library: ItemLibrary = preload("res://resources/ItemLibrary.tres")
 
 # Return an ItemData resource from the ItemLibrary
 func get_item(id: String) -> ItemData:

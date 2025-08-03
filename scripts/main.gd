@@ -1,11 +1,12 @@
 extends Node3D
-class_name Main
+class_name GameDirector
 
 @export var player_scene: PackedScene
 @export var spawn_points: Array[NodePath] = []
 
 var players = {}
 
+var debug_line_3d = preload("res://scripts/tests/DebugLine3D.gd")
 var dbg_vert: DebugLine3D
 var dbg_fwd:  DebugLine3D
 
@@ -21,12 +22,12 @@ func _ready():
 	spawn_players(1)
 	
 	# Instance and configure the vertical line (red)
-	dbg_vert = preload("res://DebugLine3D.gd").new()
+	dbg_vert = debug_line_3d.new()
 	dbg_vert.color = Color.RED
 	add_child(dbg_vert)
 
 	# Instance and configure the forward line (green)
-	dbg_fwd = preload("res://DebugLine3D.gd").new()
+	dbg_fwd = debug_line_3d.new()
 	dbg_fwd.color = Color.GREEN
 	add_child(dbg_fwd)
 

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da7q6at2qvu3l"
-path.s3tc="res://.godot/imported/generic_button_circle_outline.png-d63c88375623bacfbd45792e42cb3965.s3tc.ctex"
+uid="uid://bgkcetxsqaffg"
+path.s3tc="res://.godot/imported/keyboard-&-mouse_sheet_default.png-805fe8dc1c7195b1d18f276ba88d4a5b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/icons/generic_button_circle_outline.png"
-dest_files=["res://.godot/imported/generic_button_circle_outline.png-d63c88375623bacfbd45792e42cb3965.s3tc.ctex"]
+source_file="res://assets/icons/keyboard-&-mouse_sheet_default.png"
+dest_files=["res://.godot/imported/keyboard-&-mouse_sheet_default.png-805fe8dc1c7195b1d18f276ba88d4a5b.s3tc.ctex"]
 
 [params]
 

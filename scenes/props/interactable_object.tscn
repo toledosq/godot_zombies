@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://8ie3f12xhi8j"]
 
-[ext_resource type="Script" uid="uid://by4joj3pvprgf" path="res://scripts/interactable_object.gd" id="1_gknyc"]
-[ext_resource type="Texture2D" uid="uid://dxciof8l5x6so" path="res://data/icons/interactable_bubble.tres" id="2_1t2qe"]
-[ext_resource type="Texture2D" uid="uid://da7q6at2qvu3l" path="res://data/icons/generic_button_circle_outline.png" id="3_ieyjc"]
+[ext_resource type="Script" uid="uid://by4joj3pvprgf" path="res://scripts/props/interactable_object.gd" id="1_gknyc"]
+[ext_resource type="Texture2D" uid="uid://dxciof8l5x6so" path="res://resources/interactable_bubble.tres" id="2_1t2qe"]
+[ext_resource type="Texture2D" uid="uid://da7q6at2qvu3l" path="res://assets/icons/generic_button_circle_outline.png" id="3_ieyjc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1cvqn"]
 

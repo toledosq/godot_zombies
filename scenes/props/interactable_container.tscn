@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://d4k7txyu0q7p5"]
 
-[ext_resource type="PackedScene" uid="uid://8ie3f12xhi8j" path="res://scenes/interactable_object.tscn" id="1_m0ttg"]
-[ext_resource type="Script" uid="uid://ho86voi3d7cd" path="res://scenes/interactable_container.gd" id="2_b2tfw"]
-[ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://inventory/inventory_component.gd" id="3_06kkd"]
+[ext_resource type="PackedScene" uid="uid://8ie3f12xhi8j" path="res://scenes/props/interactable_object.tscn" id="1_m0ttg"]
+[ext_resource type="Script" uid="uid://ho86voi3d7cd" path="res://scripts/props/interactable_container.gd" id="2_b2tfw"]
+[ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://scripts/components/inventory_component.gd" id="3_06kkd"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_3f7mu"]
 

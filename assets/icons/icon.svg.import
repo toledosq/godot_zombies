@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgkcetxsqaffg"
-path.s3tc="res://.godot/imported/keyboard-&-mouse_sheet_default.png-8b5058a432648c439aa676a5301e6c2a.s3tc.ctex"
+uid="uid://bksny4u3uu7h7"
+path.s3tc="res://.godot/imported/icon.svg-7c8e6dfe2213e2029f33175ecfc9166b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/icons/keyboard-&-mouse_sheet_default.png"
-dest_files=["res://.godot/imported/keyboard-&-mouse_sheet_default.png-8b5058a432648c439aa676a5301e6c2a.s3tc.ctex"]
+source_file="res://assets/icons/icon.svg"
+dest_files=["res://.godot/imported/icon.svg-7c8e6dfe2213e2029f33175ecfc9166b.s3tc.ctex"]
 
 [params]
 
@@ -39,3 +39,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=0
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

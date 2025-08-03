@@ -4,8 +4,8 @@ signal weapon_equipped(slot_idx: int, weapon: WeaponData)
 signal weapon_unequipped(slot_idx: int)
 
 @export var columns: int = 5
-@export var slot_scene: PackedScene = preload("res://ui/InventorySlotUI.tscn")
-@export var weapon_slot_scene: PackedScene = preload("res://ui/WeaponSlotUI.tscn")
+@export var slot_scene: PackedScene = preload("res://scenes/ui/InventorySlotUI.tscn")
+@export var weapon_slot_scene: PackedScene = preload("res://scenes/ui/WeaponSlotUI.tscn")
 
 var player_inv_component: InventoryComponent
 var player_weapon_component: WeaponComponent

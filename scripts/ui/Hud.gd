@@ -2,7 +2,7 @@ class_name PlayerHud extends CanvasLayer
 
 signal ready_
 
-var default_crosshair_texture: Texture2D = preload("res://data/icons/generic_button_circle_outline.png")
+var default_crosshair_texture: Texture2D = preload("res://assets/icons/generic_button_circle_outline.png")
 @export var crosshair_texture: Texture2D
 
 @onready var health_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/HealthBar
