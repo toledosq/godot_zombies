@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://coq7sptp1bsje" path="res://scenes/characters/Player.tscn" id="2_cpaun"]
 [ext_resource type="Environment" uid="uid://dgmsf46fcrpqd" path="res://resources/default_env.tres" id="3_l4vdb"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://assets/icons/icon.svg" id="4_wj423"]
-[ext_resource type="PackedScene" uid="uid://d4k7txyu0q7p5" path="res://scenes/props/interactable_container.tscn" id="5_1u0io"]
+[ext_resource type="PackedScene" uid="uid://d4k7txyu0q7p5" path="res://scenes/props/InteractableContainer.tscn" id="5_1u0io"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_rvslj"]
 size = Vector2(50, 50)

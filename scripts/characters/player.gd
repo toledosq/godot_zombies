@@ -5,6 +5,7 @@ signal player_died(player_id_: int)
 signal weapon_equipped(slot_idx: int, weapon: WeaponData)
 signal weapon_unequipped(slot_idx: int)
 signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
+signal mouse_mode_changed(new_mouse_mode)
 
 @export var speed := 5.0
 
@@ -46,6 +47,7 @@ func _ready() -> void:
 	
 	# Initialize HUD
 	print("Player: Initializing HUD")
+	connect("mouse_mode_changed", player_hud._on_mouse_mode_changed)
 	emit_current_health()
 	
 	# Connect to Weapon Component
@@ -71,7 +73,7 @@ func _ready() -> void:
 	camera_rig.set_target(self)
 	
 	# Ensure mouse mode is confined
-	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	change_mouse_mode(Input.MOUSE_MODE_CONFINED)
 	
 	# Enable input
 	rotation_enabled = true
@@ -93,6 +95,11 @@ func set_movement_enabled(val: bool) -> void:
 func set_rotation_enabled(val: bool) -> void:
 	print("Player: set_rotation_enabled = %s" % val)
 	rotation_enabled = val
+
+
+func change_mouse_mode(new_mouse_mode: Input.MouseMode):
+	Input.set_mouse_mode(new_mouse_mode)
+	mouse_mode_changed.emit(new_mouse_mode)
 
 
 func _handle_movement(delta) -> void:
@@ -166,13 +173,13 @@ func _on_toggle_inventory_ui() -> void:
 func _on_inventory_ui_visibility_changed() -> void:
 	# Set mouse mode and movement
 	if inventory_ui.visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		change_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		# Only restrict movement when interacting
 		if interaction_component.is_interacting:
 			set_movement_enabled(false)
 	
 	elif not inventory_ui.visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+		change_mouse_mode(Input.MOUSE_MODE_CONFINED)
 		set_movement_enabled(true)
 
 

@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="ItemLibrary" load_steps=16 format=3 uid="uid://djp8oxbmci8h2"]
 
-[ext_resource type="Script" uid="uid://rr53mngj40sg" path="res://scripts/systems/items/ItemData.gd" id="1_hfia1"]
+[ext_resource type="Script" uid="uid://rr53mngj40sg" path="res://scripts/systems/items/item_data.gd" id="1_hfia1"]
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://assets/icons/icon.svg" id="2_ha0ya"]
-[ext_resource type="Script" uid="uid://bauxa12hln0na" path="res://scripts/systems/items/ArmorData.gd" id="3_xv8lu"]
-[ext_resource type="Script" uid="uid://xm1j54ma2t7d" path="res://scripts/systems/items/WeaponData.gd" id="4_pyq2h"]
-[ext_resource type="Script" uid="uid://b20edmirglmiy" path="res://scripts/systems/ItemLibrary.gd" id="5_k8ppy"]
+[ext_resource type="Script" uid="uid://bauxa12hln0na" path="res://scripts/systems/items/armor_data.gd" id="3_xv8lu"]
+[ext_resource type="Script" uid="uid://xm1j54ma2t7d" path="res://scripts/systems/items/weapon_data.gd" id="4_pyq2h"]
+[ext_resource type="Script" uid="uid://b20edmirglmiy" path="res://scripts/systems/item_library.gd" id="5_k8ppy"]
 
 [sub_resource type="Resource" id="Resource_hfia1"]
 script = ExtResource("3_xv8lu")

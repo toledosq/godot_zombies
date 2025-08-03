@@ -22,9 +22,6 @@ func _ready():
 	if not crosshair_texture:
 		crosshair_texture = default_crosshair_texture
 	
-	# Connect to MouseModeMonitor
-	MouseModeMonitor.mouse_mode_changed.connect(_on_mouse_mode_changed)
-	
 	# Announce ready status
 	print("HUD: Ready")
 	emit_signal("ready_")

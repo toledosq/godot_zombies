@@ -17,8 +17,7 @@ config/icon="res://assets/icons/icon.svg"
 
 [autoload]
 
-ItemDatabase="*res://autoload/ItemDatabase.gd"
-MouseModeMonitor="*res://autoload/mouse_mode_monitor.gd"
+ItemDatabase="*res://autoload/item_database.gd"
 
 [display]
 

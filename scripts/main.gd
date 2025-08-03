@@ -6,7 +6,7 @@ class_name GameDirector
 
 var players = {}
 
-var debug_line_3d = preload("res://scripts/tests/DebugLine3D.gd")
+var debug_line_3d = preload("res://scripts/tests/debug_line_3d.gd")
 var dbg_vert: DebugLine3D
 var dbg_fwd:  DebugLine3D
 

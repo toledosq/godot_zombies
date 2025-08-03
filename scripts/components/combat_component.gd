@@ -12,7 +12,7 @@ var dmg_melee: int
 @onready var melee_attack_area: Area3D = $MeleeAttackArea
 @onready var melee_attack_shape: CollisionShape3D = $MeleeAttackArea/CollisionShape3D
 
-@export var debug_sphere_scene: PackedScene = preload("res://scenes/tests/debug_sphere.tscn")
+@export var debug_sphere_scene: PackedScene = preload("res://scenes/tests/DebugSphere.tscn")
 
 func set_weapon_stats(weapon: WeaponData):
 	if weapon:
