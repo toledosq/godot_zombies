@@ -1,0 +1,41 @@
+**Phase 1**
+- Implement core gameplay functionality
+ - Movement
+ - Camera Control
+ - Basic Inventory Functions
+ - Player HUD and Inventory UI
+ - Basic Combat mechanics (melee, ranged attack)
+
+- Implement core game structure
+ - Main (startup logic, global references, scene transitions)
+ - Save Manager (loads/saves world and player data)
+ - State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
+ - Audio Manager (Handles audio buses, music, etc.)
+ - Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
+ - Main Menu
+ - Pause Menu
+ - Game (Gameplay container)
+ - World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
+
+**Phase 2**
+- Expand on core gameplay functionality
+ - Add more movement options
+   - vaulting
+   - sprinting
+   - crouching
+ - Extend inventory UI functionality
+   - context menu
+   - drop items
+   - use items
+ - Extend HUD functionality
+   - Hotkeys to use quickslot items
+   - Highlight active weapon slot
+   - Track Vitals
+   - Show current ammo, durability, etc. for weapons
+ - Extend Camera Control and Combat systems
+   - Two-phase camera-ray approach for aiming
+   - Abstraction of combat mechanics to allow for different weapon types (shotguns, projectiles, etc.)
+- Implement core structure data/control flow
+ - Launch game into start menu
+ - Load game world
+ - Save/Load world and player state
