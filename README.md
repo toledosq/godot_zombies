@@ -1,23 +1,25 @@
-**Phase 1 - Prototyping**
+# Development Roadmap
+
+## Phase 1 - Prototyping
 - Implement core gameplay functionality
-  - Movement
-  - Camera Control
-  - Basic Inventory Functions
-  - Player HUD and Inventory UI
-  - Basic Combat mechanics (melee, ranged attack)
+  - [x] Movement
+  - [x] Camera Control
+  - [x] Basic Inventory Functions
+  - [x] Player HUD and Inventory UI
+  - [ ] Basic Combat mechanics (melee, ranged attack)
 
-- Implement core game structure
-  - Main (startup logic, global references, scene transitions)
-  - Save Manager (loads/saves world and player data)
-  - State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
-  - Audio Manager (Handles audio buses, music, etc.)
-  - Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
-  - Main Menu
-  - Pause Menu
-  - Game (Gameplay container)
-  - World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
+- Set up core game structure
+  - [ ] Main (startup logic, global references, scene transitions)
+  - [ ] Save Manager (loads/saves world and player data)
+  - [ ] State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
+  - [ ] Audio Manager (Handles audio buses, music, etc.)
+  - [ ] Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
+  - [ ] Main Menu
+  - [ ] Pause Menu
+  - [x] Game (Gameplay container)
+  - [ ] World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
 
-**Phase 2 - Prototyping**
+## Phase 2 - Prototyping
 - Expand on core gameplay functionality
   - Add more movement options
     - vaulting
@@ -41,7 +43,7 @@
   - Save/Load world and player state
   - Gridmap world logic
 
-**Phase 3 - Vertical Slice**
+## Phase 3 - Vertical Slice
 - Implement basic enemy AI
   - Idle
   - Alert/Searching
@@ -57,7 +59,7 @@
   - UI and HUD
 - Basic audio
 
-**Phase 4 - High Level processes**
+## Phase 4 - High Level processes
 - World
   - Prefabs, tilesets
   - Procedural chunks (only for initial building)
