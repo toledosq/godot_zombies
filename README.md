@@ -1,8 +1,3 @@
-# Links
-Task Tracker: [link](https://docs.google.com/spreadsheets/d/1dQFVqDxSOzmgyrIaf7uCz0OwBJMVAQNQ0MkfOSdoOlE)  
-Item Database: [link](https://docs.google.com/spreadsheets/d/1r1JV_-RUWuXBj0GKaM0y7XY7J5t2FicY1OUZ5DVtaSk)
-
-
 # Development Roadmap
 
 ## Phase 1 - Prototyping
