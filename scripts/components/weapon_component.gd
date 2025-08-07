@@ -133,8 +133,12 @@ func try_attack() -> bool:
 	# Check if there is an active weapon
 	# TODO: Eventually there will need to be an unarmed melee attack
 	if not active_slot_weapon:
-		print("WeaponComponent: Cannot attack, active slot is empty")
+		print("WeaponComponent: Active slot is empty - unarmed attack")
 		inventory.print_slot_members()
+		can_fire = false
+		# TODO: Implement Rate of Fire delay here w/ timer
+		combat_component.attack_melee()
+		can_fire = true
 		return false
 	
 	# If melee weapon, just fire it off
