@@ -18,4 +18,5 @@ mesh = SubResource("CapsuleMesh_f2pcg")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("2_f2pcg")
+max_health = 50
 metadata/_custom_type_script = "uid://cxari8u5xjym2"
