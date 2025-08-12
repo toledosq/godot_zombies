@@ -8,9 +8,14 @@
 script = ExtResource("1_hxtm7")
 
 [node name="InteractHintGroup" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="HintBubble" type="Sprite3D" parent="InteractHintGroup"]
+billboard = 1
+no_depth_test = true
 texture = ExtResource("2_udq72")
 
 [node name="HintRing" type="Sprite3D" parent="InteractHintGroup"]
+billboard = 1
+no_depth_test = true
 texture = ExtResource("3_mdtnt")
