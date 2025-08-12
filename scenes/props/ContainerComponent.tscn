@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6wf8ovs0splv"]
+
+[ext_resource type="Script" uid="uid://js3cq6qkx671" path="res://scripts/components/container_component.gd" id="1_76ye8"]
+[ext_resource type="Script" uid="uid://bcyu5txi7tm5p" path="res://scripts/components/inventory_component.gd" id="2_4wp13"]
+
+[node name="LootContainer" type="Node"]
+script = ExtResource("1_76ye8")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("2_4wp13")
+metadata/_custom_type_script = "uid://bcyu5txi7tm5p"
