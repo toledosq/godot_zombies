@@ -6,7 +6,14 @@
   - [x] Camera Control
   - [x] Basic Inventory Functions
   - [x] Player HUD and Inventory UI
-  - [ ] Basic Combat mechanics (melee, ranged attack)
+  - [x] Basic Combat mechanics (melee, ranged attack)
+  - [x] Core Components for gameplay
+    - [x] Health Component
+    - [x] Inventory Component
+    - [x] Combat Component
+    - [x] Weapon Manager Component
+    - [x] Interaction Component
+    - [x] Loot Component
 
 - Set up core game structure
   - [ ] Main (startup logic, global references, scene transitions)
