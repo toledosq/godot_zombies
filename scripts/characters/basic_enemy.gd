@@ -1,0 +1,1 @@
+class_name BasicEnemy extends CharacterBody3D
