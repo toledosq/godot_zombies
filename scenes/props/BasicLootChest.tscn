@@ -1,0 +1,22 @@
+[gd_scene load_steps=6 format=3 uid="uid://rtjawjiyu76x"]
+
+[ext_resource type="Script" uid="uid://bvulnm8w6x20w" path="res://scripts/props/basic_loot_chest.gd" id="1_05glf"]
+[ext_resource type="PackedScene" uid="uid://cchpodvflog4f" path="res://scenes/components/InteractableComponent.tscn" id="1_h7l1o"]
+[ext_resource type="PackedScene" uid="uid://b6wf8ovs0splv" path="res://scenes/components/ContainerComponent.tscn" id="2_05glf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_055bk"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_or41i"]
+
+[node name="BasicLootChest" type="StaticBody3D"]
+script = ExtResource("1_05glf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_055bk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_or41i")
+
+[node name="InteractableComponent" parent="." instance=ExtResource("1_h7l1o")]
+
+[node name="LootContainer" parent="." instance=ExtResource("2_05glf")]
