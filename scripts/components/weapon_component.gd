@@ -136,16 +136,14 @@ func try_attack() -> bool:
 		print("WeaponComponent: Active slot is empty - unarmed attack")
 		inventory.print_slot_members()
 		can_fire = false
-		# TODO: Implement Rate of Fire delay here w/ timer
-		combat_component.attack_melee()
+		await combat_component.attack_melee()
 		can_fire = true
 		return false
 	
 	# If melee weapon, just fire it off
 	elif active_slot_weapon.weapon_type == "melee":
 		can_fire = false
-		# TODO: Implement Rate of Fire delay here w/ timer
-		combat_component.attack_melee() # TODO: threaded call?
+		await combat_component.attack_melee()
 		can_fire = true
 		return true
 	
@@ -153,15 +151,14 @@ func try_attack() -> bool:
 	elif active_slot_weapon.current_ammo <= 0:
 		print("WeaponComponent: Cannot attack - weapon empty")
 		if auto_reload:
-			reload_weapon() # TODO: threaded call?
+			reload_weapon()
 		return false
 		
 	# If ranged weapon and mag not empty
 	else:
 		print("WeaponComponent: Calling combat component.attack_ranged")
 		can_fire = false
-		combat_component.attack_ranged()
-		# TODO: Implement Rate of Fire delay here w/ timer
+		await combat_component.attack_ranged()
 		active_slot_weapon.current_ammo -= 1
 		print("WeaponComponent: Ammo remaining: %d/%d" % [active_slot_weapon.current_ammo, active_slot_weapon.mag_size])
 		can_fire = true

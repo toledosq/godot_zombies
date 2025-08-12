@@ -45,7 +45,7 @@ func attack_melee() -> void:
 	var nearest_target = null
 	var nearest_distance := INF
 	
-	# Optional: Add a small delay or animation trigger here before the attack executes.
+	# TODO: Add a small delay or animation trigger here before the attack executes.
 	
 	# Get bodies overlapping with the AttackArea
 	for body in melee_attack_area.get_overlapping_bodies():
@@ -75,9 +75,13 @@ func attack_melee() -> void:
 			sphere.global_transform.origin = nearest_target.global_position
 	else:
 		print("No valid targets in melee range.")
+	
+	# TODO: Add a small delay or animation trigger here after the attack executes.
 
 
 func attack_ranged() -> void:
+	# TODO: Add a small delay or animation trigger here before the attack executes.
+	
 	var origin: Vector3	 = global_transform.origin
 	var forward: Vector3 = -global_transform.basis.z.normalized()
 	var to_point: Vector3 = origin + forward * atk_range
@@ -102,3 +106,5 @@ func attack_ranged() -> void:
 		var debug_sphere = debug_sphere_scene.instantiate()
 		get_tree().current_scene.add_child(debug_sphere)
 		debug_sphere.global_transform.origin = result.position
+	
+	# TODO: Add a small delay or animation trigger here after the attack executes.
