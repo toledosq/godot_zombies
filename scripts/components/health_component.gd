@@ -1,5 +1,4 @@
-extends Node
-class_name HealthComponent
+class_name HealthComponent extends Node
 
 @export var max_health: int = 100
 var current_health: int
