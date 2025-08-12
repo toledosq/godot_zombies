@@ -20,6 +20,7 @@ var active_slot_weapon: WeaponData
 func _ready() -> void:
 	self.connect("item_added", _on_item_added)
 	self.connect("item_removed", _on_item_removed)
+	max_slots = 2 # Hardcode
 	inventory.max_slots = max_slots
 
 func set_active_slot(idx: int) -> void:
