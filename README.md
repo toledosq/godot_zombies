@@ -16,12 +16,12 @@
     - [x] Loot Component
 
 - Set up core game structure
-  - [ ] Main (startup logic, global references, scene transitions)
+  - [x] Main (startup logic, global references, scene transitions)
   - [ ] Save Manager (loads/saves world and player data)
-  - [ ] State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
+  - [x] State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
   - [ ] Audio Manager (Handles audio buses, music, etc.)
   - [ ] Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
-  - [ ] Main Menu
+  - [x] Main Menu
   - [ ] Pause Menu
   - [x] Game (Gameplay container)
   - [ ] World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
