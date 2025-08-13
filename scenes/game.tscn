@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbi0es4lv55g1"]
+
+[ext_resource type="Script" uid="uid://vxoieu3rjgm2" path="res://scripts/systems/game.gd" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://bqdfebn1pfcjx" path="res://scripts/systems/world_manager.gd" id="2_yqjtg"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_uwrxv")
+
+[node name="WorldManager" type="Node" parent="."]
+script = ExtResource("2_yqjtg")
