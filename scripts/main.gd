@@ -56,7 +56,11 @@ func _hide_splash() -> void:
 # Do any one-time startup work here (shader warmup, caches, save migration, etc).
 # Keep it async-friendly so the splash stays up while this runs.
 func _do_startup_tasks() -> void:
-	# Example placeholders; replace.
+	# When application loads, populate item DB singleton (still TODO: Move higher)
+	print("Loading ItemDB")
+	for proto in ItemDatabase.library.items:
+		print(proto.id, ": ", proto.display_name)
+		
 	# await RenderingServer.call_deferred("frame_post_draw")  # (if we need a frame)
 	await get_tree().process_frame
 	return

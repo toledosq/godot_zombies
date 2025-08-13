@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbi0es4lv55g1"]
+[gd_scene load_steps=5 format=3 uid="uid://bbi0es4lv55g1"]
 
 [ext_resource type="Script" uid="uid://vxoieu3rjgm2" path="res://scripts/systems/game.gd" id="1_uwrxv"]
+[ext_resource type="PackedScene" uid="uid://bsx78kuirtgkw" path="res://scenes/world/world_overworld.tscn" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://bqdfebn1pfcjx" path="res://scripts/systems/world_manager.gd" id="2_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://coq7sptp1bsje" path="res://scenes/characters/Player.tscn" id="3_iywne"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_uwrxv")
+initial_world = ExtResource("2_lbhrr")
+player_scene = ExtResource("3_iywne")
 
 [node name="WorldManager" type="Node" parent="."]
 script = ExtResource("2_yqjtg")
