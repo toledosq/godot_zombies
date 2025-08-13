@@ -5,12 +5,12 @@ extends Node
 
 # these two are loaded by the GameStateManager (exported there),
 # but keep refs here in case we need to preload at boot time too.
-@export var main_menu_scene: PackedScene
-@export var game_container_scene: PackedScene
+@export var main_menu_scene: PackedScene = preload("res://scenes/main_menu.tscn")
+@export var game_container_scene: PackedScene = preload("res://scenes/game.tscn")
 
-@onready var _gsm := %GameStateManager        as GameStateManager
-@onready var _save := %SaveManager            # not used here yet, but ready
-@onready var _current_scene_root := %CurrentScene
+@onready var _gsm := %GameStateManager				as GameStateManager
+@onready var _save := %SaveManager					# not used here yet, but ready
+@onready var _current_scene_root := %CurrentScene	# container for scenes
 
 var _splash_instance: Node
 
