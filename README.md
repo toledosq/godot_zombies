@@ -1,6 +1,6 @@
 # Development Roadmap
 
-## Phase 1 - Prototyping
+## Phase 1 - Core Structure
 - Implement core gameplay functionality
   - [x] Movement
   - [x] Camera Control
