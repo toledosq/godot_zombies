@@ -2,6 +2,7 @@ extends Node
 
 @export var splash_scene: PackedScene
 @export var min_splash_time_sec: float = 1.0
+@export var fader_path: NodePath
 
 # these two are loaded by the GameStateManager (exported there),
 # but keep refs here in case we need to preload at boot time too.
@@ -12,7 +13,9 @@ extends Node
 @onready var _save := %SaveManager					# not used here yet, but ready
 @onready var _current_scene_root := %CurrentScene	# container for scenes
 
+var _fader: Node = null
 var _splash_instance: Node
+var _is_quitting := false
 
 func _ready() -> void:
 	# Give the GSM a handle to the container where scenes should be placed.
@@ -31,7 +34,7 @@ func _ready() -> void:
 	_show_splash()
 
 	# Kick off startup tasks and then move to MAIN_MENU.
-	# (Do your shader compilation/warmups in _do_startup_tasks.)
+	# (Do shader compilation/warmups in _do_startup_tasks.)
 	await _do_startup_tasks()
 	await get_tree().create_timer(max(0.0, min_splash_time_sec)).timeout
 	_hide_splash()
@@ -56,12 +59,11 @@ func _hide_splash() -> void:
 # Do any one-time startup work here (shader warmup, caches, save migration, etc).
 # Keep it async-friendly so the splash stays up while this runs.
 func _do_startup_tasks() -> void:
-	# When application loads, populate item DB singleton (still TODO: Move higher)
+	# When application loads, populate item DB singleton
 	print("Loading ItemDB")
 	for proto in ItemDatabase.library.items:
 		print(proto.id, ": ", proto.display_name)
 		
-	# await RenderingServer.call_deferred("frame_post_draw")  # (if we need a frame)
 	await get_tree().process_frame
 	return
 
@@ -73,7 +75,47 @@ func _on_main_menu_ready(menu: Node) -> void:
 		# Avoid duplicate connections on hot-reload.
 		if not menu.is_connected("play_requested", Callable(self, "_on_play_requested")):
 			menu.connect("play_requested", Callable(self, "_on_play_requested"))
+	if menu.has_signal("exit_requested"):
+		if not menu.is_connected("exit_requested", Callable(self, "exit_to_desktop")):
+			menu.connect("exit_requested", Callable(self, "quit_to_desktop"))
 
 
 func _on_play_requested() -> void:
 	_gsm.change_state(GameStateManager.GameState.GAME)
+
+
+func quit_to_desktop() -> void:
+	if _is_quitting:
+		return
+	_is_quitting = true
+	_disable_input()
+
+	# Optional: fade to black if we have a fader with an async API
+	await _fade_out()
+
+	# Let subsystems flush state
+	await _save_on_quit_safe()
+	await _gsm.prepare_for_quit()   # unloads active child safely
+
+	# Quiet audio (quick + safe)
+	_mute_master_bus()
+
+	get_tree().quit()  # final exit
+
+func _disable_input() -> void:
+	# Mild guard so menu/game don’t react during shutdown
+	get_tree().paused = true
+
+func _fade_out() -> void:
+	if _fader and _fader.has_method("fade_out"):
+		await _fader.call("fade_out")  # returns when done
+
+func _save_on_quit_safe() -> void:
+	if _save and _save.has_method("save_game"):
+		# await async save
+		await _save.call("save_game")
+
+func _mute_master_bus() -> void:
+	var master := AudioServer.get_bus_index("Master")
+	if master >= 0:
+		AudioServer.set_bus_mute(master, true)

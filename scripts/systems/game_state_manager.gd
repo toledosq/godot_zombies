@@ -73,6 +73,13 @@ func _switch_to_game() -> void:
 
 # --- Helpers --------------------------------------------------------------------
 
+func prepare_for_quit() -> void:
+	# Centralized place to cleanly unload active content before app exit.
+	await _unload_active_child()
+	# If other persistent systems to stop, do it here
+	# e.g., stop timers, disconnect signals, flush pools, etc.
+
+
 func _place_as_current(node: Node) -> void:
 	if not is_instance_valid(current_scene_root):
 		printerr("StateManager: current_scene_root is not set/valid.")
