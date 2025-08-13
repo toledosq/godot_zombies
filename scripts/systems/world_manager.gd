@@ -72,7 +72,7 @@ func _get_spawn_transform(spawn_tag := "default") -> Transform3D:
 # ---------- Player control ----------
 
 func spawn_player(player_scene: PackedScene, spawn_tag := "default") -> Node:
-	# If you prefer “one player instance per game session”, create it once and move it around.
+	# If “one player instance per game session”, create it once and move it around.
 	if not is_instance_valid(_player):
 		_player = player_scene.instantiate()
 	var actors := _find_actors_container()
@@ -80,6 +80,10 @@ func spawn_player(player_scene: PackedScene, spawn_tag := "default") -> Node:
 		if is_instance_valid(_player.get_parent()):
 			_player.get_parent().remove_child(_player)
 		actors.add_child(_player)
+	
+	# Assign player ID
+	_player.player_name = "Player%d" % 1
+	_player.player_id = 1
 
 	# Place at spawn:
 	var xform := _get_spawn_transform(spawn_tag)

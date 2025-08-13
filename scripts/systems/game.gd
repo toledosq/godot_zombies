@@ -22,6 +22,8 @@ func _start_session() -> void:
 	# 2) Spawn player
 	_player = await _wm.spawn_player(player_scene, spawn_tag)
 	# Wire HUD, cameras, etc., now that the player exists.
+	print("Main: Requesting Player emit current health")
+	_player.emit_current_health()
 
 func change_world(new_world: PackedScene, new_spawn_tag := "default") -> void:
 	# Example API if you want to swap levels inside GAME state

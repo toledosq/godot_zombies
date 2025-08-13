@@ -1,9 +1,58 @@
-[gd_scene format=3 uid="uid://bsx78kuirtgkw"]
+[gd_scene load_steps=10 format=3 uid="uid://bsx78kuirtgkw"]
+
+[ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://assets/icons/icon.svg" id="1_4om4p"]
+[ext_resource type="PackedScene" uid="uid://rtjawjiyu76x" path="res://scenes/props/BasicLootChest.tscn" id="2_uiovj"]
+[ext_resource type="PackedScene" uid="uid://c0k8epncbheod" path="res://scenes/characters/BasicEnemy.tscn" id="3_c84sd"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c8671"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_4om4p"]
+sky_material = SubResource("ProceduralSkyMaterial_c8671")
+
+[sub_resource type="Environment" id="Environment_wn2kh"]
+background_mode = 2
+sky = SubResource("Sky_4om4p")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_c8671"]
+size = Vector2(50, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wn2kh"]
+albedo_texture = ExtResource("1_4om4p")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c8671"]
+size = Vector3(50, 1, 50)
 
 [node name="World_Overworld" type="Node3D"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wn2kh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+
 [node name="Geometry" type="Node3D" parent="."]
+
+[node name="Ground" type="MeshInstance3D" parent="Geometry"]
+mesh = SubResource("PlaneMesh_c8671")
+surface_material_override/0 = SubResource("StandardMaterial3D_wn2kh")
+
+[node name="GroundPhysics" type="StaticBody3D" parent="Geometry/Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Ground/GroundPhysics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
+shape = SubResource("BoxShape3D_c8671")
+
+[node name="BasicLootChest" parent="Geometry" instance=ExtResource("2_uiovj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 4.049)
 
 [node name="Actors" type="Node3D" parent="."]
 
-[node name="PlayerSpawn" type="Marker3D" parent="."]
+[node name="BasicEnemy" parent="Actors" instance=ExtResource("3_c84sd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6.771)
