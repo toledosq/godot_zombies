@@ -1,5 +1,5 @@
+class_name TestWorld
 extends Node3D
-class_name GameDirector
 
 @export var player_scene: PackedScene
 @export var spawn_points: Array[NodePath] = []
