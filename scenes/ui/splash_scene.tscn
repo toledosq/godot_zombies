@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://sr3otcflpuht"]
+
+[sub_resource type="Gradient" id="Gradient_p3iqw"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.4827586, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bha0d"]
+gradient = SubResource("Gradient_p3iqw")
+
+[node name="SplashScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_bha0d")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="CenterContainer"]
+custom_minimum_size = Vector2(512, 64)
+layout_mode = 2
+step = 1.0

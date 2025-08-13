@@ -1,90 +1,121 @@
-extends Node3D
-class_name GameDirector
+extends Node
 
-@export var player_scene: PackedScene
-@export var spawn_points: Array[NodePath] = []
+@export var splash_scene: PackedScene
+@export var min_splash_time_sec: float = 1.0
+@export var fader_path: NodePath
 
-var players = {}
+# these two are loaded by the GameStateManager (exported there),
+# but keep refs here in case we need to preload at boot time too.
+@export var main_menu_scene: PackedScene = preload("res://scenes/ui/main_menu.tscn")
+@export var game_container_scene: PackedScene = preload("res://scenes/systems/game.tscn")
 
-var debug_line_3d = preload("res://scripts/tests/debug_line_3d.gd")
-var dbg_vert: DebugLine3D
-var dbg_fwd:  DebugLine3D
+@onready var _gsm := %GameStateManager				as GameStateManager
+@onready var _save := %SaveManager					# not used here yet, but ready
+@onready var _current_scene_root := %CurrentScene	# container for scenes
 
-const RAY_LENGTH := 10.0   # adjust as you like
+var _fader: Node = null
+var _splash_instance: Node
+var _is_quitting := false
 
-func _ready():
-	# When scene loads, populate item DB singleton (still TODO: Move higher)
+func _ready() -> void:
+	# Give the GSM a handle to the container where scenes should be placed.
+	_gsm.current_scene_root = _current_scene_root
+
+	# Pass scene refs if you want to configure them here rather than in the GSM inspector.
+	if main_menu_scene:
+		_gsm.main_menu_scene = main_menu_scene
+	if game_container_scene:
+		_gsm.game_scene = game_container_scene
+
+	# Listen for GSM telling us when the menu is ready so we can hook Play → change state.
+	_gsm.main_menu_ready.connect(_on_main_menu_ready)
+
+	# Show splash immediately.
+	_show_splash()
+
+	# Kick off startup tasks and then move to MAIN_MENU.
+	# (Do shader compilation/warmups in _do_startup_tasks.)
+	await _do_startup_tasks()
+	await get_tree().create_timer(max(0.0, min_splash_time_sec)).timeout
+	_hide_splash()
+
+	# Tell the state manager to move to Main Menu.
+	_gsm.change_state(GameStateManager.GameState.MAIN_MENU)
+
+
+func _show_splash() -> void:
+	if splash_scene and is_instance_valid(_current_scene_root):
+		_splash_instance = splash_scene.instantiate()
+		_current_scene_root.add_child(_splash_instance)
+		_current_scene_root.move_child(_splash_instance, 0) # keep at bottom if needed
+
+
+func _hide_splash() -> void:
+	if _splash_instance:
+		_splash_instance.queue_free()
+		_splash_instance = null
+
+
+# Do any one-time startup work here (shader warmup, caches, save migration, etc).
+# Keep it async-friendly so the splash stays up while this runs.
+func _do_startup_tasks() -> void:
+	# When application loads, populate item DB singleton
 	print("Loading ItemDB")
 	for proto in ItemDatabase.library.items:
 		print(proto.id, ": ", proto.display_name)
-	
-	# Spawn player in world
-	spawn_players(1)
-	
-	# Instance and configure the vertical line (red)
-	dbg_vert = debug_line_3d.new()
-	dbg_vert.color = Color.RED
-	add_child(dbg_vert)
-
-	# Instance and configure the forward line (green)
-	dbg_fwd = debug_line_3d.new()
-	dbg_fwd.color = Color.GREEN
-	add_child(dbg_fwd)
-
-func _process(_delta: float) -> void:
-	var pos: Vector3 = players[0].global_transform.origin
-
-	# 1) Vertical: from player → straight up
-	dbg_vert.point_start = pos
-	dbg_vert.point_end	 = pos + Vector3.UP * RAY_LENGTH
-
-	# 2) Forward: 1 m above player, in the direction they face
-	#	 In Godot the “forward” is −Z in world space:
-	var base = pos
-	var forward_dir = -players[0].global_transform.basis.z.normalized()
-	dbg_fwd.point_start = base
-	dbg_fwd.point_end	= base + forward_dir * RAY_LENGTH
-
-func spawn_players(player_count: int):
-	for i in player_count:
-		# Instantiate a player scene
-		var player = player_scene.instantiate()
-		if player == null:
-			push_error("Failed to instantiate player scene!")
-			return
 		
-		# Assign player ID
-		player.player_name = "Player%d" % i
-		player.player_id = i
-		
-		# Spawn the player
-		var spawn_transform = get_node(spawn_points[i]).global_transform
-		player.global_transform = spawn_transform
-		add_child(player)
-		
-		# Wire player signals
-		_on_player_spawned(player)
-		
-		# Track player
-		players[i] = player
+	await get_tree().process_frame
+	return
 
 
-func _on_player_spawned(player):
-	# Connect the player signals
-	player.connect("player_health_changed", _on_player_health_changed)
-	player.connect("player_died", _on_player_died)
-	
-	# Announce spawn
-	print("Main: Player %d Spawned " % player.player_id, player.player_name)
-	
-	# Request player emit initial health state
-	print("Main: Requesting Player emit current health")
-	player.emit_current_health()
+# When the GSM finishes loading the Main Menu, it emits this with the instance.
+# We then connect to the menu's "play_requested" signal so Main can order the state change.
+func _on_main_menu_ready(menu: Node) -> void:
+	if menu.has_signal("play_requested"):
+		# Avoid duplicate connections on hot-reload.
+		if not menu.is_connected("play_requested", Callable(self, "_on_play_requested")):
+			menu.connect("play_requested", Callable(self, "_on_play_requested"))
+	if menu.has_signal("exit_requested"):
+		if not menu.is_connected("exit_requested", Callable(self, "exit_to_desktop")):
+			menu.connect("exit_requested", Callable(self, "quit_to_desktop"))
 
 
-func _on_player_health_changed(player_id_, current: int, maximum: int):
-	print("Main: Player %d Health Changed " % player_id_, current, "/", maximum)
+func _on_play_requested() -> void:
+	_gsm.change_state(GameStateManager.GameState.GAME)
 
 
-func _on_player_died(player_id_: int):
-	print("Main: Player %d Died" % player_id_)
+func quit_to_desktop() -> void:
+	if _is_quitting:
+		return
+	_is_quitting = true
+	_disable_input()
+
+	# Optional: fade to black if we have a fader with an async API
+	await _fade_out()
+
+	# Let subsystems flush state
+	await _save_on_quit_safe()
+	await _gsm.prepare_for_quit()   # unloads active child safely
+
+	# Quiet audio (quick + safe)
+	_mute_master_bus()
+
+	get_tree().quit()  # final exit
+
+func _disable_input() -> void:
+	# Mild guard so menu/game don’t react during shutdown
+	get_tree().paused = true
+
+func _fade_out() -> void:
+	if _fader and _fader.has_method("fade_out"):
+		await _fader.call("fade_out")  # returns when done
+
+func _save_on_quit_safe() -> void:
+	if _save and _save.has_method("save_game"):
+		# await async save
+		await _save.call("save_game")
+
+func _mute_master_bus() -> void:
+	var master := AudioServer.get_bus_index("Master")
+	if master >= 0:
+		AudioServer.set_bus_mute(master, true)

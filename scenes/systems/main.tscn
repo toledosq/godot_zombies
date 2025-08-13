@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://dkrylr6nihjrj"]
+
+[ext_resource type="Script" uid="uid://brf1w5v54dtop" path="res://scripts/main.gd" id="1_arlud"]
+[ext_resource type="PackedScene" uid="uid://sr3otcflpuht" path="res://scenes/ui/splash_scene.tscn" id="2_4jx4g"]
+[ext_resource type="Script" uid="uid://l568d8km0yup" path="res://scripts/systems/game_state_manager.gd" id="3_5cvse"]
+[ext_resource type="Script" uid="uid://cqyrse08xkltl" path="res://scripts/systems/global_input_manager.gd" id="4_kbq4u"]
+[ext_resource type="Script" uid="uid://cixdth5022xmk" path="res://scripts/systems/global_audio_manager.gd" id="5_v6f8g"]
+[ext_resource type="Script" uid="uid://brm03ngkj6q3o" path="res://scripts/systems/save_manager.gd" id="6_ydx0v"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_arlud")
+splash_scene = ExtResource("2_4jx4g")
+
+[node name="GameStateManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_5cvse")
+
+[node name="GlobalInputManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_kbq4u")
+
+[node name="GlobalAudioManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5_v6f8g")
+
+[node name="SaveManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("6_ydx0v")
+
+[node name="CurrentScene" type="Node" parent="."]
+unique_name_in_owner = true
