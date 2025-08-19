@@ -15,6 +15,7 @@ player_scene = ExtResource("3_iywne")
 script = ExtResource("2_yqjtg")
 
 [node name="PauseOverlay" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 script = ExtResource("5_6ms5l")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseOverlay"]

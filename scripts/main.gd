@@ -10,7 +10,7 @@ extends Node
 @export var game_container_scene: PackedScene = preload("res://scenes/systems/game.tscn")
 
 @onready var _gsm: GameStateManager 					= %GameStateManager
-@onready var global_input_manager: GlobalInputManager 	= %GlobalInputManager
+@onready var _global_input: GlobalInputManager 			= %GlobalInputManager
 @onready var _save : SaveManager						= %SaveManager # not used here yet, but ready
 @onready var _current_scene_root: Node					= %CurrentScene # container for scenes
 
@@ -33,6 +33,9 @@ func _ready() -> void:
 	# Listen for GSM telling us when the menu is ready so we can hook Play → change state.
 	_gsm.main_menu_ready.connect(_on_main_menu_ready)
 	_gsm.game_ready.connect(_on_game_ready)
+	
+	# Connect GlobalInputManager signals
+	_global_input.ui_cancel_requested.connect(_on_ui_cancel_requested)
 
 	# Show splash immediately.
 	_show_splash()
@@ -88,6 +91,8 @@ func _on_game_ready(game_manager: Node) -> void:
 	_game_manager = game_manager
 	if _game_manager.has_signal("quit_to_main_menu_requested"):
 		_game_manager.connect("quit_to_main_menu_requested", _on_quit_to_main_menu_requested)
+	if _game_manager.has_signal("continue_requested"):
+		_game_manager.connect("continue_requested", _on_continue_requested)
 
 
 func _on_quit_to_main_menu_requested() -> void:
@@ -99,6 +104,31 @@ func _on_quit_to_main_menu_requested() -> void:
 
 func _on_play_requested() -> void:
 	_gsm.change_state(GameStateManager.GameState.GAME)
+
+
+func _on_ui_cancel_requested() -> void:
+	if _game_manager:
+		match _gsm.get_state():
+			GameStateManager.GameState.GAME:
+				_game_manager.toggle_pause_menu()
+				_gsm.change_state(GameStateManager.GameState.PAUSED)
+			GameStateManager.GameState.PAUSED:
+				_game_manager.toggle_pause_menu()
+				_gsm.change_state(GameStateManager.GameState.GAME)
+			_:
+				pass
+	else:
+		print("Main: Cannot process ui_cancel input - Game is not active")
+
+
+func _on_continue_requested() -> void:
+	if _game_manager:
+		match _gsm.get_state():
+			GameStateManager.GameState.PAUSED:
+				_game_manager.toggle_pause_menu()
+				_gsm.change_state(GameStateManager.GameState.GAME)
+			_:
+				pass
 
 
 func quit_to_desktop() -> void:

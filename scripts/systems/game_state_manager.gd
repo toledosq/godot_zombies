@@ -16,9 +16,11 @@ var current_scene_root: Node
 var _current_state: GameState = GameState.STARTUP
 var _active_child: Node
 
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 func get_state() -> GameState:
 	return _current_state
-
 
 func change_state(new_state: GameState) -> bool:
 	if new_state == _current_state:
@@ -60,15 +62,16 @@ func _switch_to_main_menu() -> void:
 
 func _switch_to_game() -> void:
 	# If transitioning from menu, clear it first.
-	await _unload_active_child()
+	if _current_state != GameState.PAUSED:
+		await _unload_active_child()
 
-	if not game_scene:
-		printerr("StateManager: game_scene not assigned.")
-		return
+		if not game_scene:
+			printerr("StateManager: game_scene not assigned.")
+			return
 
-	var game := game_scene.instantiate()
-	_place_as_current(game)
-	game_ready.emit(game)
+		var game := game_scene.instantiate()
+		_place_as_current(game)
+		game_ready.emit(game)
 
 
 # --- Helpers --------------------------------------------------------------------
@@ -90,6 +93,7 @@ func _place_as_current(node: Node) -> void:
 
 func _unload_active_child() -> void:
 	if _active_child and is_instance_valid(_active_child):
+		print("GameStateManager: Unloading %s" % _active_child.name)
 		_active_child.queue_free()
 		await get_tree().process_frame  # ensure it’s gone before we add the next
 	_active_child = null

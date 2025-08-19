@@ -40,3 +40,9 @@ func _on_load_pressed() -> void:
 
 func _on_settings_pressed() -> void:
 	settings_menu_requested.emit()
+
+func show_menu() -> void:
+	visible = true
+
+func hide_menu() -> void:
+	visible = false

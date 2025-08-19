@@ -1,5 +1,7 @@
-extends Node
-class_name GameManager
+class_name GameManager extends Node
+
+signal quit_to_main_menu_requested
+signal continue_requested
 
 @export var world_manager_path: NodePath = ^"WorldManager"
 @export var initial_world: PackedScene		   # e.g. res://worlds/World_Overworld.tscn
@@ -7,10 +9,15 @@ class_name GameManager
 @export var start_immediately := true
 @export var spawn_tag := "default"			   # optional: named spawn variant
 
-@onready var _wm := get_node(world_manager_path) as WorldManager
+@onready var pause_overlay: PauseMenu 	= %PauseOverlay
+@onready var _wm: WorldManager 			= get_node(world_manager_path)
 var _player: Node3D
 
 func _ready() -> void:
+	# Connect Pause Menu Signals
+	pause_overlay.continue_game_requested.connect(_on_continue_requested)
+	pause_overlay.quit_game_requested.connect(_on_quit_to_main_menu_requested)
+	
 	# (Main/GameStateManager) will instance Game.tscn under CurrentScene.
 	# To allow Game.tscn to auto-start when it’s ready:
 	if start_immediately and initial_world and player_scene:
@@ -32,8 +39,41 @@ func change_world(new_world: PackedScene, new_spawn_tag := "default") -> void:
 	_player = _wm.respawn_player(spawn_tag)  # keep same player instance, move it
 
 func _on_player_health_changed(player_id_, current: int, maximum: int):
-	print("Main: Player %d Health Changed " % player_id_, current, "/", maximum)
+	print("GameManager: Player %d Health Changed " % player_id_, current, "/", maximum)
 
 
 func _on_player_died(player_id_: int):
-	print("Main: Player %d Died" % player_id_)
+	print("GameManager: Player %d Died" % player_id_)
+
+
+func _on_continue_requested() -> void:
+	continue_requested.emit()
+
+func _on_quit_to_main_menu_requested() -> void:
+	quit_to_main_menu_requested.emit()
+
+func toggle_pause_menu() -> void:
+	if get_tree().paused:
+		_resume_game()
+	else:
+		_pause_game()
+
+func _pause_game() -> void:
+	get_tree().paused = true
+	if pause_overlay:
+		pause_overlay.show_menu()
+
+func _resume_game() -> void:
+	if pause_overlay:
+		pause_overlay.hide_menu()
+	get_tree().paused = false
+
+func _on_continue() -> void:
+	_resume_game()
+
+func _on_quit_to_menu() -> void:
+	# Hide UI and let Main handle the state transition
+	if pause_overlay:
+		pause_overlay.hide_menu()
+	get_tree().paused = false
+	emit_signal("quit_to_main_menu_requested")
