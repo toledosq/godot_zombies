@@ -19,10 +19,10 @@
   - [x] Main (startup logic, global references, scene transitions)
   - [ ] Save Manager (loads/saves world and player data)
   - [x] State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
-  - [ ] Audio Manager (Handles audio buses, music, etc.)
-  - [ ] Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
+  - [x] Audio Manager (Handles audio buses, music, etc.)
+  - [x] Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
   - [x] Main Menu
-  - [ ] Pause Menu
+  - [x] Pause Menu
   - [x] Game (Gameplay container)
   - [ ] World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
 
