@@ -9,13 +9,16 @@ extends Node
 @export var main_menu_scene: PackedScene = preload("res://scenes/ui/main_menu.tscn")
 @export var game_container_scene: PackedScene = preload("res://scenes/systems/game.tscn")
 
-@onready var _gsm := %GameStateManager				as GameStateManager
-@onready var _save := %SaveManager					# not used here yet, but ready
-@onready var _current_scene_root := %CurrentScene	# container for scenes
+@onready var _gsm: GameStateManager 					= %GameStateManager
+@onready var global_input_manager: GlobalInputManager 	= %GlobalInputManager
+@onready var _save : SaveManager						= %SaveManager # not used here yet, but ready
+@onready var _current_scene_root: Node					= %CurrentScene # container for scenes
 
 var _fader: Node = null
 var _splash_instance: Node
 var _is_quitting := false
+var _game_manager: GameManager = null
+
 
 func _ready() -> void:
 	# Give the GSM a handle to the container where scenes should be placed.
@@ -29,6 +32,7 @@ func _ready() -> void:
 
 	# Listen for GSM telling us when the menu is ready so we can hook Play → change state.
 	_gsm.main_menu_ready.connect(_on_main_menu_ready)
+	_gsm.game_ready.connect(_on_game_ready)
 
 	# Show splash immediately.
 	_show_splash()
@@ -73,11 +77,24 @@ func _do_startup_tasks() -> void:
 func _on_main_menu_ready(menu: Node) -> void:
 	if menu.has_signal("play_requested"):
 		# Avoid duplicate connections on hot-reload.
-		if not menu.is_connected("play_requested", Callable(self, "_on_play_requested")):
-			menu.connect("play_requested", Callable(self, "_on_play_requested"))
+		if not menu.is_connected("play_requested", _on_play_requested):
+			menu.connect("play_requested", _on_play_requested)
 	if menu.has_signal("exit_requested"):
-		if not menu.is_connected("exit_requested", Callable(self, "exit_to_desktop")):
-			menu.connect("exit_requested", Callable(self, "quit_to_desktop"))
+		if not menu.is_connected("exit_requested", quit_to_desktop):
+			menu.connect("exit_requested", quit_to_desktop)
+
+
+func _on_game_ready(game_manager: Node) -> void:
+	_game_manager = game_manager
+	if _game_manager.has_signal("quit_to_main_menu_requested"):
+		_game_manager.connect("quit_to_main_menu_requested", _on_quit_to_main_menu_requested)
+
+
+func _on_quit_to_main_menu_requested() -> void:
+	# Ensure we leave in a clean state
+	get_tree().paused = false
+	_gsm.change_state(GameStateManager.GameState.MAIN_MENU)
+	_game_manager = null
 
 
 func _on_play_requested() -> void:
