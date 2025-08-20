@@ -4,6 +4,7 @@ extends Node
 signal state_changed(new_state: GameState)
 signal main_menu_ready(menu_scene: Node)
 signal game_ready(game_scene: Node)
+signal mouse_mode_changed(new_mouse_mode: Input.MouseMode)
 
 enum GameState { STARTUP, MAIN_MENU, GAME, PAUSED }
 
@@ -29,11 +30,12 @@ func change_state(new_state: GameState) -> bool:
 	match new_state:
 		GameState.MAIN_MENU:
 			await _switch_to_main_menu()
+			_set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		GameState.GAME:
 			await _switch_to_game()
+			_set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 		GameState.PAUSED:
-			# TODO: Should be implemented inside GAME container (pause tree, show UI).
-			pass
+			_set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		GameState.STARTUP:
 			# Usually only at boot; nothing to do here.
 			pass
@@ -97,3 +99,13 @@ func _unload_active_child() -> void:
 		_active_child.queue_free()
 		await get_tree().process_frame  # ensure it’s gone before we add the next
 	_active_child = null
+
+# method to set mouse mode and emit signal
+func _set_mouse_mode(mode: Input.MouseMode) -> void:
+	Input.set_mouse_mode(mode)
+	mouse_mode_changed.emit(mode)
+
+
+# Public method for other systems to request mouse mode changes
+func set_mouse_mode(mode: Input.MouseMode) -> void:
+	_set_mouse_mode(mode)
