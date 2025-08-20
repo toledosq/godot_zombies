@@ -37,3 +37,4 @@ grow_vertical = 0
 custom_minimum_size = Vector2(512, 64)
 layout_mode = 2
 step = 1.0
+value = 50.0

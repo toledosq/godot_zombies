@@ -33,6 +33,9 @@ func _ready() -> void:
 	# Listen for GSM telling us when the menu is ready so we can hook Play → change state.
 	_gsm.main_menu_ready.connect(_on_main_menu_ready)
 	_gsm.game_ready.connect(_on_game_ready)
+
+	# Connect to GameStateManager for mouse mode changes
+	_gsm.mouse_mode_changed.connect(_on_mouse_mode_changed)
 	
 	# Connect GlobalInputManager signals
 	_global_input.ui_cancel_requested.connect(_on_ui_cancel_requested)
@@ -48,6 +51,11 @@ func _ready() -> void:
 
 	# Tell the state manager to move to Main Menu.
 	_gsm.change_state(GameStateManager.GameState.MAIN_MENU)
+
+
+func _on_mouse_mode_changed(new_mouse_mode: Input.MouseMode) -> void:
+	# This is now handled by the GameStateManager, but we can add logging if needed
+	print("Main: Mouse mode changed to: ", new_mouse_mode)
 
 
 func _show_splash() -> void:
