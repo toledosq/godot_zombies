@@ -8,10 +8,10 @@ signal continue_requested
 @export var player_scene: PackedScene
 @export var start_immediately := true
 @export var spawn_tag := "default"			   # optional: named spawn variant
+@export var _gsm: GameStateManager
 
 @onready var pause_overlay: PauseMenu 	= %PauseOverlay
 @onready var _wm: WorldManager 			= get_node(world_manager_path)
-@onready var _gsm: GameStateManager = get_node("/root/Main/GameStateManager")
 var _player: Node3D
 
 
@@ -31,6 +31,8 @@ func _start_session() -> void:
 	await _wm.load_world(initial_world)
 	# 2) Spawn player
 	_player = _wm.spawn_player(player_scene, spawn_tag)
+	# 3) Hook up Mouse Mode Changed signal - enables player_hud to change cursor texture to crosshair when needed
+	_gsm.mouse_mode_changed.connect(_player.player_hud._on_mouse_mode_changed)
 
 	# Wire HUD, cameras, etc., now that the player exists.
 

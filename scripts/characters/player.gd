@@ -46,8 +46,6 @@ func _ready() -> void:
 	
 	# Initialize HUD
 	print("Player: Initializing HUD")
-	var gsm = get_node("/root/Main/GameStateManager")
-	gsm.mouse_mode_changed.connect(player_hud._on_mouse_mode_changed)
 	emit_current_health()
 	
 	# Connect to Weapon Component

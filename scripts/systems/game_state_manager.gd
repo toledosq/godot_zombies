@@ -72,6 +72,10 @@ func _switch_to_game() -> void:
 			return
 
 		var game := game_scene.instantiate()
+		
+		# Ensure game has reference to state manager
+		# Doing this to avoid autoload...
+		game._gsm = self
 		_place_as_current(game)
 		game_ready.emit(game)
 
