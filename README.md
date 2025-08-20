@@ -1,30 +1,8 @@
 # Development Roadmap
 
 ## Phase 1 - Core Structure
-- Implement core gameplay functionality
-  - [x] Movement
-  - [x] Camera Control
-  - [x] Basic Inventory Functions
-  - [x] Player HUD and Inventory UI
-  - [x] Basic Combat mechanics (melee, ranged attack)
-  - [x] Core Components for gameplay
-    - [x] Health Component
-    - [x] Inventory Component
-    - [x] Combat Component
-    - [x] Weapon Manager Component
-    - [x] Interaction Component
-    - [x] Loot Component
-
-- Set up core game structure
-  - [x] Main (startup logic, global references, scene transitions)
-  - [ ] Save Manager (loads/saves world and player data)
-  - [x] State Manager (Handle changing game states between MENU, PAUSE, GAME, etc.)
-  - [x] Audio Manager (Handles audio buses, music, etc.)
-  - [x] Input Manager (Handles non-gameplay inputs like screenshot, F11, Escape, etc.)
-  - [x] Main Menu
-  - [x] Pause Menu
-  - [x] Game (Gameplay container)
-  - [ ] World Director (handles gridmap, chunk streaming, weather, time of day, etc.)
+- [x] Implement core gameplay functionality
+- [x] Set up core game structure
 
 ## Phase 2 - Prototyping
 - Expand on core gameplay functionality
@@ -44,9 +22,6 @@
   - Extend Camera Control and Combat systems
     - Two-phase camera-ray approach for aiming
     - Abstraction of combat mechanics to allow for different weapon types (shotguns, projectiles, etc.)
- - Implement core structure data/control flow
-  - Launch game into start menu
-  - Load game world
   - Save/Load world and player state
   - Gridmap world logic
 
