@@ -7,12 +7,19 @@ signal weapon_unequipped(slot_idx: int)
 signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
 
 @export var speed := 5.0
+@export var sprint_speed_modifier := 1.8
+@export var crouch_speed_modifier := 0.6
 
 var player_id: int
 var player_name: String
 var previous_transform: Transform3D
 var movement_enabled := false
 var rotation_enabled := false
+
+# Crouching state
+var is_crouching := false
+var crouch_toggle_active := false
+var crouch_hold_active := false
 
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
@@ -25,6 +32,7 @@ var rotation_enabled := false
 @onready var body = $Body  # Path to visible mesh
 @onready var collision: CollisionShape3D = $CollisionShape3D
 @onready var camera_rig: Node3D = $PlayerCamera
+@onready var animation_player: AnimationPlayer = $AnimationPlayer  # Future animation implementation
 
 
 func _ready() -> void:
@@ -35,6 +43,10 @@ func _ready() -> void:
 	player_controller.connect("test_input", _on_test_input_event)
 	player_controller.connect("reload", _on_reload_input)
 	player_controller.connect("set_active_slot", _on_set_active_slot)
+	
+	# Connect crouching inputs
+	player_controller.connect("crouch_hold_changed", _on_crouch_hold_changed)
+	player_controller.connect("crouch_toggle_pressed", _on_crouch_toggle_pressed)
 	
 	# Mark the inventory component as belonging to player
 	inventory_component.add_to_group("player_inventory")
@@ -77,6 +89,7 @@ func _ready() -> void:
 func _physics_process(delta) -> void:
 	if movement_enabled:
 		_handle_movement(delta)
+		_handle_crouching()
 	if rotation_enabled:
 		_rotate_towards_mouse()
 
@@ -97,10 +110,17 @@ func _handle_movement(delta) -> void:
 	# Get direction from movement input
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	
+	# Check if sprinting or crouching
+	var current_speed = speed
+	if Input.is_action_pressed("sprint") and not is_crouching:
+		current_speed = speed * sprint_speed_modifier
+	elif is_crouching:
+		current_speed = speed * crouch_speed_modifier
+	
 	# If movement input is detected, move in the input direction
 	if direction != Vector3.ZERO:
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
 	# If no input detected, come to a stop
 	else:
 		velocity.x = move_toward(velocity.x, 0, 20.0 * delta)
@@ -108,6 +128,43 @@ func _handle_movement(delta) -> void:
 	
 	# Do movement
 	move_and_slide()
+
+
+func _handle_crouching() -> void:
+	# Determine if crouching (either hold or toggle)
+	var should_crouch = crouch_hold_active or crouch_toggle_active
+	
+	# Update crouching state
+	if should_crouch != is_crouching:
+		is_crouching = should_crouch
+		_on_crouch_state_changed(is_crouching)
+
+
+func _on_crouch_state_changed(crouching: bool) -> void:
+	print("Player: Crouch state changed to: ", crouching)
+	
+	# Future animation implementation hooks
+	if animation_player:
+		if crouching:
+			# Play crouch animation
+			if animation_player.has_animation("crouch"):
+				animation_player.play("crouch")
+			# Future: Adjust collision shape height
+			# Future: Adjust camera height
+		else:
+			# Play stand up animation
+			if animation_player.has_animation("stand"):
+				animation_player.play("stand")
+			# Future: Restore collision shape height
+			# Future: Restore camera height
+
+
+func _on_crouch_hold_changed(is_held: bool) -> void:
+	crouch_hold_active = is_held
+
+
+func _on_crouch_toggle_pressed() -> void:
+	crouch_toggle_active = !crouch_toggle_active
 
 
 func _rotate_towards_mouse() -> void:

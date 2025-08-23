@@ -8,6 +8,8 @@ signal toggle_inventory_ui
 signal reload
 signal set_active_slot(idx: int)
 signal test_input(type: String)
+signal crouch_hold_changed(is_held: bool)
+signal crouch_toggle_pressed
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -33,4 +35,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		test_input.emit("test_damage")
 	elif event.is_action_pressed("test_heal"):
 		test_input.emit("test_heal")
+	elif event.is_action_pressed("crouch_toggle"):
+		crouch_toggle_pressed.emit()
+	elif event.is_action_pressed("crouch_hold"):
+		crouch_hold_changed.emit(true)
+	elif event.is_action_released("crouch_hold"):
+		crouch_hold_changed.emit(false)
 	
