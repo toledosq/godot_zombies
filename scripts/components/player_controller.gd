@@ -38,7 +38,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("crouch_toggle"):
 		crouch_toggle_pressed.emit()
 	elif event.is_action_pressed("crouch_hold"):
+		print("PlayerController: Crouch Hold active")
 		crouch_hold_changed.emit(true)
 	elif event.is_action_released("crouch_hold"):
+		print("PlayerController: Crouch Hold released")
 		crouch_hold_changed.emit(false)
 	
