@@ -10,6 +10,7 @@ signal set_active_slot(idx: int)
 signal test_input(type: String)
 signal crouch_hold_changed(is_held: bool)
 signal crouch_toggle_pressed
+signal sprint_changed(is_sprinting: bool)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
@@ -43,4 +44,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_released("crouch_hold"):
 		print("PlayerController: Crouch Hold released")
 		crouch_hold_changed.emit(false)
+	elif event.is_action_pressed("sprint"):
+		print("PlayerController: Sprint started")
+		sprint_changed.emit(true)
+	elif event.is_action_released("sprint"):
+		print("PlayerController: Sprint ended")
+		sprint_changed.emit(false)
 	

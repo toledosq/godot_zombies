@@ -21,6 +21,9 @@ var is_crouching := false
 var crouch_toggle_active := false
 var crouch_hold_active := false
 
+# Sprint state
+var is_sprinting := false
+
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
@@ -47,6 +50,9 @@ func _ready() -> void:
 	# Connect crouching inputs
 	player_controller.connect("crouch_hold_changed", _on_crouch_hold_changed)
 	player_controller.connect("crouch_toggle_pressed", _on_crouch_toggle_pressed)
+	
+	# Connect sprint input
+	player_controller.connect("sprint_changed", _on_sprint_changed)
 	
 	# Mark the inventory component as belonging to player
 	inventory_component.add_to_group("player_inventory")
@@ -112,7 +118,7 @@ func _handle_movement(delta) -> void:
 	
 	# Check if sprinting or crouching
 	var current_speed = speed
-	if Input.is_action_pressed("sprint") and not is_crouching:
+	if is_sprinting and not is_crouching:
 		current_speed = speed * sprint_speed_modifier
 	elif is_crouching:
 		current_speed = speed * crouch_speed_modifier
@@ -165,6 +171,10 @@ func _on_crouch_hold_changed(is_held: bool) -> void:
 
 func _on_crouch_toggle_pressed() -> void:
 	crouch_toggle_active = !crouch_toggle_active
+
+
+func _on_sprint_changed(sprinting: bool) -> void:
+	is_sprinting = sprinting
 
 
 func _rotate_towards_mouse() -> void:
