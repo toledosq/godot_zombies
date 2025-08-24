@@ -69,6 +69,9 @@ func _ready() -> void:
 	# Connect sprint input
 	player_controller.connect("sprint_changed", _on_sprint_changed)
 	
+	# Connect weapon input
+	player_controller.connect("reload", _on_reload)
+	
 	# Mark the inventory component as belonging to player
 	inventory_component.add_to_group("player_inventory")
 	
@@ -309,6 +312,9 @@ func _on_set_active_slot(idx: int) -> void:
 
 func _on_attack() -> void:
 	weapon_component.try_attack()
+
+func _on_reload() -> void:
+	weapon_component.reload_weapon()
 
 func _on_active_weapon_changed(slot_idx: int, weapon: WeaponData) -> void:
 	# Tell the combat_component to update stats

@@ -26,9 +26,6 @@ func _ready():
 	action_delay_timer.timeout.connect(_update_action_delay_progress)
 	add_child(action_delay_timer)
 	
-	# Create action delay UI components if they don't exist
-	_setup_action_delay_ui()
-	
 	# Hide action delay container initially
 	if action_delay_container:
 		action_delay_container.visible = false
@@ -106,39 +103,6 @@ func set_crosshair_texture(tex: Texture2D):
 	crosshair_texture = tex
 	# Call this to ensure the crosshair updates
 	_on_mouse_mode_changed(Input.mouse_mode)
-
-
-func _setup_action_delay_ui() -> void:
-	# Try to find existing components first
-	var center_container = get_node_or_null("CenterContainer")
-	if not center_container:
-		# Create center container
-		center_container = CenterContainer.new()
-		center_container.name = "CenterContainer"
-		add_child(center_container)
-	
-	action_delay_container = center_container.get_node_or_null("ActionDelayContainer")
-	if not action_delay_container:
-		# Create action delay container
-		action_delay_container = VBoxContainer.new()
-		action_delay_container.name = "ActionDelayContainer"
-		center_container.add_child(action_delay_container)
-		
-		# Create progress bar
-		action_delay_progress = ProgressBar.new()
-		action_delay_progress.name = "ActionDelayProgressBar"
-		action_delay_progress.custom_minimum_size = Vector2(300, 30)
-		action_delay_container.add_child(action_delay_progress)
-		
-		# Create label
-		action_delay_label = Label.new()
-		action_delay_label.name = "ActionDelayLabel"
-		action_delay_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		action_delay_container.add_child(action_delay_label)
-	else:
-		# Get existing components
-		action_delay_progress = action_delay_container.get_node_or_null("ActionDelayProgressBar")
-		action_delay_label = action_delay_container.get_node_or_null("ActionDelayLabel")
 
 
 # Action delay system
