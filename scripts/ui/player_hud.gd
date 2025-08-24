@@ -9,9 +9,30 @@ var default_crosshair_texture: Texture2D = preload("res://assets/icons/generic_b
 @onready var energy_bar: ProgressBar = $BottomBar/CenterContainer/HBoxContainer/VitalsContainer/EnergyBar
 @onready var weapon_container: HBoxContainer = $BottomBar/CenterContainer/HBoxContainer/WeaponContainer
 @onready var quick_slot_container: HBoxContainer = $BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer
+@onready var action_delay_container: VBoxContainer = $CenterContainer/ActionDelayContainer
+@onready var action_delay_progress: ProgressBar = $CenterContainer/ActionDelayContainer/ActionDelayProgressBar
+@onready var action_delay_label: Label = $CenterContainer/ActionDelayContainer/ActionDelayLabel
+
+# Action delay state
+var action_delay_timer: Timer
+var action_delay_total_time: float
+var action_delay_is_cancellable: bool
 
 
 func _ready():
+	# Setup action delay timer
+	action_delay_timer = Timer.new()
+	action_delay_timer.wait_time = 0.1  # Update every 0.1 seconds
+	action_delay_timer.timeout.connect(_update_action_delay_progress)
+	add_child(action_delay_timer)
+	
+	# Create action delay UI components if they don't exist
+	_setup_action_delay_ui()
+	
+	# Hide action delay container initially
+	if action_delay_container:
+		action_delay_container.visible = false
+	
 	# Initial setup
 	_update_hud_layout()
 
@@ -85,3 +106,96 @@ func set_crosshair_texture(tex: Texture2D):
 	crosshair_texture = tex
 	# Call this to ensure the crosshair updates
 	_on_mouse_mode_changed(Input.mouse_mode)
+
+
+func _setup_action_delay_ui() -> void:
+	# Try to find existing components first
+	var center_container = get_node_or_null("CenterContainer")
+	if not center_container:
+		# Create center container
+		center_container = CenterContainer.new()
+		center_container.name = "CenterContainer"
+		add_child(center_container)
+	
+	action_delay_container = center_container.get_node_or_null("ActionDelayContainer")
+	if not action_delay_container:
+		# Create action delay container
+		action_delay_container = VBoxContainer.new()
+		action_delay_container.name = "ActionDelayContainer"
+		center_container.add_child(action_delay_container)
+		
+		# Create progress bar
+		action_delay_progress = ProgressBar.new()
+		action_delay_progress.name = "ActionDelayProgressBar"
+		action_delay_progress.custom_minimum_size = Vector2(300, 30)
+		action_delay_container.add_child(action_delay_progress)
+		
+		# Create label
+		action_delay_label = Label.new()
+		action_delay_label.name = "ActionDelayLabel"
+		action_delay_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		action_delay_container.add_child(action_delay_label)
+	else:
+		# Get existing components
+		action_delay_progress = action_delay_container.get_node_or_null("ActionDelayProgressBar")
+		action_delay_label = action_delay_container.get_node_or_null("ActionDelayLabel")
+
+
+# Action delay system
+func _on_action_delay_started(seconds: float, cancellable: bool) -> void:
+	print("HUD: Action delay started - %s seconds, cancellable: %s" % [seconds, cancellable])
+	action_delay_total_time = seconds
+	action_delay_is_cancellable = cancellable
+	
+	# Setup progress bar
+	if action_delay_progress:
+		action_delay_progress.max_value = seconds
+		action_delay_progress.value = seconds
+	
+	# Setup label
+	if action_delay_label:
+		var label_text = "Action in progress... (%.1fs)" % seconds
+		if cancellable:
+			label_text += " - Press ESC to cancel"
+		action_delay_label.text = label_text
+	
+	# Show container and start timer
+	if action_delay_container:
+		action_delay_container.visible = true
+	action_delay_timer.start()
+
+
+func _on_action_delay_completed() -> void:
+	print("HUD: Action delay completed")
+	_hide_action_delay()
+
+
+func _on_action_delay_cancelled() -> void:
+	print("HUD: Action delay cancelled")
+	_hide_action_delay()
+
+
+func _hide_action_delay() -> void:
+	if action_delay_container:
+		action_delay_container.visible = false
+	action_delay_timer.stop()
+
+
+func _update_action_delay_progress() -> void:
+	if not action_delay_progress or not action_delay_container.visible:
+		return
+	
+	# Update progress bar value (countdown)
+	var current_value = action_delay_progress.value - 0.1
+	if current_value <= 0:
+		current_value = 0
+		action_delay_timer.stop()
+	
+	action_delay_progress.value = current_value
+	
+	# Update label with remaining time
+	if action_delay_label:
+		var label_text = "Action in progress... (%.1fs)" % current_value
+		if action_delay_is_cancellable:
+			label_text += " - Press ESC to cancel"
+		action_delay_label.text = label_text

@@ -1,6 +1,7 @@
 class_name PlayerController extends Node
 
 var input_enabled := false
+var action_delay_active := false
 
 signal attack
 signal interact
@@ -11,8 +12,19 @@ signal test_input(type: String)
 signal crouch_hold_changed(is_held: bool)
 signal crouch_toggle_pressed
 signal sprint_changed(is_sprinting: bool)
+signal cancel_action
 
 func _input(event: InputEvent) -> void:
+	# Cancel action always works during action delay
+	if event.is_action_pressed("cancel_action") and action_delay_active:
+		print("PlayerController: Cancel action pressed")
+		cancel_action.emit()
+		return
+	
+	# Block most inputs during action delay
+	if action_delay_active:
+		return
+	
 	if event.is_action_pressed("interact"):
 		interact.emit()
 		
@@ -20,6 +32,10 @@ func _input(event: InputEvent) -> void:
 		toggle_inventory_ui.emit()
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Block inputs during action delay (except movement which is handled in Player)
+	if action_delay_active:
+		return
+		
 	if event.is_action_pressed("attack"):
 		attack.emit()
 	elif event.is_action_pressed("reload"):
@@ -36,6 +52,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		test_input.emit("test_damage")
 	elif event.is_action_pressed("test_heal"):
 		test_input.emit("test_heal")
+	elif event.is_action_pressed("test_action_delay_short"):
+		test_input.emit("test_action_delay_short")
+	elif event.is_action_pressed("test_action_delay_long"):
+		test_input.emit("test_action_delay_long")
 	elif event.is_action_pressed("crouch_toggle"):
 		crouch_toggle_pressed.emit()
 	elif event.is_action_pressed("crouch_hold"):
@@ -50,4 +70,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_released("sprint"):
 		print("PlayerController: Sprint ended")
 		sprint_changed.emit(false)
-	
+
+
+func set_action_delay_active(active: bool) -> void:
+	print("PlayerController: Action delay active = %s" % active)
+	action_delay_active = active

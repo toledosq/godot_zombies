@@ -5,6 +5,9 @@ signal player_died(player_id_: int)
 signal weapon_equipped(slot_idx: int, weapon: WeaponData)
 signal weapon_unequipped(slot_idx: int)
 signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
+signal action_delay_started(seconds: float, cancellable: bool)
+signal action_delay_completed
+signal action_delay_cancelled
 
 @export var speed := 5.0
 @export var sprint_speed_modifier := 1.8
@@ -24,6 +27,11 @@ var crouch_hold_active := false
 # Sprint state
 var is_sprinting := false
 
+# Action delay state
+var is_action_delayed := false
+var action_delay_cancellable := false
+var action_delay_timer: Timer
+
 @onready var player_controller: PlayerController = $PlayerController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var inventory_component: InventoryComponent = $InventoryComponent
@@ -39,13 +47,20 @@ var is_sprinting := false
 
 
 func _ready() -> void:
+	# Setup action delay timer
+	action_delay_timer = Timer.new()
+	action_delay_timer.wait_time = 1.0
+	action_delay_timer.one_shot = true
+	action_delay_timer.connect("timeout", _on_action_delay_timeout)
+	add_child(action_delay_timer)
+	
 	# Connect player controller
 	player_controller.connect("attack", _on_attack)
-	player_controller.connect("interact", interaction_component._try_interact)
+	player_controller.connect("interact", _on_interact_with_delay)
 	player_controller.connect("toggle_inventory_ui", _on_toggle_inventory_ui)
 	player_controller.connect("test_input", _on_test_input_event)
-	player_controller.connect("reload", _on_reload_input)
 	player_controller.connect("set_active_slot", _on_set_active_slot)
+	player_controller.connect("cancel_action", _on_cancel_action_delay)
 	
 	# Connect crouching inputs
 	player_controller.connect("crouch_hold_changed", _on_crouch_hold_changed)
@@ -65,6 +80,11 @@ func _ready() -> void:
 	# Initialize HUD
 	print("Player: Initializing HUD")
 	emit_current_health()
+	
+	# Connect action delay signals to HUD
+	connect("action_delay_started", player_hud._on_action_delay_started)
+	connect("action_delay_completed", player_hud._on_action_delay_completed)
+	connect("action_delay_cancelled", player_hud._on_action_delay_cancelled)
 	
 	# Connect to Weapon Component
 	weapon_component.connect("active_weapon_changed", _on_active_weapon_changed)
@@ -111,6 +131,8 @@ func set_rotation_enabled(val: bool) -> void:
 
 
 func _handle_movement(delta) -> void:
+	if not movement_enabled:
+		return
 	# Get movement input vector
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	# Get direction from movement input
@@ -180,6 +202,9 @@ func _on_sprint_changed(sprinting: bool) -> void:
 func _rotate_towards_mouse() -> void:
 	if not camera_rig.camera:
 		return
+	
+	if not rotation_enabled:
+		return
 
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_origin = camera_rig.camera.project_ray_origin(mouse_pos)
@@ -211,6 +236,12 @@ func _on_test_input_event(test_type: String) -> void:
 		"test_remove_item":
 			print("Removing 1 bandage")
 			inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
+		"test_action_delay_short":
+			print(">>> Testing short action delay (2s, cancellable)")
+			action_delay(2.0, true)
+		"test_action_delay_long":
+			print(">>> Testing long action delay (5s, non-cancellable)")
+			action_delay(5.0, false)
 		_:
 			print("invalid test type: %s" % test_type)
 
@@ -293,9 +324,27 @@ func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
 	player_hud._on_weapon_unequipped(slot_idx)
 
-func _on_reload_input() -> void:
-	print("Player: Reload input received")
-	weapon_component.reload_weapon()
+func _on_interact_with_delay() -> void:
+	print("Player: Interact input received - starting interaction delay")
+	# Start action delay for interaction (1.5 seconds, cancellable)
+	action_delay(1.5, true)
+	# Connect to delay completion to actually do the interaction
+	if not action_delay_completed.is_connected(_perform_interact):
+		action_delay_completed.connect(_perform_interact, CONNECT_ONE_SHOT)
+	if not action_delay_cancelled.is_connected(_cancel_interact):
+		action_delay_cancelled.connect(_cancel_interact, CONNECT_ONE_SHOT)
+
+func _perform_interact() -> void:
+	print("Player: Performing interaction after delay")
+	interaction_component._try_interact()
+
+func _cancel_interact() -> void:
+	print("Player: Interaction was cancelled")
+	# Disconnect signals if they're still connected
+	if action_delay_completed.is_connected(_perform_interact):
+		action_delay_completed.disconnect(_perform_interact)
+	if action_delay_cancelled.is_connected(_cancel_interact):
+		action_delay_cancelled.disconnect(_cancel_interact)
 
 
 func _on_reload_started() -> void:
@@ -323,3 +372,55 @@ func pickup_item(item: ItemData, quantity: int) -> int:
 		print("Dropped %d %s because inventory full!" % [result.rejected, item.name])
 		return result.rejected
 	return 0
+
+
+# Action delay system
+func action_delay(seconds: float, cancellable: bool = true) -> void:
+	if is_action_delayed:
+		print("Player: Action delay already in progress, cancelling previous delay")
+		_cancel_action_delay()
+	
+	print("Player: Starting action delay for %s seconds (cancellable: %s)" % [seconds, cancellable])
+	is_action_delayed = true
+	action_delay_cancellable = cancellable
+	action_delay_timer.wait_time = seconds
+	action_delay_timer.start()
+	
+	# Disable input during delay
+	movement_enabled = false
+	rotation_enabled = false
+	player_controller.set_action_delay_active(true)
+	
+	# Notify HUD and other systems
+	emit_signal("action_delay_started", seconds, cancellable)
+
+
+func _on_cancel_action_delay() -> void:
+	if not is_action_delayed:
+		return
+		
+	if not action_delay_cancellable:
+		print("Player: Cannot cancel non-cancellable action delay")
+		return
+		
+	print("Player: Action delay cancelled")
+	_cancel_action_delay()
+
+
+func _cancel_action_delay() -> void:
+	action_delay_timer.stop()
+	_on_action_delay_timeout()
+
+
+func _on_action_delay_timeout() -> void:
+	print("Player: Action delay completed")
+	is_action_delayed = false
+	action_delay_cancellable = false
+	
+	# Re-enable input
+	player_controller.set_action_delay_active(false)
+	movement_enabled = true
+	rotation_enabled = true
+	
+	# Notify systems
+	emit_signal("action_delay_completed")

@@ -197,4 +197,20 @@ layout_mode = 2
 [node name="QuickSlot5" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer" instance=ExtResource("10_6eyey")]
 layout_mode = 2
 
+[node name="CenterContainer" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ActionDelayContainer" type="VBoxContainer" parent="HUD/CenterContainer"]
+layout_mode = 2
+
+[node name="ActionDelayProgressBar" type="ProgressBar" parent="HUD/CenterContainer/ActionDelayContainer"]
+layout_mode = 2
+
+[node name="ActionDelayLabel" type="Label" parent="HUD/CenterContainer/ActionDelayContainer"]
+layout_mode = 2
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
