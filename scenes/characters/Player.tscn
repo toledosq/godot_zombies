@@ -80,7 +80,7 @@ script = ExtResource("6_cw2d6")
 
 [node name="CenterContainer" type="CenterContainer" parent="InventoryUI"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -127,7 +127,6 @@ script = ExtResource("11_bpxo2")
 
 [node name="BottomBar" type="Control" parent="HUD"]
 layout_mode = 3
-anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -197,3 +196,5 @@ layout_mode = 2
 
 [node name="QuickSlot5" parent="HUD/BottomBar/CenterContainer/HBoxContainer/QuickSlotContainer" instance=ExtResource("10_6eyey")]
 layout_mode = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
