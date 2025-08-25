@@ -27,6 +27,9 @@ var crouch_hold_active := false
 # Sprint state
 var is_sprinting := false
 
+# Aiming state
+var is_aiming := false
+
 # Action delay state
 var is_action_delayed := false
 var action_delay_cancellable := false
@@ -68,6 +71,9 @@ func _ready() -> void:
 	
 	# Connect sprint input
 	player_controller.connect("sprint_changed", _on_sprint_changed)
+	
+	# Connect aiming input
+	player_controller.connect("aim_changed", _on_aim_changed)
 	
 	# Connect weapon input
 	player_controller.connect("reload", _on_reload)
@@ -203,6 +209,31 @@ func _on_sprint_changed(sprinting: bool) -> void:
 	is_sprinting = sprinting
 
 
+func _on_aim_changed(aiming: bool) -> void:
+	# Check if aiming is allowed
+	if aiming and not _can_aim():
+		print("Player: Aiming blocked - cannot aim in current state")
+		return
+	
+	# Update aiming state
+	if is_aiming != aiming:
+		print("Player: Aiming changed to: ", aiming)
+		is_aiming = aiming
+		camera_rig.set_aiming(is_aiming)
+
+
+func _can_aim() -> bool:
+	# Aiming conditions: inventory not visible and not in action delay
+	return not inventory_ui.visible and not is_action_delayed
+
+
+func _disengage_aiming() -> void:
+	if is_aiming:
+		print("Player: Disengaging aim due to state change")
+		is_aiming = false
+		camera_rig.set_aiming(false)
+
+
 func _rotate_towards_mouse() -> void:
 	if not camera_rig.camera:
 		return
@@ -262,8 +293,9 @@ func _on_toggle_inventory_ui() -> void:
 
 
 func _on_inventory_ui_visibility_changed() -> void:
-	# Set movement
+	# Disengage aiming when inventory becomes visible
 	if inventory_ui.visible:
+		_disengage_aiming()
 		# Only restrict movement when interacting
 		if interaction_component.is_interacting:
 			set_movement_enabled(false)
@@ -273,6 +305,7 @@ func _on_inventory_ui_visibility_changed() -> void:
 
 
 func _on_container_inventory_received(inv_comp: InventoryComponent) -> void:
+	_disengage_aiming()  # Disengage aiming when interacting
 	inventory_ui.setup_container_grid(inv_comp)
 	inventory_ui.visible = true
 
@@ -388,6 +421,7 @@ func action_delay(seconds: float, cancellable: bool = true) -> void:
 		_cancel_action_delay()
 	
 	print("Player: Starting action delay for %s seconds (cancellable: %s)" % [seconds, cancellable])
+	_disengage_aiming()  # Disengage aiming when action delay starts
 	is_action_delayed = true
 	action_delay_cancellable = cancellable
 	action_delay_timer.wait_time = seconds

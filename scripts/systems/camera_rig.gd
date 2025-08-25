@@ -3,8 +3,15 @@ extends Node3D
 @export var camera_distance := 12.0
 @export var camera_rotation := 60.0
 @export var pan_limit := 3.0 # Maximum offset in meters
+@export var aim_pan_limit := 6.0 # Maximum offset in meters when aiming
 @export var pan_speed := 5.0 # Smooth movement speed
 @export var target_node: Node3D
+
+# Aiming properties
+@export var aim_fov := 65.0 # FOV when aiming (narrower than default 75)
+var default_fov: float
+var is_aiming := false
+var aim_transition_speed := 8.0 # Speed of FOV transition
 
 @onready var camera: Camera3D = $Camera3D
 
@@ -15,6 +22,7 @@ var current_pan_offset: Vector3 = Vector3.ZERO
 func _ready():
 	var pitch = deg_to_rad(camera_rotation)
 	initial_offset = Vector3(0, sin(pitch), cos(pitch)) * camera_distance
+	default_fov = camera.fov
 	if target_node:
 		set_target(target_node)
 
@@ -22,6 +30,7 @@ func _process(delta: float) -> void:
 	if not target_node:
 		return
 	_update_position(delta)
+	_update_aiming(delta)
 	force_update_transform()
 
 func _update_position(delta: float) -> void:
@@ -36,8 +45,9 @@ func _update_position(delta: float) -> void:
 	# Calculate offset from center (-1 to 1)
 	var offset_from_center = (mouse_pos - viewport_size * 0.5) / (viewport_size * 0.5)
 	
-	# Scale directly by pan_limit (no normalization)
-	var pan_offset = Vector3(offset_from_center.x, 0, offset_from_center.y) * pan_limit
+	# Scale by pan_limit, with increased limit when aiming
+	var current_pan_limit = aim_pan_limit if is_aiming else pan_limit
+	var pan_offset = Vector3(offset_from_center.x, 0, offset_from_center.y) * current_pan_limit
 	pan_offset.y = 0  # Keep camera on XZ plane
 
 	# Smoothly interpolate to new offset
@@ -47,6 +57,16 @@ func _update_position(delta: float) -> void:
 	global_position = desired_pos + current_pan_offset
 	global_rotation = Vector3.ZERO
 
+
+func _update_aiming(delta: float) -> void:
+	# Smoothly transition FOV based on aiming state
+	var target_fov = aim_fov if is_aiming else default_fov
+	camera.fov = lerp(camera.fov, target_fov, aim_transition_speed * delta)
+
+func set_aiming(aiming: bool) -> void:
+	if is_aiming != aiming:
+		print("CameraRig: Aiming = %s" % aiming)
+		is_aiming = aiming
 
 func set_target(target: Node3D):
 	target_node = target

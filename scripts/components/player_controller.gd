@@ -13,6 +13,7 @@ signal crouch_hold_changed(is_held: bool)
 signal crouch_toggle_pressed
 signal sprint_changed(is_sprinting: bool)
 signal cancel_action
+signal aim_changed(is_aiming: bool)
 
 func _input(event: InputEvent) -> void:
 	# Cancel action always works during action delay
@@ -70,6 +71,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_released("sprint"):
 		print("PlayerController: Sprint ended")
 		sprint_changed.emit(false)
+	elif event.is_action_pressed("aim"):
+		print("PlayerController: Aim started")
+		aim_changed.emit(true)
+	elif event.is_action_released("aim"):
+		print("PlayerController: Aim ended")
+		aim_changed.emit(false)
 
 
 func set_action_delay_active(active: bool) -> void:
