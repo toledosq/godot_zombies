@@ -7,9 +7,9 @@
 ## Phase 2 - Prototyping
 - Expand on core gameplay functionality
   - Add more movement options
-    - vaulting
-    - sprinting
-    - crouching
+    - [ ] vaulting
+    - [x] sprinting
+    - [x] crouching
   - Extend inventory UI functionality
     - context menu
     - drop items
