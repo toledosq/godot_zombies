@@ -5,7 +5,7 @@ var action_delay_active := false
 
 signal attack
 signal interact
-signal toggle_inventory_ui
+signal toggle_inventory_ui()
 signal reload
 signal set_active_slot(idx: int)
 signal test_input(type: String)

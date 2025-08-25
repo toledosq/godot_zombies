@@ -20,6 +20,7 @@ func _ready() -> void:
 	visible = false
 	container_grid.visible = false # Hide until a container is opened
 
+
 func setup_player_grid(component: InventoryComponent) -> void:
 	player_inv_component = component
 	player_grid.columns = columns

@@ -98,6 +98,7 @@ func _ready() -> void:
 	weapon_component.set_active_slot(0)
 	
 	# Connect to Inventory UI and run initial setup
+	inventory_ui.connect("visibility_changed", _on_inventory_ui_visibility_changed)
 	inventory_ui.connect("weapon_equipped", _on_weapon_equipped)
 	inventory_ui.connect("weapon_unequipped", _on_weapon_unequipped)
 	inventory_ui.setup_player_grid(inventory_component)
@@ -425,8 +426,9 @@ func _on_action_delay_timeout() -> void:
 	
 	# Re-enable input
 	player_controller.set_action_delay_active(false)
-	set_movement_enabled(true)
-	set_rotation_enabled(true)
+	if not inventory_ui.visible:
+		set_movement_enabled(true)
+		set_rotation_enabled(true)
 	
 	# Notify systems
 	emit_signal("action_delay_completed")
