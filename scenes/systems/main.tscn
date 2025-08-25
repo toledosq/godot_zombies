@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dkrylr6nihjrj"]
+[gd_scene load_steps=8 format=3 uid="uid://dkrylr6nihjrj"]
 
 [ext_resource type="Script" uid="uid://brf1w5v54dtop" path="res://scripts/main.gd" id="1_arlud"]
 [ext_resource type="PackedScene" uid="uid://sr3otcflpuht" path="res://scenes/ui/splash_scene.tscn" id="2_4jx4g"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cqyrse08xkltl" path="res://scripts/systems/global_input_manager.gd" id="4_kbq4u"]
 [ext_resource type="Script" uid="uid://cixdth5022xmk" path="res://scripts/systems/global_audio_manager.gd" id="5_v6f8g"]
 [ext_resource type="Script" uid="uid://brm03ngkj6q3o" path="res://scripts/systems/save_manager.gd" id="6_ydx0v"]
+[ext_resource type="Script" uid="uid://cgasbeu0kewp" path="res://scripts/tests/debug_overlay.gd" id="7_4jx4g"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_arlud")
@@ -29,3 +30,6 @@ script = ExtResource("6_ydx0v")
 
 [node name="CurrentScene" type="Node" parent="."]
 unique_name_in_owner = true
+
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("7_4jx4g")
