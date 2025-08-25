@@ -99,6 +99,47 @@ func cancel_interaction() -> void:
 		container_inv_comp = null
 		is_interacting = false
 
+func cancel_action_delay_interaction() -> void:
+	"""
+	Called when an action delay is cancelled during interaction setup.
+	This cancels any pending interactions that were waiting for the delay to complete.
+	"""
+	print("InteractionComponent: Action delay cancelled, stopping interaction process")
+	
+	# Cancel the interaction if we're in the middle of setting one up
+	if is_interacting:
+		cancel_interaction()
+	
+	# TODO: Add cancellation logic for specific interaction types here
+	# Examples for future implementation:
+	# - Container interactions: Already handled above
+	# - Consumable usage from containers: cancel_consumable_interaction()
+	# - Item crafting at workbenches: cancel_crafting_interaction()
+	# - NPC dialogue that requires action delays: cancel_dialogue_interaction()
+
+func _on_action_cancelled(action_type: String) -> void:
+	"""
+	Called when any action is cancelled via the action cancellation system.
+	This allows components to respond to specific action type cancellations.
+	"""
+	print("InteractionComponent: Action cancelled - type: %s" % action_type)
+	
+	match action_type:
+		"interaction":
+			# Handle interaction-specific cancellation
+			cancel_action_delay_interaction()
+		"consumable":
+			# TODO: Handle consumable usage cancellation
+			# Example: cancel_consumable_interaction()
+			print("InteractionComponent: Consumable action cancelled - implement cancellation logic here")
+		"crafting":
+			# TODO: Handle crafting action cancellation 
+			# Example: cancel_crafting_interaction()
+			print("InteractionComponent: Crafting action cancelled - implement cancellation logic here")
+		_:
+			# Handle unknown action types or generic cancellation
+			print("InteractionComponent: Unknown action type cancelled: %s" % action_type)
+
 func receive_inventory(inventory_component: InventoryComponent) -> void:
 	if container_inv_comp == inventory_component:
 		return # already open

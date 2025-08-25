@@ -8,6 +8,7 @@ signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
 signal action_delay_started(seconds: float, cancellable: bool)
 signal action_delay_completed
 signal action_delay_cancelled
+signal action_cancelled(action_type: String)
 
 @export var speed := 5.0
 @export var sprint_speed_modifier := 1.8
@@ -33,6 +34,7 @@ var is_aiming := false
 # Action delay state
 var is_action_delayed := false
 var action_delay_cancellable := false
+var current_action_type := ""  # Track the type of action currently being delayed
 var action_delay_timer: Timer
 
 @onready var player_controller: PlayerController = $PlayerController
@@ -113,6 +115,9 @@ func _ready() -> void:
 	# Hook up InteractionComponent -> InventoryUI
 	interaction_component.connect("container_inventory_received", _on_container_inventory_received)
 	interaction_component.connect("container_inventory_closed", _on_container_inventory_closed)
+	
+	# Connect action cancellation signal to interaction component
+	connect("action_cancelled", interaction_component._on_action_cancelled)
 	
 	# Set camera rig target to self
 	camera_rig.set_target(self)
@@ -272,11 +277,11 @@ func _on_test_input_event(test_type: String) -> void:
 			print("Removing 1 bandage")
 			inventory_component.remove_item(ItemDatabase.get_item("cons_bandage"), 1)
 		"test_action_delay_short":
-			print(">>> Testing short action delay (2s, cancellable)")
-			action_delay(2.0, true)
+			print(">>> Testing short action delay (2s, cancellable, test type)")
+			action_delay(2.0, true, "test")
 		"test_action_delay_long":
-			print(">>> Testing long action delay (5s, non-cancellable)")
-			action_delay(5.0, false)
+			print(">>> Testing long action delay (5s, non-cancellable, test type)")
+			action_delay(5.0, false, "test")
 		_:
 			print("invalid test type: %s" % test_type)
 
@@ -367,7 +372,7 @@ func _on_weapon_unequipped(slot_idx: int) -> void:
 func _on_interact_with_delay() -> void:
 	print("Player: Interact input received - starting interaction delay")
 	# Start action delay for interaction (1.5 seconds, cancellable)
-	action_delay(1.5, true)
+	action_delay(1.5, true, "interaction")
 	# Connect to delay completion to actually do the interaction
 	if not action_delay_completed.is_connected(_perform_interact):
 		action_delay_completed.connect(_perform_interact, CONNECT_ONE_SHOT)
@@ -380,6 +385,23 @@ func _perform_interact() -> void:
 
 func _cancel_interact() -> void:
 	print("Player: Interaction was cancelled")
+	
+	# Cancel any ongoing interactions with components
+	interaction_component.cancel_action_delay_interaction()
+	
+	# TODO: Add cancellation logic for other action types here
+	# The action_cancelled signal will be emitted with the specific action type,
+	# allowing components to handle their own cancellation logic.
+	# 
+	# Examples for future implementation:
+	# - Consumable usage: Use action_delay(time, true, "consumable") and handle in components
+	# - Weapon reloading: Use action_delay(time, true, "reload") and connect weapon_component
+	# - Crafting actions: Use action_delay(time, true, "crafting") and handle in crafting system
+	# - Spellcasting: Use action_delay(time, true, "spell") and handle in magic system
+	#
+	# Components should connect to the action_cancelled signal like this:
+	# connect("action_cancelled", component._on_action_cancelled)
+	
 	# Disconnect signals if they're still connected
 	if action_delay_completed.is_connected(_perform_interact):
 		action_delay_completed.disconnect(_perform_interact)
@@ -415,15 +437,32 @@ func pickup_item(item: ItemData, quantity: int) -> int:
 
 
 # Action delay system
-func action_delay(seconds: float, cancellable: bool = true) -> void:
+#
+# This system provides a unified way to handle delayed actions with cancellation support.
+# 
+# Usage:
+# 1. Call action_delay(duration, cancellable, "action_type") to start a delay
+# 2. Connect action_delay_completed signal to perform the action after delay
+# 3. Connect action_delay_cancelled signal to handle cancellation cleanup  
+# 4. Components can connect to action_cancelled(action_type) to handle specific cancellations
+#
+# The action_type parameter allows different systems to respond appropriately to cancellations:
+# - "interaction": For container/NPC interactions 
+# - "consumable": For eating/drinking items
+# - "reload": For weapon reloading
+# - "crafting": For item crafting
+# - "spell": For magic spellcasting
+# - etc.
+func action_delay(seconds: float, cancellable: bool = true, action_type: String = "") -> void:
 	if is_action_delayed:
 		print("Player: Action delay already in progress, cancelling previous delay")
 		_cancel_action_delay()
 	
-	print("Player: Starting action delay for %s seconds (cancellable: %s)" % [seconds, cancellable])
+	print("Player: Starting action delay for %s seconds (cancellable: %s, type: %s)" % [seconds, cancellable, action_type])
 	_disengage_aiming()  # Disengage aiming when action delay starts
 	is_action_delayed = true
 	action_delay_cancellable = cancellable
+	current_action_type = action_type
 	action_delay_timer.wait_time = seconds
 	action_delay_timer.start()
 	
@@ -450,6 +489,11 @@ func _on_cancel_action_delay() -> void:
 
 func _cancel_action_delay() -> void:
 	action_delay_timer.stop()
+	# Emit action-specific cancellation signal before cleanup to notify other components
+	if current_action_type != "":
+		emit_signal("action_cancelled", current_action_type)
+	# Emit general cancellation signal
+	emit_signal("action_delay_cancelled")
 	_on_action_delay_timeout()
 
 
@@ -457,6 +501,7 @@ func _on_action_delay_timeout() -> void:
 	print("Player: Action delay completed")
 	is_action_delayed = false
 	action_delay_cancellable = false
+	current_action_type = ""  # Clear the action type
 	
 	# Re-enable input
 	player_controller.set_action_delay_active(false)
