@@ -111,8 +111,8 @@ func _ready() -> void:
 	camera_rig.set_target(self)
 	
 	# Enable input
-	rotation_enabled = true
-	movement_enabled = true
+	set_movement_enabled(true)
+	set_rotation_enabled(true)
 
 
 func _physics_process(delta) -> void:
@@ -393,8 +393,8 @@ func action_delay(seconds: float, cancellable: bool = true) -> void:
 	action_delay_timer.start()
 	
 	# Disable input during delay
-	movement_enabled = false
-	rotation_enabled = false
+	set_movement_enabled(false)
+	set_rotation_enabled(false)
 	player_controller.set_action_delay_active(true)
 	
 	# Notify HUD and other systems
@@ -425,8 +425,8 @@ func _on_action_delay_timeout() -> void:
 	
 	# Re-enable input
 	player_controller.set_action_delay_active(false)
-	movement_enabled = true
-	rotation_enabled = true
+	set_movement_enabled(true)
+	set_rotation_enabled(true)
 	
 	# Notify systems
 	emit_signal("action_delay_completed")
