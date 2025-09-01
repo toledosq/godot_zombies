@@ -58,9 +58,8 @@ func _gui_input(event: InputEvent) -> void:
 				_handle_shift_click()
 
 func _handle_shift_click() -> void:
-	# Only allow shift-click when there's a container open
 	var inventory_ui = get_tree().get_first_node_in_group("inventory_ui") as InventoryUI
-	if not inventory_ui or not inventory_ui.container_inv_component:
+	if not inventory_ui:
 		return
 	
 	# Check if this slot has an item
@@ -70,20 +69,26 @@ func _handle_shift_click() -> void:
 	if not slot.item:
 		return
 	
-	# Determine target inventory component based on current slot's inventory
-	var target_inv_comp: InventoryComponent
-	if inv_comp == inventory_ui.player_inv_component:
-		# Player slot clicked -> transfer to container
-		target_inv_comp = inventory_ui.container_inv_component
-	elif inv_comp == inventory_ui.container_inv_component:
-		# Container slot clicked -> transfer to player
-		target_inv_comp = inventory_ui.player_inv_component
-	else:
-		# Unknown inventory type
-		return
+	# Case 1: Container is open -> transfer between inventories
+	if inventory_ui.container_inv_component:
+		# Determine target inventory component based on current slot's inventory
+		var target_inv_comp: InventoryComponent
+		if inv_comp == inventory_ui.player_inv_component:
+			# Player slot clicked -> transfer to container
+			target_inv_comp = inventory_ui.container_inv_component
+		elif inv_comp == inventory_ui.container_inv_component:
+			# Container slot clicked -> transfer to player
+			target_inv_comp = inventory_ui.player_inv_component
+		else:
+			# Unknown inventory type
+			return
+		
+		# Perform the auto-transfer using the existing transfer logic
+		_auto_transfer_to_inventory(target_inv_comp)
 	
-	# Perform the auto-transfer using the existing transfer logic
-	_auto_transfer_to_inventory(target_inv_comp)
+	# Case 2: No container open, weapon clicked -> auto-equip weapon
+	elif slot.item is WeaponData and inv_comp == inventory_ui.player_inv_component:
+		_auto_equip_weapon(slot.item as WeaponData)
 
 func _auto_transfer_to_inventory(target_inv_comp: InventoryComponent) -> void:
 	# Find the best destination slot using inventory's built-in logic
@@ -113,6 +118,63 @@ func _auto_transfer_to_inventory(target_inv_comp: InventoryComponent) -> void:
 		target_inv_comp.emit_signal("item_added", result.index, src_slot.item, transferred)
 		
 		print("Auto-transferred %d %s" % [transferred, src_slot.item.display_name if src_slot.item else "items"])
+
+func _auto_equip_weapon(weapon: WeaponData) -> void:
+	var inventory_ui = get_tree().get_first_node_in_group("inventory_ui") as InventoryUI
+	if not inventory_ui or not inventory_ui.player_weapon_component:
+		return
+	
+	var weapon_comp = inventory_ui.player_weapon_component
+	var weapon_inventory = weapon_comp.inventory
+	
+	# Find the best slot to equip the weapon
+	var target_slot_idx = _find_best_weapon_slot(weapon_comp)
+	if target_slot_idx == -1:
+		print("Cannot auto-equip weapon - no available slots")
+		return
+	
+	var target_slot = weapon_inventory.slots[target_slot_idx]
+	var src_slot = inventory.slots[slot_index]
+	
+	# If target slot has a weapon, swap it back to player inventory
+	if target_slot.item:
+		var displaced_weapon = target_slot.item
+		# Try to add the displaced weapon back to player inventory
+		var result = inv_comp.inventory.add_item(displaced_weapon, 1)
+		if result.added == 0:
+			print("Cannot auto-equip - inventory full, cannot swap weapons")
+			return
+		
+		# Remove the displaced weapon from weapon slot
+		target_slot.item = null
+		target_slot.quantity = 0
+		weapon_comp.emit_signal("item_removed", target_slot_idx, displaced_weapon, 1)
+	
+	# Move weapon from inventory to weapon slot
+	target_slot.item = weapon
+	target_slot.quantity = 1
+	
+	# Remove from player inventory
+	src_slot.item = null
+	src_slot.quantity = 0
+	
+	# Emit signals for UI updates
+	weapon_comp.emit_signal("item_added", target_slot_idx, weapon, 1)
+	inv_comp.emit_signal("item_removed", slot_index, weapon, 1)
+	
+	print("Auto-equipped %s to weapon slot %d" % [weapon.display_name, target_slot_idx])
+
+func _find_best_weapon_slot(weapon_comp: WeaponComponent) -> int:
+	var weapon_inventory = weapon_comp.inventory
+	
+	# First, try to find an empty slot
+	for i in weapon_inventory.max_slots:
+		var slot = weapon_inventory.slots[i]
+		if not slot.item:
+			return i
+	
+	# If no empty slots, use the active slot for replacement
+	return weapon_comp.active_slot
 
 # Drag & Drop hooks
 func _get_drag_data(_position: Vector2) -> Variant:
