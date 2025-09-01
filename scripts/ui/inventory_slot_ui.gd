@@ -49,6 +49,71 @@ func refresh() -> void:
 func _on_inventory_changed(_index: int, _item: ItemData, _qty: int) -> void:
 	refresh()
 
+# Handle mouse input for shift-click auto-transfer
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if Input.is_key_pressed(KEY_SHIFT):
+				_handle_shift_click()
+
+func _handle_shift_click() -> void:
+	# Only allow shift-click when there's a container open
+	var inventory_ui = get_tree().get_first_node_in_group("inventory_ui") as InventoryUI
+	if not inventory_ui or not inventory_ui.container_inv_component:
+		return
+	
+	# Check if this slot has an item
+	if slot_index >= inventory.slots.size():
+		return
+	var slot = inventory.slots[slot_index]
+	if not slot.item:
+		return
+	
+	# Determine target inventory component based on current slot's inventory
+	var target_inv_comp: InventoryComponent
+	if inv_comp == inventory_ui.player_inv_component:
+		# Player slot clicked -> transfer to container
+		target_inv_comp = inventory_ui.container_inv_component
+	elif inv_comp == inventory_ui.container_inv_component:
+		# Container slot clicked -> transfer to player
+		target_inv_comp = inventory_ui.player_inv_component
+	else:
+		# Unknown inventory type
+		return
+	
+	# Perform the auto-transfer using the existing transfer logic
+	_auto_transfer_to_inventory(target_inv_comp)
+
+func _auto_transfer_to_inventory(target_inv_comp: InventoryComponent) -> void:
+	# Find the best destination slot using inventory's built-in logic
+	var src_slot = inventory.slots[slot_index]
+	if not src_slot.item:
+		return
+	
+	# Use the target inventory's add_item method to find optimal placement
+	var target_inventory = target_inv_comp.inventory
+	if not target_inventory.has_space_for(src_slot.item, src_slot.quantity):
+		print("Cannot transfer - target inventory full")
+		return
+	
+	# Try to add the item to the target inventory
+	var result = target_inventory.add_item(src_slot.item, src_slot.quantity)
+	var transferred = result.added
+	
+	if transferred > 0:
+		# Remove the transferred amount from source
+		src_slot.quantity -= transferred
+		if src_slot.quantity <= 0:
+			src_slot.item = null
+			src_slot.quantity = 0
+		
+		# Emit signals so both UIs refresh
+		inv_comp.emit_signal("item_removed", slot_index, src_slot.item, transferred)
+		target_inv_comp.emit_signal("item_added", result.index, src_slot.item, transferred)
+		
+		print("Auto-transferred %d %s" % [transferred, src_slot.item.display_name if src_slot.item else "items"])
+
 # Drag & Drop hooks
 func _get_drag_data(_position: Vector2) -> Variant:
 	if slot_index >= inventory.slots.size(): return null
