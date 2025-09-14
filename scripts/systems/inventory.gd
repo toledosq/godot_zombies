@@ -18,7 +18,7 @@ func has_space_for(item: ItemData, quantity: int = 1) -> bool:
 
 	# 1) Fill existing partial stacks
 	for slot in slots:
-		if slot.item == item and slot.quantity < item.max_stack:
+		if slot.item != null and slot.item.is_same_item_type(item) and slot.quantity < item.max_stack:
 			var space = item.max_stack - slot.quantity
 			remaining -= min(space, remaining)
 			if remaining <= 0:
@@ -42,7 +42,7 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 
 	# 1) Top up existing stacks
 	for slot in slots:
-		if slot.item == item and slot.quantity < item.max_stack:
+		if slot.item != null and slot.item.is_same_item_type(item) and slot.quantity < item.max_stack:
 			var space = item.max_stack - slot.quantity
 			var to_add = min(space, remaining)
 			slot.quantity += to_add
@@ -78,7 +78,7 @@ func remove_item(item: ItemData, quantity: int = 1) -> Dictionary:
 		# Track which slot is being tried
 		changed_index = i-1
 		var slot = slots[changed_index]
-		if slot.item == item:
+		if slot.item != null and slot.item.is_same_item_type(item):
 			if slot.quantity > remaining:
 				slot.quantity -= remaining
 				remaining = 0
@@ -111,6 +111,13 @@ func _ensure_slots_length() -> void:
 	# Trim extras if max_slots got smaller
 	while slots.size() > max_slots:
 		slots.pop_back()
+
+func get_quantity(item: ItemData) -> int:
+	var total = 0
+	for slot in slots:
+		if slot.item != null and slot.item.is_same_item_type(item):
+			total += slot.quantity
+	return total
 
 func print_slot_members() -> Array:
 	var pa_: Array = []

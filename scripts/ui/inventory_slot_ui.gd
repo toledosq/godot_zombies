@@ -258,7 +258,7 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 		dst_slot.quantity = moved
 	
 	# 2b) same item in target slot -> top off existing stack
-	elif dst_slot.item == src_slot.item:
+	elif dst_slot.item != null and dst_slot.item.is_same_item_type(src_slot.item):
 		var space = dst_slot.item.max_stack - dst_slot.quantity
 		moved = min(space, src_slot.quantity)
 		dst_slot.quantity += moved

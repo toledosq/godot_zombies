@@ -25,3 +25,8 @@ class_name ItemData
 @export var recipe_id: String
 @export var recyclable: bool
 @export var recyclable_id: String
+
+# Helper function to check if two items are the same type (by ID)
+# This is needed since we now use duplicated instances instead of shared references
+func is_same_item_type(other: ItemData) -> bool:
+	return other != null and self.id == other.id
