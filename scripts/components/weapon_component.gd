@@ -4,6 +4,7 @@ signal active_weapon_changed(slot_idx: int, weapon: WeaponData)
 signal request_ammo(type: String, amount: int)
 signal reload_started
 signal reload_complete
+signal ammo_changed(slot_idx: int, current_ammo: int, max_ammo: int)
 
 @export var active_slot: int = 0
 @export var combat_component: Node3D
@@ -37,16 +38,29 @@ func update_active_slot() -> void:
 	var w = inventory.slots[active_slot]
 	active_slot_weapon = w.item
 	emit_signal("active_weapon_changed", active_slot, active_slot_weapon)
+	
+	# Also emit ammo changed signal for proper UI updates
+	if active_slot_weapon and active_slot_weapon is WeaponData:
+		var weapon = active_slot_weapon as WeaponData
+		emit_signal("ammo_changed", active_slot, weapon.current_ammo, weapon.mag_size)
 
 func _on_item_added(idx: int, _item: ItemData, _qty: int) -> void:
 	if idx == active_slot:
 		print("WeaponComponent: Weapon equipped in active slot (%d | %d)" % [idx, active_slot])
 		update_active_slot()
+	else:
+		# Emit ammo signal for non-active slots too
+		if _item and _item is WeaponData:
+			var weapon = _item as WeaponData
+			emit_signal("ammo_changed", idx, weapon.current_ammo, weapon.mag_size)
 
 func _on_item_removed(idx: int, _item: ItemData, _qty: int) -> void:
 	if idx == active_slot:
 		print("WeaponComponent: Weapon unequipped in active slot (%d | %d)" % [idx, active_slot])
 		update_active_slot()
+	else:
+		# Emit ammo signal for cleared non-active slots too
+		emit_signal("ammo_changed", idx, 0, 0)
 
 ## OVERRIDE ADD_ITEM TO ALLOW CUSTOM BEHAVIOR
 func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
@@ -116,6 +130,9 @@ func _on_received_ammo(received: int) -> void:
 	# Add ammo to weapon magazine
 	active_slot_weapon.current_ammo += received
 	
+	# Emit ammo changed signal
+	emit_signal("ammo_changed", active_slot, active_slot_weapon.current_ammo, active_slot_weapon.mag_size)
+	
 	# Reload finished, allow changing active slots
 	reload_complete.emit()
 	print("WeaponComponent: Reload complete - %d/%d" % [active_slot_weapon.current_ammo, active_slot_weapon.mag_size])
@@ -161,6 +178,8 @@ func try_attack() -> bool:
 		can_fire = false
 		await combat_component.attack_ranged()
 		active_slot_weapon.current_ammo -= 1
+		# Emit ammo changed signal
+		emit_signal("ammo_changed", active_slot, active_slot_weapon.current_ammo, active_slot_weapon.mag_size)
 		print("WeaponComponent: Ammo remaining: %d/%d" % [active_slot_weapon.current_ammo, active_slot_weapon.mag_size])
 		can_fire = true
 		return true

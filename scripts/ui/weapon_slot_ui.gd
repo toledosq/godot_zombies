@@ -10,6 +10,12 @@ func setup(component: InventoryComponent) -> void:
 	inv_comp.connect("item_removed", _on_inventory_changed)
 	inv_comp.connect("inventory_full", Callable(self, "_on_inventory_full"))
 	
+	# Connect to weapon-specific signals if this is a WeaponComponent
+	if component is WeaponComponent:
+		var weapon_comp = component as WeaponComponent
+		weapon_comp.connect("ammo_changed", _on_ammo_changed)
+		weapon_comp.connect("active_weapon_changed", _on_active_weapon_changed)
+	
 	refresh()
 
 ### OVERRIDES IventorySlotUI.refresh() to allow custom behavior
@@ -21,7 +27,7 @@ func refresh() -> void:
 	
 	if slot and weapon and icon:
 		icon.texture = weapon.icon
-		count_label.text = ("%d/%d" % [weapon.current_ammo, weapon.mag_size]) # TODO: Change this to current ammo
+		count_label.text = ("%d/%d" % [weapon.current_ammo, weapon.mag_size])
 		tooltip_text = weapon.display_name
 	else:
 		if icon:
@@ -41,6 +47,17 @@ func _can_drop_data(_position: Vector2, data: Variant) -> bool:
 
 func _on_inventory_changed(_index: int, _item: ItemData, _qty: int) -> void:
 	print("WeaponSlotUI: Refreshing slot %d" % slot_index)
+	refresh()
+
+func _on_ammo_changed(changed_slot_idx: int, current_ammo: int, max_ammo: int) -> void:
+	# Only refresh if this is the slot that changed
+	if changed_slot_idx == slot_index:
+		print("WeaponSlotUI: Ammo changed for slot %d: %d/%d" % [slot_index, current_ammo, max_ammo])
+		refresh()
+
+func _on_active_weapon_changed(changed_slot_idx: int, weapon: WeaponData) -> void:
+	# Refresh all weapon slots when active weapon changes to update display
+	print("WeaponSlotUI: Active weapon changed, refreshing slot %d" % slot_index)
 	refresh()
 
 ### OVERRIDES InventorySlotUI._handle_shift_click() for weapon-specific behavior
