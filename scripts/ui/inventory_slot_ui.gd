@@ -211,10 +211,37 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 	
 	# 1) Same inventory -> swap slots
 	if src_comp == dst_comp:
-		# Simple swap within inventory
+		# Store the items before swapping to emit correct signals
+		# This is crucial for proper HUD updates during weapon swaps
+		var src_slot = src_comp.inventory.slots[src_idx]
+		var dst_slot = dst_comp.inventory.slots[dst_idx]
+		var src_item = src_slot.item
+		var dst_item = dst_slot.item
+		var src_qty = src_slot.quantity
+		var dst_qty = dst_slot.quantity
+		
+		# Perform the actual swap in the inventory
 		src_comp.inventory.swap_slots(src_idx, dst_idx)
-		src_comp.emit_signal("item_removed", src_idx, null, 0)
-		dst_comp.emit_signal("item_added", dst_idx, dst_comp.inventory.slots[dst_idx].item, 0)
+		
+		# Emit proper signals for both slots after the swap
+		# This ensures both the inventory UI and player HUD update correctly
+		
+		# Update the source slot (now contains what was in destination)
+		if dst_item:
+			src_comp.emit_signal("item_added", src_idx, dst_item, dst_qty)
+		else:
+			src_comp.emit_signal("item_removed", src_idx, src_item, src_qty)
+		
+		# Update the destination slot (now contains what was in source)
+		if src_item:
+			dst_comp.emit_signal("item_added", dst_idx, src_item, src_qty)
+		else:
+			dst_comp.emit_signal("item_removed", dst_idx, dst_item, dst_qty)
+		
+		print("Swapped weapons: slot %d (%s) <-> slot %d (%s)" % [
+			src_idx, src_item.display_name if src_item else "empty",
+			dst_idx, dst_item.display_name if dst_item else "empty"
+		])
 		return
 	
 	# 2) Cross-inventory -> direct placement
