@@ -19,6 +19,8 @@ var container_inv_component: InventoryComponent
 func _ready() -> void:
 	visible = false
 	container_grid.visible = false # Hide until a container is opened
+	# Add to group so inventory slots can find this UI
+	add_to_group("inventory_ui")
 
 
 func setup_player_grid(component: InventoryComponent) -> void:
