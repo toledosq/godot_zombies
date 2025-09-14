@@ -18,6 +18,9 @@ var action_delay_timer: Timer
 var action_delay_total_time: float
 var action_delay_is_cancellable: bool
 
+# Active weapon slot tracking
+var current_active_slot: int = 0  # Track which weapon slot is currently active
+
 
 func _ready():
 	# Setup action delay timer
@@ -36,6 +39,9 @@ func _ready():
 	# Connect to viewport resize for dynamic scaling
 	get_viewport().connect("size_changed", _update_hud_layout)
 	
+	# Initialize the active weapon slot visual feedback (slot 0 is default active)
+	call_deferred("_initialize_active_slot")
+	
 	# Init crosshair
 	if not crosshair_texture:
 		crosshair_texture = default_crosshair_texture
@@ -51,7 +57,7 @@ func _on_weapon_equipped(slot_idx: int, weapon_data: WeaponData):
 
 func _on_weapon_unequipped(slot_idx: int):
 	print("HUD: weapon unequipped from slot %d" % slot_idx)
-	var panel = weapon_container.get_child(slot_idx)
+	var panel: HUDPanel = weapon_container.get_child(slot_idx)
 	panel.clear_icon_texture()
 
 func _update_hud_layout():
@@ -87,10 +93,16 @@ func _on_energy_changed(_player_id: int, value: int, max_value: int):
 func _on_player_died(_player_id):
 	print("HUD: Player died!")
 
-func _on_active_weapon_changed(_slot_idx: int, _weapon_data: WeaponData) -> void:
-	# 1) Swap the crosshair texture
-	# set_crosshair_texture(weapon_data.crosshair)
-	pass
+func _on_active_weapon_changed(slot_idx: int, weapon_data: WeaponData) -> void:
+	# Update the active slot tracking and visual feedback
+	# This works even if weapon_data is null (empty slot)
+	_update_active_weapon_slot(slot_idx)
+	
+	# Future: Swap the crosshair texture based on weapon
+	# if weapon_data:
+	#     set_crosshair_texture(weapon_data.crosshair)
+	# else:
+	#     set_crosshair_texture(default_crosshair_texture)
 
 func _on_mouse_mode_changed(mode: Input.MouseMode) -> void:
 	match mode:
@@ -103,6 +115,94 @@ func set_crosshair_texture(tex: Texture2D):
 	crosshair_texture = tex
 	# Call this to ensure the crosshair updates
 	_on_mouse_mode_changed(Input.mouse_mode)
+
+
+# Active weapon slot visual feedback system
+func _update_active_weapon_slot(new_active_slot: int) -> void:
+	"""
+	Updates the visual feedback for the active weapon slot.
+	Removes the orange border from the previous active slot and adds it to the new active slot.
+	"""
+	print("HUD: Updating active weapon slot from %d to %d" % [current_active_slot, new_active_slot])
+	
+	# Remove active border from previous slot
+	_set_weapon_slot_active(current_active_slot, false)
+	
+	# Add active border to new slot
+	_set_weapon_slot_active(new_active_slot, true)
+	
+	# Update tracking variable
+	current_active_slot = new_active_slot
+
+
+func _set_weapon_slot_active(slot_idx: int, is_active: bool) -> void:
+	"""
+	Sets the active visual state for a specific weapon slot.
+	Adds or removes an orange border to indicate the active slot.
+	"""
+	# Check if weapon_container exists
+	if not weapon_container:
+		print("HUD: weapon_container is null, cannot set active slot")
+		return
+	
+	# Ensure the slot index is valid
+	if slot_idx < 0 or slot_idx >= weapon_container.get_child_count():
+		print("HUD: Invalid weapon slot index: %d (total children: %d)" % [slot_idx, weapon_container.get_child_count()])
+		return
+	
+	# Get the weapon panel for this slot
+	var panel: Panel = weapon_container.get_child(slot_idx) as Panel
+	if not panel:
+		print("HUD: Could not find weapon panel for slot %d" % slot_idx)
+		return
+	
+	print("HUD: Found panel of type: %s for slot %d" % [panel.get_class(), slot_idx])
+	
+	# Apply or remove the active border styling
+	if is_active:
+		# Add orange border to indicate active slot
+		panel.add_theme_stylebox_override("panel", _create_active_slot_style())
+		print("HUD: Added active border to weapon slot %d" % slot_idx)
+	else:
+		# Remove the border styling (return to default)
+		panel.remove_theme_stylebox_override("panel")
+		print("HUD: Removed active border from weapon slot %d" % slot_idx)
+
+
+func _create_active_slot_style() -> StyleBox:
+	"""
+	Creates a StyleBox with an orange border for the active weapon slot.
+	This provides clear visual feedback about which slot is currently active.
+	"""
+	var style = StyleBoxFlat.new()
+	
+	# Set orange border properties
+	style.border_width_left = 3
+	style.border_width_right = 3
+	style.border_width_top = 3
+	style.border_width_bottom = 3
+	style.border_color = Color.ORANGE
+	
+	# Make the background transparent so only the border shows
+	style.bg_color = Color.TRANSPARENT
+	
+	return style
+
+
+func _initialize_active_slot() -> void:
+	"""
+	Initializes the active weapon slot visual feedback after the HUD is fully set up.
+	This is called deferred to ensure all child nodes are ready.
+	"""
+	# Check if weapon_container has children before initializing
+	if not weapon_container or weapon_container.get_child_count() == 0:
+		print("HUD: Weapon container not ready yet, retrying initialization...")
+		call_deferred("_initialize_active_slot")
+		return
+	
+	# Set the initial active slot (slot 0) with visual feedback
+	_set_weapon_slot_active(current_active_slot, true)
+	print("HUD: Initialized active weapon slot %d with visual feedback" % current_active_slot)
 
 
 # Action delay system
