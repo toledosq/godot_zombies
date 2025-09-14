@@ -15,10 +15,10 @@
     - drop items
     - use items
   - Extend HUD functionality
-    - Hotkeys to use quickslot items
-    - Highlight active weapon slot
-    - Track Vitals
-    - Show current ammo, durability, etc. for weapons
+    - [ ] Hotkeys to use quickslot items
+    - [x] Highlight active weapon slot
+    - [ ] Track Vitals
+    - [x] Show current ammo, durability, etc. for weapons
   - Extend Camera Control and Combat systems
     - Two-phase camera-ray approach for aiming
     - Abstraction of combat mechanics to allow for different weapon types (shotguns, projectiles, etc.)
