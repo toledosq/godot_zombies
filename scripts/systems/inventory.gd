@@ -57,7 +57,7 @@ func add_item(item: ItemData, quantity: int = 1) -> Dictionary:
 			break
 		if slot.item == null:
 			var to_add = min(item.max_stack, remaining)
-			slot.item = item
+			slot.item = item.duplicate(true)  # Create unique instance
 			slot.quantity = to_add
 			added += to_add
 			remaining -= to_add

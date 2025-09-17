@@ -102,7 +102,7 @@ func _auto_transfer_to_inventory(target_inv_comp: InventoryComponent) -> void:
 		print("Cannot transfer - target inventory full")
 		return
 	
-	# Try to add the item to the target inventory
+	# Try to add the item to the target inventory (duplication will happen in add_item)
 	var result = target_inventory.add_item(src_slot.item, src_slot.quantity)
 	var transferred = result.added
 	
@@ -139,7 +139,7 @@ func _auto_equip_weapon(weapon: WeaponData) -> void:
 	# If target slot has a weapon, swap it back to player inventory
 	if target_slot.item:
 		var displaced_weapon = target_slot.item
-		# Try to add the displaced weapon back to player inventory
+		# Try to add the displaced weapon back to player inventory (duplication will happen in add_item)
 		var result = inv_comp.inventory.add_item(displaced_weapon, 1)
 		if result.added == 0:
 			print("Cannot auto-equip - inventory full, cannot swap weapons")
@@ -150,8 +150,8 @@ func _auto_equip_weapon(weapon: WeaponData) -> void:
 		target_slot.quantity = 0
 		weapon_comp.emit_signal("item_removed", target_slot_idx, displaced_weapon, 1)
 	
-	# Move weapon from inventory to weapon slot
-	target_slot.item = weapon
+	# Move weapon from inventory to weapon slot (create unique instance)
+	target_slot.item = weapon.duplicate(true)
 	target_slot.quantity = 1
 	
 	# Remove from player inventory
@@ -254,7 +254,7 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 	var moved = 0
 	if dst_slot.item == null:
 		moved = min(src_slot.quantity, src_slot.item.max_stack)
-		dst_slot.item = src_slot.item
+		dst_slot.item = src_slot.item.duplicate(true)  # Create unique instance
 		dst_slot.quantity = moved
 	
 	# 2b) same item in target slot -> top off existing stack
@@ -267,9 +267,9 @@ func _drop_data(_position: Vector2, data: Variant) -> void:
 	else:
 		var tmp_item = dst_slot.item
 		var tmp_qty = dst_slot.quantity
-		dst_slot.item = src_slot.item
+		dst_slot.item = src_slot.item.duplicate(true)  # Create unique instance
 		dst_slot.quantity = src_slot.quantity
-		src_slot.item = tmp_item
+		src_slot.item = tmp_item.duplicate(true) if tmp_item else null  # Create unique instance
 		src_slot.quantity = tmp_qty
 		moved = dst_slot.quantity
 		
