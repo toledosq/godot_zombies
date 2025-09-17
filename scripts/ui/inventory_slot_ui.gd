@@ -35,7 +35,14 @@ func refresh() -> void:
 	
 	if slot and slot.item and icon:
 		icon.texture = slot.item.icon
-		count_label.text = str(slot.quantity)
+		
+		# Check if item is a weapon and show ammo instead of quantity
+		if slot.item is WeaponData:
+			var weapon = slot.item as WeaponData
+			count_label.text = ("%d/%d" % [weapon.current_ammo, weapon.mag_size])
+		else:
+			count_label.text = str(slot.quantity)
+		
 		tooltip_text = slot.item.display_name
 	else:
 		if icon:
