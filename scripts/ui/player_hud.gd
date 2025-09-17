@@ -61,13 +61,28 @@ func _ready():
 
 func _on_weapon_equipped(slot_idx: int, weapon_data: WeaponData):
 	print("HUD: weapon equipped to slot %d" % slot_idx)
-	var panel: HUDPanel = weapon_container.get_child(slot_idx)
+	var panel: HUDWeaponPanel = weapon_container.get_child(slot_idx) as HUDWeaponPanel
 	panel.set_icon_texture(weapon_data.icon)
+	# Set initial ammo display
+	panel.set_weapon_ammo(weapon_data.current_ammo, weapon_data.mag_size)
 
 func _on_weapon_unequipped(slot_idx: int):
 	print("HUD: weapon unequipped from slot %d" % slot_idx)
-	var panel: HUDPanel = weapon_container.get_child(slot_idx)
-	panel.clear_icon_texture()
+	var panel: HUDWeaponPanel = weapon_container.get_child(slot_idx) as HUDWeaponPanel
+	panel.clear_weapon()
+
+func _on_ammo_changed(slot_idx: int, current_ammo: int, max_ammo: int) -> void:
+	print("HUD: Ammo changed for slot %d: %d/%d" % [slot_idx, current_ammo, max_ammo])
+	# Ensure slot index is valid
+	if slot_idx < 0 or slot_idx >= weapon_container.get_child_count():
+		print("HUD: Invalid weapon slot index for ammo update: %d" % slot_idx)
+		return
+	
+	var panel: HUDWeaponPanel = weapon_container.get_child(slot_idx) as HUDWeaponPanel
+	if panel:
+		panel.set_weapon_ammo(current_ammo, max_ammo)
+	else:
+		print("HUD: Could not find weapon panel for ammo update at slot %d" % slot_idx)
 
 func _update_hud_layout():
 	"""

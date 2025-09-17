@@ -102,6 +102,7 @@ func _ready() -> void:
 	weapon_component.connect("reload_started", _on_reload_started)
 	weapon_component.connect("reload_complete", _on_reload_complete)
 	weapon_component.connect("request_ammo", _on_request_ammo)
+	weapon_component.connect("ammo_changed", _on_ammo_changed)
 	weapon_component.combat_component = combat_component
 	weapon_component.set_active_slot(0)
 	
@@ -368,6 +369,10 @@ func _on_weapon_equipped(slot_idx: int, weapon: WeaponData) -> void:
 func _on_weapon_unequipped(slot_idx: int) -> void:
 	print("Player: weapon unequipped in slot %d" % slot_idx)
 	player_hud._on_weapon_unequipped(slot_idx)
+
+func _on_ammo_changed(slot_idx: int, current_ammo: int, max_ammo: int) -> void:
+	print("Player: Ammo changed for slot %d: %d/%d" % [slot_idx, current_ammo, max_ammo])
+	player_hud._on_ammo_changed(slot_idx, current_ammo, max_ammo)
 
 func _on_interact_with_delay() -> void:
 	print("Player: Interact input received - starting interaction delay")
