@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bsx78kuirtgkw"]
+[gd_scene load_steps=12 format=3 uid="uid://bsx78kuirtgkw"]
 
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://assets/icons/icon.svg" id="1_4om4p"]
 [ext_resource type="PackedScene" uid="uid://rtjawjiyu76x" path="res://scenes/props/BasicLootChest.tscn" id="2_uiovj"]
@@ -26,6 +26,12 @@ albedo_texture = ExtResource("1_4om4p")
 [sub_resource type="BoxShape3D" id="BoxShape3D_c8671"]
 size = Vector3(50, 1, 50)
 
+[sub_resource type="BoxMesh" id="BoxMesh_uiovj"]
+size = Vector3(5, 5, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c84sd"]
+size = Vector3(5, 5, 10)
+
 [node name="World_Overworld" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -49,7 +55,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_wn2kh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
 shape = SubResource("BoxShape3D_c8671")
 
-[node name="BasicLootChest" parent="Geometry" instance=ExtResource("2_uiovj")]
+[node name="Platform" type="MeshInstance3D" parent="Geometry"]
+transform = Transform3D(-4.3711385e-08, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -4.3711385e-08, 8.546961, 2.5, -10.153364)
+mesh = SubResource("BoxMesh_uiovj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/Platform"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Platform/StaticBody3D"]
+shape = SubResource("BoxShape3D_c84sd")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="BasicLootChest" parent="Props" instance=ExtResource("2_uiovj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 4.049)
 
 [node name="Actors" type="Node3D" parent="."]
