@@ -1,8 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsx78kuirtgkw"]
+[gd_scene load_steps=16 format=3 uid="uid://bsx78kuirtgkw"]
 
 [ext_resource type="Texture2D" uid="uid://bksny4u3uu7h7" path="res://assets/icons/icon.svg" id="1_4om4p"]
 [ext_resource type="PackedScene" uid="uid://rtjawjiyu76x" path="res://scenes/props/BasicLootChest.tscn" id="2_uiovj"]
 [ext_resource type="PackedScene" uid="uid://c0k8epncbheod" path="res://scenes/characters/BasicEnemy.tscn" id="3_c84sd"]
+[ext_resource type="PackedScene" uid="uid://16wl1tmbi4fu" path="res://assets/models/roads/road-straight.glb" id="4_c84sd"]
+[ext_resource type="PackedScene" uid="uid://c41yxva6d1pw8" path="res://assets/models/buildings/building-i.glb" id="5_g4u0l"]
+[ext_resource type="PackedScene" uid="uid://paoe2gt143f4" path="res://assets/models/roads/road-driveway-single.glb" id="5_iif3d"]
+[ext_resource type="PackedScene" uid="uid://of4n3vkrb85v" path="res://assets/models/buildings/building-g.glb" id="6_iavnc"]
+[ext_resource type="PackedScene" uid="uid://c5ybu4cu7wqho" path="res://assets/models/roads/tile-low.glb" id="6_lr1no"]
+[ext_resource type="PackedScene" uid="uid://blwtcysvyl7gh" path="res://assets/models/buildings/building-l.glb" id="9_cyhkh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c8671"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -25,12 +31,6 @@ albedo_texture = ExtResource("1_4om4p")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c8671"]
 size = Vector3(50, 1, 50)
-
-[sub_resource type="BoxMesh" id="BoxMesh_uiovj"]
-size = Vector3(5, 5, 10)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_c84sd"]
-size = Vector3(5, 5, 10)
 
 [node name="World_Overworld" type="Node3D"]
 
@@ -55,14 +55,50 @@ surface_material_override/0 = SubResource("StandardMaterial3D_wn2kh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
 shape = SubResource("BoxShape3D_c8671")
 
-[node name="Platform" type="MeshInstance3D" parent="Geometry"]
-transform = Transform3D(-4.3711385e-08, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -4.3711385e-08, 8.546961, 2.5, -10.153364)
-mesh = SubResource("BoxMesh_uiovj")
+[node name="road-straight2" parent="Geometry" instance=ExtResource("4_c84sd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -3)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/Platform"]
+[node name="road-straight3" parent="Geometry" instance=ExtResource("4_c84sd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -3)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Platform/StaticBody3D"]
-shape = SubResource("BoxShape3D_c84sd")
+[node name="road-driveway-single2" parent="Geometry" instance=ExtResource("5_iif3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -3)
+
+[node name="road-driveway-single3" parent="Geometry" instance=ExtResource("5_iif3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -3)
+
+[node name="road-driveway-single4" parent="Geometry" instance=ExtResource("5_iif3d")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6, 0, -3)
+
+[node name="tile-low2" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -2)
+
+[node name="tile-low3" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -2)
+
+[node name="tile-low4" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -2)
+
+[node name="tile-low5" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -4)
+
+[node name="tile-low6" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -4)
+
+[node name="tile-low9" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -4)
+
+[node name="tile-low7" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -4)
+
+[node name="tile-low8" parent="Geometry" instance=ExtResource("6_lr1no")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -4)
+
+[node name="building-i2" parent="Geometry" instance=ExtResource("5_g4u0l")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6, 0, -5)
+
+[node name="building-g2" parent="Geometry" instance=ExtResource("6_iavnc")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8, 0, -5)
 
 [node name="Props" type="Node3D" parent="."]
 
@@ -73,3 +109,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 4.049)
 
 [node name="BasicEnemy" parent="Actors" instance=ExtResource("3_c84sd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6.771)
+
+[node name="building-l2" parent="." instance=ExtResource("9_cyhkh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -5)
