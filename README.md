@@ -1,3 +1,5 @@
+# THIS PROJECT IS DEPRECATED, NO FURTHER DEVELOPMENT WILL BE COMPLETED.
+
 # Development Roadmap
 
 ## Phase 1 - Core Structure
